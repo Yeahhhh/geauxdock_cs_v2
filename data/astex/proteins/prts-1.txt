@@ -1,1 +1,1 @@
-1a07C-1 /worka/work/yfang11/geauxdock_cs/data/astex/x/proteins/1a07C-1.pdb
+1a07C-1 /home/yfang11/geauxdock_cs/data/astex/x/proteins/1a07C-1.pdb

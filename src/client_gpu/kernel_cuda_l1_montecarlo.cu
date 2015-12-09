@@ -20,6 +20,7 @@
 #define MY_KERNEL_MIN_BLOCKS 1
 #endif
 */
+
 #define MY_KERNEL_MIN_BLOCKS 1
 
 

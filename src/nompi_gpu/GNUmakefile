@@ -57,6 +57,13 @@ endif
 # BDX <= warpSize     (always true)
 
 
+#
+# notes:
+# __launch_bounds__ is better than -maxrregcount=64
+# -maxrregcount=69 may generate 58 registers, this option is not safe
+# lower maxrregcount usually get lower number of registers
+
+
 ifeq ($(GPU), GTX780)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_35
 	DEVFLAGS += -maxrregcount=69
@@ -66,14 +73,13 @@ ifeq ($(GPU), GTX780)
 	DMARCRO += -DENABLE_CUDA_LDG
 else ifeq ($(GPU), K20X)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_35
-#	DEVFLAGS += -maxrregcount=64 # __launch_bounds__ is better
 	DEVFLAGS += -Xptxas -dlcm=ca
 	GD := 14
 	BD := 1024
 	DMARCRO += -DENABLE_CUDA_LDG
 else ifeq ($(GPU), GTX980)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_52
-	DEVFLAGS += -maxrregcount=62
+	DEVFLAGS += -maxrregcount=64
 	DEVFLAGS += -Xptxas -dlcm=ca
 	GD := 32
 	BD := 512
