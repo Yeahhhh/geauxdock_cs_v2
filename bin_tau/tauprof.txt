@@ -1,0 +1,8 @@
+export TAU_MAKEFILE=/usr/local/packages/tau/2.23.2b3/INTEL-140-MVAPICH2-2.0/x86_64/lib/Makefile.tau-icpc-mpi-pdt-openmp
+export TAU_OPTIONS='-optTauSelectFile=select.tau -optVerbose'
+
+export TAU_METRICS=GET_TIME_OF_DAY\:PAPI_FP_INS
+ 
+
+
+

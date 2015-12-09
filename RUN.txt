@@ -1,0 +1,16 @@
+smic.hpc.lsu.edu:
+
+vim ~/.modules
+module load cuda/6.5
+module load impi/4.1.3.048
+module load intel/14.0.2 
+
+
+cd src/server && make -j8 -B install
+cd ../client_cpu_mic && make -j8 -B install
+cd ../client_gpu && make -j8 -B install
+
+cd ../../bin
+mpirun -np 1 ./dock_server : -np 1 ./dock_client_cpu
+mpirun -np 1 ./dock_server : -np 1 ./dock_client_gpu
+
