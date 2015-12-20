@@ -103,6 +103,7 @@ int main (int argc, char **argv)
     t[3].Start ();
     Dock (ch, rh, cd, rd, pt, sd);
     t[3].Stop ();
+    printf ("copy H2D time\t\t\t%8.3f\n", t[2].Span ());
     printf ("Dock time\t\t\t%8.3f\n", t[15].Span ());
   }
 
@@ -110,6 +111,7 @@ int main (int argc, char **argv)
   tc[1].Stop ();
 
 
+  tc[3].Start ();
 
   DeviceFree (cd, rd, sd);
   CUDA_ERR (cudaFreeHost (rh));
@@ -117,7 +119,9 @@ int main (int argc, char **argv)
   //free (rh);
   //free (ch);
 
+  tc[3].Stop ();
 
+  printf ("CUDA mem free time\t\t%8.3f\n", tc[3].Span ());
 
 
   for (int g = 0; g < NGPU; ++g) {

@@ -75,9 +75,8 @@ ParseArguments (int argc, char **argv, McPara * mcpara, ExchgPara * exchgpara,
 
   std::string basedir ("../data/");
   //std::string basedir ("../../data/");
-  // std::string basedir ("/home/yfang11/work/geauxdock_cs/data/");
   inputfiles->lig_list = basedir + "astex/ligands/ligs.txt";
-  inputfiles->prt_list = basedir + "astex/proteins/prts-1.txt";
+  inputfiles->prt_list = basedir + "astex/proteins/prts.txt";
   inputfiles->weight_file.path = basedir + "parameters/08ff_opt";
   inputfiles->enepara_file.path = basedir + "parameters/paras";
   inputfiles->norpara_file.path_a = basedir + "parameters/08_nor_a";

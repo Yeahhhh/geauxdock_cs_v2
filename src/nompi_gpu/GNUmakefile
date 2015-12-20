@@ -66,7 +66,7 @@ endif
 
 ifeq ($(GPU), GTX780)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_35
-	DEVFLAGS += -maxrregcount=69
+#	DEVFLAGS += -maxrregcount=69
 	DEVFLAGS += -Xptxas -dlcm=ca
 	GD := 12
 	BD := 1024

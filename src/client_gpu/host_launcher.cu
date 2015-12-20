@@ -107,12 +107,16 @@ Dock (Complex *ch,
       //cudaDeviceSynchronize();
     }
 
+    //yeah::Timer eeee;
+    //eeee.Start ();
     // copy ligand record from GPU to CPU memory
     // use synchronized copy to ensure multi-device consistency
     for (int g = 0; g < NGPU; ++g) {
       cudaSetDevice (g);
       CUDA_ERR (cudaMemcpy (rh + pt[g]->rep_begin, rd[g], pt[g]->record_sz, cudaMemcpyDeviceToHost));
     }
+    // eeee.Stop ();
+    // printf ("launcher: time of memory copy D2H %f\n", eeee.Span());
     e[4].Stop ();
     #include <kernel_dump.C>
   }
