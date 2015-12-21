@@ -8,7 +8,7 @@
 // slightly improves performance on Maxwell GPU
 
 
-//#define ENABLE_CUDA_LDG
+#define ENABLE_CUDA_LDG
 
 
 #ifdef ENABLE_CUDA_LDG

@@ -83,7 +83,7 @@ struct MYALIGN Kde
   float y[MAXKDE];		// KDE y coord, optimized
   float z[MAXKDE];		// KDE z coord, optimized
 
-  int kde_npoint;			// number of kde points
+  int kde_npoint;		// number of kde points
 };
 
 
@@ -93,28 +93,19 @@ struct MYALIGN Mcs
   float x[MAX_MCS_COL];              //                                      used
   float y[MAX_MCS_COL];              //                                      used
   float z[MAX_MCS_COL];              //                                      used
+  float tcc;                         //                                      used
 
-
-/*
-  // sparse matrix, Jagged Diagonal Storage (JDS)
-  int   idx_col[MAX_MCS_COL];              // index for sparse matrix              used
-  float x2[MAX_MCS_COL];              //                                      used
-  float y2[MAX_MCS_COL];              //                                      used
-  float z2[MAX_MCS_COL];              //                                      used
-*/
-  float tcc;                    //                                      used
-  int ncol;
 };
 
 
-struct MYALIGN Mcs2
+// inverse row and column
+struct MYALIGN Mcs_R
 {
-  float x[MAX_MCS_ROW][MAX_MCS_COL];
-  float y[MAX_MCS_ROW][MAX_MCS_COL];
-  float z[MAX_MCS_ROW][MAX_MCS_COL];
+  float x[MAX_MCS_COL][MAX_MCS_ROW];
+  float y[MAX_MCS_COL][MAX_MCS_ROW];
+  float z[MAX_MCS_COL][MAX_MCS_ROW];
   float tcc[MAX_MCS_ROW];
 };
-
 
 struct MYALIGN Mcs3
 {
@@ -125,8 +116,21 @@ struct MYALIGN Mcs3
 };
 
 
+
+// sparse matrix, ELLPACK format
+struct MYALIGN Mcs_ELL
+{
+  int   i[MAX_MCS_ROW][MAX_MCS_COL];         // index
+  float x[MAX_MCS_ROW][MAX_MCS_COL];
+  float y[MAX_MCS_ROW][MAX_MCS_COL];
+  float z[MAX_MCS_ROW][MAX_MCS_COL];
+  int ncol[MAX_MCS_ROW];
+  float tcc[MAX_MCS_ROW];
+};
+
+
 // sparse matrix, CSR
-struct MYALIGN Mcs4
+struct MYALIGN Mcs_CSR
 {
   int idx_col[MAX_MCS_COL * MAX_MCS_ROW];
   float x[MAX_MCS_COL * MAX_MCS_ROW];
@@ -141,9 +145,6 @@ struct MYALIGN Mcs4
   int npoint;
 };
 
-
-
-typedef Mcs4 McsM;
 
 
 

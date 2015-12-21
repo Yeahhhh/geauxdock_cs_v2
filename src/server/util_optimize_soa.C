@@ -364,71 +364,83 @@ OptimizeKde (const Kde0 * kde0, Kde * kde)
 
 
 
-void
-CopyMcsPoint (const Mcs0 * mcs0, Mcs * mcs, const int i0, const int i)
-{
-  mcs->x[i] = mcs0->x[i0];
-  mcs->y[i] = mcs0->y[i0];
-  mcs->z[i] = mcs0->z[i0];
-
-  /*
-  mcs->i2[i] = mcs0->i2[i0];
-  mcs->x2[i] = mcs0->x2[i0];
-  mcs->y2[i] = mcs0->y2[i0];
-  mcs->z2[i] = mcs0->z2[i0];
-  */
-}
-
-
-
 // sorting MCS is incorrect
 void
-OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, McsM * mcsm, const int nrow)
+OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, Mcs_R * mcs_r, Mcs_ELL * mcs_ell, Mcs_CSR *mcs_csr, const int nrow)
 {
     //printf ("mcs_nrow = %d, MAX_MCS_COL= %d\n", nrow, MAX_MCS_COL); // nrow 11, ncol 128
 
-  for (int i = 0; i < nrow; ++i) {
-    mcs[i].tcc = mcs0[i].tcc;
-    mcs[i].ncol = mcs0[i].ncol;
-    const Mcs0 *src = &mcs0[i];
-    Mcs *dst = &mcs[i];
 
-    for (int j = 0; j < MAX_MCS_COL; ++j)
-      CopyMcsPoint(src, dst, j, j);
-  }
-
-
-
-  int npoint = 0;
-  int row_ptr = 0; // the row pointer for CSR sparse matrix
-  for (int i = 0; i < nrow; ++i) {
-    const Mcs0 *src = &mcs0[i];
-    const int ncol = src->ncol;
-    for (int j = 0; j < ncol; ++j) {
-      const int linear_ptr = row_ptr + j;
-      mcsm->idx_col[linear_ptr] = src->idx_col[j];
-      mcsm->x[linear_ptr] = src->x[j];
-      mcsm->y[linear_ptr] = src->y[j];
-      mcsm->z[linear_ptr] = src->z[j];
+#if 1
+    // mcs
+    for (int i = 0; i < nrow; ++i) {
+        const Mcs0 *src = &mcs0[i];
+        Mcs *dst = &mcs[i];
+        for (int j = 0; j < MAX_MCS_COL; ++j) {
+            dst->x[j] = src->x[j];
+            dst->y[j] = src->y[j];
+            dst->z[j] = src->z[j];
+        }
+        mcs[i].tcc = mcs0[i].tcc;
     }
+#endif
 
-    mcsm->tcc[i] = src->tcc;
-    mcsm->row_ptr[i] = row_ptr;
-    mcsm->ncol[i] = ncol;
 
-    npoint += ncol;
-    row_ptr += ncol;
-  }
-  mcsm->nrow = nrow;
-  mcsm->npoint = npoint;
+#if 0
+    // mcs_r
+    for (int i = 0; i < nrow; ++i) {
+        const Mcs0 *src = &mcs0[i];
+        for (int j = 0; j < MAX_MCS_COL; ++j) {
+            mcs_r->x[j][i] = src->x[j];
+            mcs_r->y[j][i] = src->y[j];
+            mcs_r->z[j][i] = src->z[j];
+        }
+        mcs_r->tcc[i] = src->tcc;
+    }
+#endif
 
-  /*
-  printf ("%d total mcs points\n", mcsm->npoint);
-  for (int i = 0; i < npoint; ++i) {
-    printf ("%2d ", mcsm->idx_col[i]);
-  }
-  printf ("\n");
-  */
+
+    // mcs_ell
+
+#if 1
+#endif
+
+
+
+
+#if 0
+    // mcs_csr
+    int npoint = 0;
+    int row_ptr = 0; // the row pointer for CSR sparse matrix
+    for (int i = 0; i < nrow; ++i) {
+        const Mcs0 *src = &mcs0[i];
+        const int ncol = src->ncol;
+        for (int j = 0; j < ncol; ++j) {
+            const int linear_ptr = row_ptr + j;
+            mcs_csr->idx_col[linear_ptr] = src->idx_col[j];
+            mcs_csr->x[linear_ptr] = src->x[j];
+            mcs_csr->y[linear_ptr] = src->y[j];
+            mcs_csr->z[linear_ptr] = src->z[j];
+        }
+
+        mcs_csr->tcc[i] = src->tcc;
+        mcs_csr->row_ptr[i] = row_ptr;
+        mcs_csr->ncol[i] = ncol;
+
+        npoint += ncol;
+        row_ptr += ncol;
+    }
+    mcs_csr->nrow = nrow;
+    mcs_csr->npoint = npoint;
+
+    /*
+      printf ("%d total mcs points\n", mcs_csr->npoint);
+      for (int i = 0; i < npoint; ++i) {
+      printf ("%2d ", mcs_csr->idx_col[i]);
+      }
+      printf ("\n");
+    */
+#endif
 }
 
 

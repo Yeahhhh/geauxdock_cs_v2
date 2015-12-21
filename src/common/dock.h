@@ -397,8 +397,13 @@ struct Complex
   Protein prt[MAX_CONF_PRT];
   Psp psp;
   Kde kde;
+
   Mcs mcs[MAX_MCS_ROW];
-  //Mcs3 mcs3;
+  Mcs_R mcs_r;  
+  Mcs_ELL mcs_ell;
+  Mcs_CSR mcs_csr;
+  Mcs3 mcs3;
+
   EnePara enepara;
   Temp temp[MAX_TMP];
 

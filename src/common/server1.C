@@ -30,7 +30,9 @@
   Psp **psps = new Psp*[conf_lig];
   Kde **kdes = new Kde*[conf_lig];
   Mcs **mcss = new Mcs*[conf_lig];
-  McsM **mcsms = new McsM*[conf_lig];
+  Mcs_R **mcss_r = new Mcs_R*[conf_lig];
+  Mcs_ELL **mcss_ell = new Mcs_ELL*[conf_lig];
+  Mcs_CSR **mcss_csr = new Mcs_CSR*[conf_lig];
 
   for (int i = 0; i < conf_lig; ++i) {
     lig0s[i] = new Ligand0[MAX_CONF_LIG];
@@ -41,7 +43,9 @@
     psps[i] = new Psp;
     kdes[i] = new Kde;
     mcss[i] = new Mcs[MAX_MCS_ROW];
-    mcsms[i] = new McsM;
+    mcss_r[i] = new Mcs_R;
+    mcss_ell[i] = new Mcs_ELL;
+    mcss_csr[i] = new Mcs_CSR;
   }
   t[6].Stop ();
 
@@ -58,7 +62,7 @@
     OptimizeKde (kde0s[i], kdes[i]);
     OptimizeLigand (lig0s[i], kdes[i], ligs[i], inputfiles->lig_files[i].conf_total);
     OptimizePsp (psp0s[i], psps[i]);
-    OptimizeMcs (mcs0s[i], mcss[i], mcsms[i], inputfiles->lhm_files[i].mcs_nrow);
+    OptimizeMcs (mcs0s[i], mcss[i], mcss_r[i], mcss_ell[i], mcss_csr[i], inputfiles->lhm_files[i].mcs_nrow);
   }
   t[7].Stop ();
 
@@ -170,19 +174,12 @@
     for (int j = 0; j < sz.n_lig; ++j) cc->lig[j] = ligs[i][j];
     for (int j = 0; j < sz.n_prt; ++j) cc->prt[j] = prt[j];
     for (int j = 0; j < sz.mcs_nrow; ++j)   cc->mcs[j] = mcss[i][j];
+    cc->mcs_r =  mcss_r[i][0];
+    cc->mcs_ell =  mcss_ell[i][0];
+    cc->mcs_csr =  mcss_csr[i][0];
     for (int j = 0; j < sz.n_tmp; ++j) cc->temp[j] = temp[j];
     for (int j = 0; j < sz.n_rep; ++j) cc->replica[j] = replica[j];
 
-    /*
-    for (int ipos = 0; ipos < MAX_MCS_ROW; ++ipos) {
-        for (int imcs = 0; imcs < MAX_MCS_COL; ++imcs) {
-            cc->mcs3.x[imcs][ipos] = cc->mcs[ipos].x[imcs];
-            cc->mcs3.y[imcs][ipos] = cc->mcs[ipos].y[imcs];
-            cc->mcs3.z[imcs][ipos] = cc->mcs[ipos].z[imcs];
-        }
-        cc->mcs3.tcc[ipos] = cc->mcs[ipos].tcc;
-    }
-    */
 
 
 

@@ -30,11 +30,18 @@
     delete[]psps[i];
     delete[]kdes[i];
     delete[]mcss[i];
+    delete[]mcss_r[i];
+    delete[]mcss_ell[i];
+    delete[]mcss_csr[i];
   }
   delete[]ligs;
   delete[]psps;
   delete[]kdes;
   delete[]mcss;
+  delete[]mcss_r;
+  delete[]mcss_ell;
+  delete[]mcss_csr;
+
   delete[]prt;
   delete[]enepara;
 
