@@ -1,14 +1,19 @@
 
-      float ekde = 0.0f;
-      ty = threadIdx.x / bdx_kde;
-      tx = threadIdx.x % bdx_kde;
+
+// wrong code
 
 
-      // lig loop, ~30
-      for (int j = 0; j < lig_natom; j += bdy_kde) { // y loop
-	float ekde1 = 0.0f;
 
-	{
+float ekde = 0.0f;
+ty = threadIdx.x / bdx_kde;
+tx = threadIdx.x % bdx_kde;
+
+
+// lig loop, ~30
+for (int j = 0; j < lig_natom; j += bdy_kde) { // y loop
+    float ekde1 = 0.0f;
+
+    {
 	const int l = j + ty;
 	if (l < lig_natom) {
 
@@ -24,19 +29,19 @@
 
             } // kde loop
 	} // if (l < lig_natom)
-	}
+    }
 
-	BlockReduceSum_2D_1_d_2 (bdy_kde, bdx_kde, ekde1);
-	if (threadIdx.x < bdy_kde) {
-	  const int l = j + threadIdx.x;
-          const float kde_sz = (float) (kde_end_idx[l] - kde_begin_idx[l]);
-	  if (l < lig_natom)
-              ekde += ekde1 / kde_sz;
-	}
+    BlockReduceSum_2D_1_d_2 (bdy_kde, bdx_kde, ekde1);
+    if (threadIdx.x < bdy_kde) {
+        const int l = j + threadIdx.x;
+        const float kde_sz = (float) (kde_end_idx[l] - kde_begin_idx[l]);
+        if (l < lig_natom)
+            ekde += ekde1 / kde_sz;
+    }
 
-      } // lig loop
+} // lig loop
 
-      WarpReduceSum_1_d_2 (ekde);
-      if (threadIdx.x == 0)
-	e_s[6] = ekde * enepara_kde3_inv;
+WarpReduceSum_1_d_2 (ekde);
+if (threadIdx.x == 0)
+    e_s[6] = ekde * enepara_kde3_inv;
 

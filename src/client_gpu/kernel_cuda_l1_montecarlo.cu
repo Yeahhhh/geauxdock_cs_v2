@@ -10,8 +10,8 @@
 
 
 
-// python: sqrt_2_pi_inv = -1.0 / math.sqrt (3.1415926535897932384626433 * 2.0)
-#define SQRT_2_PI_INV  -0.398942f
+// python3 -c "import math; print (-1.0 / math.sqrt (3.1415926535897932384626433 * 2.0))"
+#define SQRT_2_PI_INV  -0.3989422804f
 
 /*
 #if __CUDA_ARCH__ >= 500
@@ -45,7 +45,9 @@ MonteCarlo_d (Complex * __restrict__ complex,
     __shared__ Psp * __restrict__ psp;
     __shared__ Kde * __restrict__ kde;
     __shared__ Mcs * __restrict__ mcs; // verified faster than accessing complex->mcs...
-    //__shared__ Mcs3 * __restrict__ mcs3;
+    //__shared__ Mcs_R * __restrict__ mcs_r;
+    //__shared__ Mcs_ELL * __restrict__ mcs_ell;
+    //__shared__ Mcs_CSR * __restrict__ mcs_csr;
     __shared__ EnePara * __restrict__ enepara;
 
 
@@ -90,7 +92,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     // constant
     // mcs
-    __shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse MCS matrix
+    //__shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse MCS matrix
     __shared__ float mcs_tcc[MAX_MCS_ROW];
 
 
@@ -136,7 +138,9 @@ MonteCarlo_d (Complex * __restrict__ complex,
       psp = &complex->psp;
       kde = &complex->kde;
       mcs = &complex->mcs[0];
-      //mcs3 = &complex->mcs3;
+      //mcs_r = &complex->mcs_r;
+      //mcs_ell = &complex->mcs_ell;
+      //mcs_csr = &complex->mcs_csr;
       enepara = &complex->enepara;
     }
 
@@ -206,7 +210,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
     }
 
     for (int m = threadIdx.x; m < mcs_nrow; m += blockDim.x) {
-      mcs_ncol[m] = mcs[m].ncol; 
+        //mcs_ncol[m] = mcs[m].ncol; 
       mcs_tcc[m] = mcs[m].tcc;
     }
 
@@ -221,16 +225,6 @@ MonteCarlo_d (Complex * __restrict__ complex,
     int ty, tx;
 
 
-    //if (threadIdx.x == 0 && r == 0) {
-      //CalcThreadBlockShape (kde_npoint, lig_natom, bdx_kde, bdy_kde);
-    //}
-
-#if 0
-    CalcThreadBlockShape (prt_npoint, lig_natom, bdx_prt, bdy_prt);
-    CalcThreadBlockShape (kde_npoint, lig_natom, bdx_kde, bdy_kde);
-    CalcThreadBlockShape (lig_natom, mcs_nrow, bdx_mcs, bdy_mcs);
-#endif
-
 #if 1
     bdy_prt = 8;
     bdx_prt = blockDim.x / bdy_prt;
@@ -241,6 +235,12 @@ MonteCarlo_d (Complex * __restrict__ complex,
     bdy_mcs = blockDim.x / bdx_mcs;
 #endif
 
+
+#if 0
+    CalcThreadBlockShape (prt_npoint, lig_natom, bdx_prt, bdy_prt);
+    CalcThreadBlockShape (kde_npoint, lig_natom, bdx_kde, bdy_kde);
+    CalcThreadBlockShape (lig_natom, mcs_nrow, bdx_mcs, bdy_mcs);
+#endif
 
 #if 0
     if (r == 0 && threadIdx.x == 3) {
@@ -386,15 +386,12 @@ if (threadIdx.x == 0) {
     e_s[2] = epmf; // 2 - pmf (CP)
     e_s[3] = epsp; // 3 - psp (PS CP)
     e_s[4] = ehdb * SQRT_2_PI_INV; // 4 - hdb (HB)
-    //e_s[4] = ehdb * sqrt_2_pi_inv; // 4 - hdb (HB)
     e_s[5] = ehpc; // 5 - hpc (HP)
 }
 
 
 
 #if CALC_KDE == 1
-// no way to compress Vector_kde x Vector_lig
-// fully optimized
 //#include <energy_kde_v1.cu>
 //#include <energy_kde_v2.cu> // the best non-sparse implementation, CUDA thread 128*8
 //#include <energy_kde_v3.cu>
@@ -403,11 +400,11 @@ if (threadIdx.x == 0) {
 
 
 #if CALC_MCS == 1
-//#include <energy_mcs_v0.cu> // sparse matrix
-#include <energy_mcs_v1.cu> // fastest
-//#include <energy_mcs_v2.cu> // the paper
-//#include <energy_mcs_v3.cu> //
-//#include <energy_mcs_v4.cu> // CSR sparse matrix
+#include <energy_mcs_v1.cu> // correct. the paper, row: lig, colum: mcs
+//#include <energy_mcs_v2.cu> // correct. not computing elhm2, no faster
+//#include <energy_mcs_v3_r.cu> // wrong, transpose x y, reduction is inefficient
+//#include <energy_mcs_v4_ell.cu> // sparse matrix, ELLPACK format
+//#include <energy_mcs_v4_csr.cu> // sparse matrix, CSR format
 #endif
 
 

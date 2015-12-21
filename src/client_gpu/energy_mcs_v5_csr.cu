@@ -1,5 +1,4 @@
-// reference: CSR matrix-vector multiplication
-
+// sparse matrix in CSR format
 
 
 
