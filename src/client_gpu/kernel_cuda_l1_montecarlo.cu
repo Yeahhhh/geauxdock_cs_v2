@@ -46,8 +46,8 @@ MonteCarlo_d (Complex * __restrict__ complex,
     __shared__ Kde * __restrict__ kde;
     __shared__ Mcs * __restrict__ mcs; // verified faster than accessing complex->mcs...
     //__shared__ Mcs_R * __restrict__ mcs_r;
-    //__shared__ Mcs_ELL * __restrict__ mcs_ell;
-    //__shared__ Mcs_CSR * __restrict__ mcs_csr;
+    __shared__ Mcs_ELL * __restrict__ mcs_ell;
+    __shared__ Mcs_CSR * __restrict__ mcs_csr;
     __shared__ EnePara * __restrict__ enepara;
 
 
@@ -92,8 +92,9 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     // constant
     // mcs
-    //__shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse MCS matrix
+    __shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse MCS matrix
     __shared__ float mcs_tcc[MAX_MCS_ROW];
+    __shared__ float elhm1s[MAX_MCS_ROW];
 
 
     // constant
@@ -123,7 +124,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
     // constant
     // scalars
     //__shared__ float sqrt_2_pi_inv;
-    __shared__ int lig_natom, prt_npoint, kde_npoint, mcs_nrow;
+    __shared__ int lig_natom, prt_npoint, kde_npoint, mcs_nrow, mcs_npoint;
 
 
     // temporary write-read vars
@@ -139,8 +140,8 @@ MonteCarlo_d (Complex * __restrict__ complex,
       kde = &complex->kde;
       mcs = &complex->mcs[0];
       //mcs_r = &complex->mcs_r;
-      //mcs_ell = &complex->mcs_ell;
-      //mcs_csr = &complex->mcs_csr;
+      mcs_ell = &complex->mcs_ell;
+      mcs_csr = &complex->mcs_csr;
       enepara = &complex->enepara;
     }
 
@@ -190,6 +191,8 @@ MonteCarlo_d (Complex * __restrict__ complex,
       prt_npoint = prt->prt_npoint;
       kde_npoint = complex->size.kde_npoint;
       mcs_nrow = complex->size.mcs_nrow;
+      mcs_npoint = mcs_csr->npoint;
+
       is_accept_s = rep->is_accept;
 
       record[r - complex->rep_begin].next_entry = 0; // reset the record's entry point
@@ -210,8 +213,8 @@ MonteCarlo_d (Complex * __restrict__ complex,
     }
 
     for (int m = threadIdx.x; m < mcs_nrow; m += blockDim.x) {
-        //mcs_ncol[m] = mcs[m].ncol; 
-      mcs_tcc[m] = mcs[m].tcc;
+        mcs_ncol[m] = mcs[m].ncol; 
+        mcs_tcc[m] = mcs[m].tcc;
     }
 
 
@@ -400,11 +403,11 @@ if (threadIdx.x == 0) {
 
 
 #if CALC_MCS == 1
-#include <energy_mcs_v1.cu> // correct. the paper, row: lig, colum: mcs
+#include <energy_mcs_v1.cu> // correct. the paper, row: lig, colum: mcs.  the fastest
 //#include <energy_mcs_v2.cu> // correct. not computing elhm2, no faster
 //#include <energy_mcs_v3_r.cu> // wrong, transpose x y, reduction is inefficient
-//#include <energy_mcs_v4_ell.cu> // sparse matrix, ELLPACK format
-//#include <energy_mcs_v4_csr.cu> // sparse matrix, CSR format
+//#include <energy_mcs_v4_ell.cu> // correct, sparse matrix, ELLPACK format, no faster than version 1
+//#include <energy_mcs_v5_coo.cu> // correct, sparse matrix, COO format, slow due to atomicAdd
 #endif
 
 

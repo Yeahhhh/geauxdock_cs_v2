@@ -93,6 +93,7 @@ struct MYALIGN Mcs
   float x[MAX_MCS_COL];              //                                      used
   float y[MAX_MCS_COL];              //                                      used
   float z[MAX_MCS_COL];              //                                      used
+  int ncol;
   float tcc;                         //                                      used
 
 };
@@ -100,14 +101,6 @@ struct MYALIGN Mcs
 
 // inverse row and column
 struct MYALIGN Mcs_R
-{
-  float x[MAX_MCS_COL][MAX_MCS_ROW];
-  float y[MAX_MCS_COL][MAX_MCS_ROW];
-  float z[MAX_MCS_COL][MAX_MCS_ROW];
-  float tcc[MAX_MCS_ROW];
-};
-
-struct MYALIGN Mcs3
 {
   float x[MAX_MCS_COL][MAX_MCS_ROW];
   float y[MAX_MCS_COL][MAX_MCS_ROW];
@@ -129,20 +122,21 @@ struct MYALIGN Mcs_ELL
 };
 
 
-// sparse matrix, CSR
+// sparse matrix
+// support CSR format
+// support COO format
 struct MYALIGN Mcs_CSR
 {
-  int idx_col[MAX_MCS_COL * MAX_MCS_ROW];
+  int   idx_col[MAX_MCS_COL * MAX_MCS_ROW]; // column index
+  int   idx_row[MAX_MCS_COL * MAX_MCS_ROW]; // row index
   float x[MAX_MCS_COL * MAX_MCS_ROW];
   float y[MAX_MCS_COL * MAX_MCS_ROW];
   float z[MAX_MCS_COL * MAX_MCS_ROW];
   float tcc[MAX_MCS_ROW];
 
-
-  int row_ptr[MAX_MCS_ROW]; // the row pointer for CSR sparse matrix
-  int ncol[MAX_MCS_ROW];
-  int nrow;
-  int npoint;
+  //int row_ptr[MAX_MCS_ROW]; // row pointer for CSR sparse matrix
+  //int nrow;
+  int npoint; // total points in the sparse matrix
 };
 
 

@@ -17,11 +17,11 @@ for (int j = 0; j < mcs_nrow; j += bdy_mcs) { // y loop
 
     const int m = j + ty;
     if (m < mcs_nrow) {
-      for (int i = tx; i < mcs_i2max[m]; i += bdx_mcs) { // x loop
-        const int l = mcs[m].idx_col[i];
-        const float dx = lig_x2[l] - mcs[m].x2[i]; // do not use __LDG
-        const float dy = lig_y2[l] - mcs[m].y2[i];
-        const float dz = lig_z2[l] - mcs[m].z2[i];
+      for (int i = tx; i < mcs_ncol[m]; i += bdx_mcs) { // x loop
+        const int l = mcs_ell->i[m][i];
+        const float dx = lig_x2[l] - mcs_ell->x[m][i]; // do not use __LDG
+        const float dy = lig_y2[l] - mcs_ell->y[m][i];
+        const float dz = lig_z2[l] - mcs_ell->z[m][i];
         elhm1 += dx * dx + dy * dy + dz * dz;
         elhm2++;
       }

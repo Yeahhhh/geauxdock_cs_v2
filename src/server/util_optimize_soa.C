@@ -381,6 +381,7 @@ OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, Mcs_R * mcs_r, Mcs_ELL * mcs_ell, Mcs
             dst->y[j] = src->y[j];
             dst->z[j] = src->z[j];
         }
+        mcs[i].ncol = mcs0[i].ncol;
         mcs[i].tcc = mcs0[i].tcc;
     }
 #endif
@@ -401,45 +402,63 @@ OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, Mcs_R * mcs_r, Mcs_ELL * mcs_ell, Mcs
 
 
     // mcs_ell
-
 #if 1
+    for (int i = 0; i < nrow; ++i) {
+        const Mcs0 *src = &mcs0[i];
+        const int ncol = src->ncol;
+        for (int j = 0; j < ncol; ++j) {
+            mcs_ell->i[i][j] = src->idx_col[j];
+            mcs_ell->x[i][j] = src->x2[j];
+            mcs_ell->y[i][j] = src->y2[j];
+            mcs_ell->z[i][j] = src->z2[j];
+        }
+        mcs_ell->ncol[i] = src->ncol;
+        mcs_ell->tcc[i] = src->tcc;
+    }
 #endif
 
 
 
 
-#if 0
-    // mcs_csr
-    int npoint = 0;
-    int row_ptr = 0; // the row pointer for CSR sparse matrix
+
+#if 1
+    // mcs_csr, mcs_coo
+    int row_ptr[MAX_MCS_ROW]; // row pointer for CSR sparse matrix
+    row_ptr[0] = 0;
     for (int i = 0; i < nrow; ++i) {
         const Mcs0 *src = &mcs0[i];
         const int ncol = src->ncol;
         for (int j = 0; j < ncol; ++j) {
-            const int linear_ptr = row_ptr + j;
+            const int linear_ptr = row_ptr[i] + j;
             mcs_csr->idx_col[linear_ptr] = src->idx_col[j];
-            mcs_csr->x[linear_ptr] = src->x[j];
-            mcs_csr->y[linear_ptr] = src->y[j];
-            mcs_csr->z[linear_ptr] = src->z[j];
+            mcs_csr->idx_row[linear_ptr] = i;
+            mcs_csr->x[linear_ptr] = src->x2[j];
+            mcs_csr->y[linear_ptr] = src->y2[j];
+            mcs_csr->z[linear_ptr] = src->z2[j];
         }
-
         mcs_csr->tcc[i] = src->tcc;
-        mcs_csr->row_ptr[i] = row_ptr;
-        mcs_csr->ncol[i] = ncol;
-
-        npoint += ncol;
-        row_ptr += ncol;
+        row_ptr[i + 1] = row_ptr[i] + ncol;
     }
-    mcs_csr->nrow = nrow;
-    mcs_csr->npoint = npoint;
+    mcs_csr->npoint = row_ptr[nrow];
 
-    /*
-      printf ("%d total mcs points\n", mcs_csr->npoint);
-      for (int i = 0; i < npoint; ++i) {
-      printf ("%2d ", mcs_csr->idx_col[i]);
-      }
-      printf ("\n");
-    */
+/*
+    mcs_csr->nrow = nrow;
+    mcs_csr->row_ptr[0] = row_ptr[0];
+    for (int i = 0; i < nrow; ++i) {
+        mcs_csr->row_ptr[i + 1] = row_ptr[i + 1];
+*/
+
+
+
+#if 0
+    int npoint = row_ptr[nrow];
+    printf ("%d mcs rows\n", nrow);
+    printf ("%d total mcs points\n", npoint);
+    for (int i = 0; i < npoint; ++i) {
+        printf ("%2d ", mcs_csr->i[i]);
+    }
+    printf ("\n");
+#endif
 #endif
 }
 

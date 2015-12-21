@@ -13,9 +13,9 @@ SetDevice ()
 {
   for (int g = 0; g < NGPU; ++g) {
     cudaSetDevice (g);
-    //cudaDeviceSetCacheConfig (cudaFuncCachePreferEqual);
+    cudaDeviceSetCacheConfig (cudaFuncCachePreferEqual);
     //cudaDeviceSetCacheConfig (cudaFuncCachePreferL1);
-    cudaDeviceSetCacheConfig (cudaFuncCachePreferShared);
+    //cudaDeviceSetCacheConfig (cudaFuncCachePreferShared);
   }
 }
 

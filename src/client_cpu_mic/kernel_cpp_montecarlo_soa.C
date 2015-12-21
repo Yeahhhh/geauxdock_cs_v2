@@ -247,13 +247,15 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 	const float x1 = lig->x[l];
 	const float y1 = lig->y[l];
 	const float z1 = lig->z[l];
-	lig_x1[l] = rot[0][0] * x1 + rot[0][1] * y1 + rot[0][2] * z1 + movematrix[0] + lig_center[0];
-	lig_y1[l] = rot[1][0] * x1 + rot[1][1] * y1 + rot[1][2] * z1 + movematrix[1] + lig_center[1];
-	lig_z1[l] = rot[2][0] * x1 + rot[2][1] * y1 + rot[2][2] * z1 + movematrix[2] + lig_center[2];
 
 	const float x2 = lig->x2[l];
 	const float y2 = lig->y2[l];
 	const float z2 = lig->z2[l];
+
+	lig_x1[l] = rot[0][0] * x1 + rot[0][1] * y1 + rot[0][2] * z1 + movematrix[0] + lig_center[0];
+	lig_y1[l] = rot[1][0] * x1 + rot[1][1] * y1 + rot[1][2] * z1 + movematrix[1] + lig_center[1];
+	lig_z1[l] = rot[2][0] * x1 + rot[2][1] * y1 + rot[2][2] * z1 + movematrix[2] + lig_center[2];
+
 	lig_x2[l] = rot[0][0] * x2 + rot[0][1] * y2 + rot[0][2] * z2 + movematrix[0] + lig_center[0];
 	lig_y2[l] = rot[1][0] * x2 + rot[1][1] * y2 + rot[1][2] * z2 + movematrix[1] + lig_center[1];
 	lig_z2[l] = rot[2][0] * x2 + rot[2][1] * y2 + rot[2][2] * z2 + movematrix[2] + lig_center[2];
