@@ -1,7 +1,9 @@
+
 TARGET_GPU := 0
 TARGET_CPU := 1
 TARGET_MIC := 2
 TARGET_DEVICE := $(TARGET_CPU)
+#TARGET_DEVICE := $(TARGET_MIC)
 DMARCRO := -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_MIC=$(TARGET_MIC) -DTARGET_DEVICE=$(TARGET_DEVICE) $(MAKEMACRO)
 
 
@@ -37,7 +39,7 @@ OBJ += util_optimize_soa.o
 OBJ += util_print.o
 OBJ += host_launcher.o
 
-HEADPATH += -I. -I../common -I../server
+HEADPATH += -I. -I../common -I../server -I../client_cpu_mic
 LIBPATH += #-Wl,-rpath=/usr/local/compilers/Intel/cluster_studio_xe_2013.1.046/composer_xe_2013_sp1.2.144/compiler/lib/mic
 LINKFLAGS += -lyeahc -lm -lrt
 
@@ -47,7 +49,7 @@ FLAGS += -Wall
 FLAGS += -openmp
 #FLAGS += -vec-guard-write
 #FLAGS += -no-vec # disable SIMD code generation
-#FLAGS += -no-simd # ignore SIMD pragmas
+#FLAGS += -no-simd # ignore SIMD pragmas, slow down 2%
 FLAGS += -O3
 #FLAGS += -fast
 #FLAGS += -vec-threshold0   # should consistantly turn this off thoughout the benchmarks
@@ -94,7 +96,9 @@ install: $(EXE)
 	(cp $(EXE) ../../bin/)
 
 run: $(EXE)
-	cd ../../data && ../src/nompi_cpu_mic/$(EXE) -nt 11
+	cd ../../data && ../src/nompi_cpu_mic/$(EXE) -nt 20
 
 clean:
 	@(rm -f ${EXE} *.o)
+
+

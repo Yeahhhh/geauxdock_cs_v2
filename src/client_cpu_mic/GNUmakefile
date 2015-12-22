@@ -22,7 +22,7 @@ endif
 OBJ_HOST := dock_client.o
 OBJ_DEV := host_launcher.o util_print.o
 
-HEADPATH += -I. -I../common
+HEADPATH += -I. -I../common -I../client_cpu_mic
 #LIBPATH += -Lx
 LINKFLAGS += -lyeahc -lm -lrt
 

@@ -1,8 +1,6 @@
-#include <omp.h>
 
 
-// Intel MKL VSL Random Number Generator
-//#include <mkl_vsl.h>
+
 
 #if TARGET_DEVICE == TARGET_MIC
 __attribute__((target(mic)))
@@ -25,6 +23,12 @@ MyRand_d (int seed)
 
 
 
+// Intel MKL VSL Random Number Generator
+#include <mkl_vsl.h>
+
+
+
+
 static void
 MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 {
@@ -36,15 +40,14 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
   out (rec:length(reps) alloc_if(1) free_if(1))
 #endif
 
-#pragma omp parallel for schedule (static)
+#if TARGET_DEVICE == TARGET_CPU
+#pragma omp parallel for
+#endif
+#if TARGET_DEVICE == TARGET_MIC
+#pragma omp parallel for schedule (dynamic,1)
+#endif
+
   for (int r = complex->rep_begin; r <= complex->rep_end; ++r) {
-
-    //const int nthreads = omp_get_num_threads ();
-    //const int ompid = omp_get_thread_num ();
-    //if ( r < nthreads) {
-    //  printf ("openmp thread: %d / %d\n", ompid, nthreads);
-    //}
-
 
     // constant
     // pointers
@@ -54,6 +57,8 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
     const Psp * const psp = &complex->psp;
     const Kde * const kde = &complex->kde;
     const Mcs * const mcs = &complex->mcs[0];
+    const Mcs_ELL * const mcs_ell = &complex->mcs_ell;
+    const Mcs_CSR * const mcs_csr = &complex->mcs_csr;
     const EnePara * const enepara = &complex->enepara;
 
 
@@ -62,12 +67,25 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
     float move_scale[6] MYALIGN; // translation x y z, rotation x y z
     float movematrix[6] MYALIGN; // translation x y z, rotation x y z
     float rot[3][3] MYALIGN; // rotz roty rotx
+
+    // might be sorted
     float lig_x1[MAXLIG] MYALIGN;
     float lig_y1[MAXLIG] MYALIGN;
     float lig_z1[MAXLIG] MYALIGN;
+
+    // never sorted
     float lig_x2[MAXLIG] MYALIGN;
     float lig_y2[MAXLIG] MYALIGN;
     float lig_z2[MAXLIG] MYALIGN;
+
+    // sort by t
+    float lig_x3[MAXLIG] MYALIGN;
+    float lig_y3[MAXLIG] MYALIGN;
+    float lig_z3[MAXLIG] MYALIGN;
+
+    // kde is always sorted by t
+    int kde_begin_idx[MAXLIG] MYALIGN;
+    int kde_end_idx[MAXLIG] MYALIGN;
 
 
     // constant
@@ -84,6 +102,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
     // constant
     // mcs
+    int mcs_ncol[MAX_MCS_ROW] MYALIGN; // row length in the sparse matrix representation
     float mcs_tcc[MAX_MCS_ROW] MYALIGN;
 
 
@@ -123,8 +142,8 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
 
 
-    for (int bidx = 0; bidx < 6; ++bidx)
-      move_scale[bidx] = complex->mcpara.move_scale[bidx];
+    for (int i = 0; i < 6; ++i)
+      move_scale[i] = complex->mcpara.move_scale[i];
 
     for (int l = 0; l < MAXTP2; ++l) {
       for (int p = 0; p < MAXTP1; ++p) {
@@ -143,10 +162,10 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
       enepara_hpl2[l] = enepara->hpl2[l];
     }
     
-    for (int bidx = 0; bidx < MAXWEI - 1; ++bidx) {
-      enepara_a_para[bidx] = enepara->a_para[bidx];
-      enepara_b_para[bidx] = enepara->b_para[bidx];
-      enepara_w[bidx] = enepara->w[bidx];
+    for (int i = 0; i < MAXWEI - 1; ++i) {
+      enepara_a_para[i] = enepara->a_para[i];
+      enepara_b_para[i] = enepara->b_para[i];
+      enepara_w[i] = enepara->w[i];
     }
 
     enepara_lj0 = enepara->lj0;
@@ -171,14 +190,17 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
     for (int l = 0; l < lig_natom; ++l) {
       lig_t[l] = lig->t[l];
       lig_c[l] = lig->c[l];
+      kde_begin_idx[l] = lig->kde_begin_idx[l];
+      kde_end_idx[l] = lig->kde_end_idx[l];
     }
 
-    for (int bidx = 0; bidx < 3; ++bidx) {
-      lig_center[bidx] = lig->center[bidx];
-      prt_pocket_center[bidx] = prt->pocket_center[bidx];
+    for (int i = 0; i < 3; ++i) {
+      lig_center[i] = lig->center[i];
+      prt_pocket_center[i] = prt->pocket_center[i];
     }
 
     for (int m = 0; m < mcs_nrow; ++m) {
+      mcs_ncol[m] = mcs[m].ncol;
       mcs_tcc[m] = mcs[m].tcc;
     }
 
@@ -211,14 +233,14 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
       // move
 
       //#pragma unroll (6)
-      for (int bidx = 0; bidx < 6; ++bidx) {
+      for (int i = 0; i < 6; ++i) {
 #if IS_AWAY == 0
 	const float fixed_var = 0.0f;
 #elif IS_AWAY == 1
 	const float fixed_var = 44.5f;
 #endif
 	float moveamount = s2max != 1 ? MYRAND : fixed_var;
-	movematrix[bidx] = move_scale[bidx] * moveamount + rep->movematrix[bidx];
+	movematrix[i] = move_scale[i] * moveamount + rep->movematrix[i];
       }
 
     
@@ -247,18 +269,22 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 	const float x1 = lig->x[l];
 	const float y1 = lig->y[l];
 	const float z1 = lig->z[l];
-
 	const float x2 = lig->x2[l];
 	const float y2 = lig->y2[l];
 	const float z2 = lig->z2[l];
-
+	//const float x3 = lig->x3[l];
+	//const float y3 = lig->y3[l];
+	//const float z3 = lig->z3[l];
 	lig_x1[l] = rot[0][0] * x1 + rot[0][1] * y1 + rot[0][2] * z1 + movematrix[0] + lig_center[0];
 	lig_y1[l] = rot[1][0] * x1 + rot[1][1] * y1 + rot[1][2] * z1 + movematrix[1] + lig_center[1];
 	lig_z1[l] = rot[2][0] * x1 + rot[2][1] * y1 + rot[2][2] * z1 + movematrix[2] + lig_center[2];
-
 	lig_x2[l] = rot[0][0] * x2 + rot[0][1] * y2 + rot[0][2] * z2 + movematrix[0] + lig_center[0];
 	lig_y2[l] = rot[1][0] * x2 + rot[1][1] * y2 + rot[1][2] * z2 + movematrix[1] + lig_center[1];
 	lig_z2[l] = rot[2][0] * x2 + rot[2][1] * y2 + rot[2][2] * z2 + movematrix[2] + lig_center[2];
+	//lig_x3[l] = rot[0][0] * x3 + rot[0][1] * y3 + rot[0][2] * z3 + movematrix[0] + lig_center[0];
+	//lig_y3[l] = rot[1][0] * x3 + rot[1][1] * y3 + rot[1][2] * z3 + movematrix[1] + lig_center[1];
+	//lig_z3[l] = rot[2][0] * x3 + rot[2][1] * y3 + rot[2][2] * z3 + movematrix[2] + lig_center[2];
+
       }
   
 
@@ -276,134 +302,11 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
       float ehpc = 0.0f;
 
 
+
 #if CALC_PRT == 1
-
-
-      // lig loop, ~30
-#pragma loop count (32)
-//#pragma unroll_and_jam (2)
-      for (int l = 0; l < lig_natom; ++l) {
-	float ehpc1 = 0.0f;
-        const int lig__t = lig_t[l];
-
-
-#pragma loop count (384)
-#pragma simd reduction(+:evdw, eele, epmf, epsp, ehdb, ehpc, ehpc1)
-//#pragma simd vectorlength(8)
-//#pragma unroll (2)
-        // prt loop, ~300
-	for (int p = 0; p < prt_npoint; ++p) {
-          const int prt__t = prt->t[p];
-
-          const float dx = lig_x1[l] - prt->x[p];
-          const float dy = lig_y1[l] - prt->y[p];
-          const float dz = lig_z1[l] - prt->z[p];
-          const float dst_pow2 = dx * dx + dy * dy + dz * dz;
-          const float dst_pow4 = dst_pow2 * dst_pow2;
-          const float dst = sqrtf (dst_pow2);
-
-
-#if 1
-          /* hydrophobic potential */
-
-
-          if (prt->cdc[p] == 1 && dst_pow2 <= 81.0f OROR1) {
-            ehpc1 += prt->hpp[p] *
-              (1.0f - (3.5f / 81.0f * dst_pow2 -
-                       4.5f / 81.0f / 81.0f * dst_pow4 +
-                       2.5f / 81.0f / 81.0f / 81.0f * dst_pow4 * dst_pow2 -
-                       0.5f / 81.0f / 81.0f / 81.0f / 81.0f * dst_pow4 * dst_pow4));
-          }
+#include <energy_prt_v1.C>
 #endif
 
-
-
-      
-
-#if 1
-          /* L-J potential */
-          // p1a[MAXTP2][MAXTP1]
-          // p2a[MAXTP2][MAXTP1]
-          {
-	    const float p1 = enepara_p1a[lig__t][prt__t] / (dst_pow4 * dst_pow4 * dst);
-	    const float p2 = enepara_p2a[lig__t][prt__t] / (dst_pow4 * dst_pow2);
-	    const float p4 = p1 * enepara_lj0 * (1.0f + enepara_lj1 * dst_pow2) + 1.0f;
-	    evdw += (p1 - p2) / p4;
-          }
-#endif
-
-
-
-
-#if 1
-          /* electrostatic potential */
-          {
-	    const float s1 = enepara_el1 * dst;
-	    float g1;
-	    if (s1 < 1 OROR1)
-	      g1 = enepara_el0 + enepara_a1 * s1 * s1 + enepara_b1 * s1 * s1 * s1;
-	    else
-	      g1 = 1.0f / s1;
-	    eele += lig_c[l] * prt->ele[p] * g1;
-          }
-#endif
-
-
-#if 1
-          /* contact potential */
-          // pmf0[MAXTP2][MAXTP1]
-          // pmf1[MAXTP2][MAXTP1]
-          // psp[MAXTP2][MAXPRO]
-
-          const float dst_minus_pmf0 = dst - enepara_pmf0[lig__t][prt__t];
-
-          epmf +=
-            enepara_pmf1[lig__t][prt__t] /
-            (1.0f + expf ((-0.5f * dst + 6.0f) * dst_minus_pmf0));
-
-
-          /* pocket-specific potential */
-          // the senmatics do not match with the original program:
-          // if (found psp[][])
-          //   accumulate to epsp
-          // else
-          //   do nothing
-          if (prt->c[p] == 2 && dst_minus_pmf0 <= 0 OROR1) {
-            const int i1 = prt->seq3r[p];
-            epsp += psp->psp[lig__t][i1]; // sparse matrix, indirect dereference
-
-            // performance measuring
-            // improve from 336 to 352, not worth doing
-            //epsp += float (lig__t + i1);
-          }
-#endif
-
-
-#if 1
-          /* hydrogen bond potential */
-          // hdb0[MAXTP2][MAXTP1]
-          // hdb1[MAXTP2][MAXTP1]
-          
-          const float hdb0 = enepara_hdb0[lig__t][prt__t];
-          if (hdb0 > 0.1f OROR1) {
-            const float hdb1 = enepara_hdb1[lig__t][prt__t];
-            const float hdb3 = (dst - hdb0) * hdb1;
-            ehdb += hdb1 * expf (-0.5f * hdb3 * hdb3);
-          }
-#endif
-
-        } // prt loop
-
-
-
-	/* hydrophobic restraits*/
-	// hpl0[MAXTP2]
-	// hpl1[MAXTP2]
-	// hpl2[MAXTP2]
-	const float hpc2 = (ehpc1 - enepara_hpl0[lig__t]) / enepara_hpl1[lig__t];
-	ehpc += 0.5f * hpc2 * hpc2 - enepara_hpl2[lig__t];
-      } // lig loop
-#endif
 
       float e_s[MAXWEI] MYALIGN;
       e_s[0] = evdw; // 0 - vdw 
@@ -415,94 +318,19 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
 
 
-
-
-
-
-
 #if CALC_KDE == 1
-      /* kde potential */
-      // fully optimized
-
-      float ekde = 0.0f;
-
-      // lig loop, ~30
-#pragma loop count (32)
-      for (int l = 0; l < lig_natom; ++l) {
-	float ekde1 = 0.0f;
-	int ekde2 = 0;
-	const int lig__t = lig_t[l];
-
-	// kde loop, ~400
-#pragma loop count (384)
-#pragma simd reduction(+:ekde1, ekde2)
-//#pragma simd private(dx, dy, dz, kde_dst_pow2)
-//#pragma simd vectorlength(8)
-	for (int k = 0; k < kde_npoint; ++k) {
-	  if (lig__t == kde->t[k] OROR1) {
-	    const float dx = lig_x1[l] - kde->x[k];
-	    const float dy = lig_y1[l] - kde->y[k];
-	    const float dz = lig_z1[l] - kde->z[k];
-	    const float kde_dst_pow2 = dx * dx + dy * dy + dz * dz;
-#if 0
-// slower on Xeon Phi
-// little impact on CPU
-            const float t = enepara_kde2 * kde_dst_pow2;
-            if (t > -30) {
-                //printf ("%f ", t);
-                ekde1 += expf (t);
-            }
-#endif
-#if 1
-// faster on Xeon Phi
-// little impact on CPU
-            ekde1 += expf (enepara_kde2 * kde_dst_pow2);
-#endif
-	    ekde2++;
-	  }
-	} // kde loop
-
-	if (ekde2 != 0)
-	  ekde += (ekde1 / (float) ekde2);
-        
-      } // lig loop
-
-      e_s[6] = ekde * enepara_kde3_inv;
+//#include <energy_kde_v1.C> // correct,
+//#include <energy_kde_v2.C> // correct, not computing ekde2, a little bit faster
+#include <energy_kde_v3.C> // correct, sparse format, CPU improve 2%, mic improve 6%
 #endif
 
 
 
 
 #if CALC_MCS == 1
-      /* position restraints */
-      // fully optimized
-
-      float elhm = 0.0f;
-
-      // lhm loop, ~11
-#pragma loop count (11)
-      for (int m = 0; m < mcs_nrow; ++m) {
-	float elhm1 = 0.0f;
-	int elhm2 = 0;
-
-#pragma loop count (32)
-#pragma simd reduction(+:elhm1, elhm2)
-//#pragma vector aligned
-	for (int l = 0; l < lig_natom; ++l) {
-          if (mcs[m].x[l] != MCS_INVALID_COORD OROR1) {
-            const float dx = lig_x2[l] - mcs[m].x[l];
-            const float dy = lig_y2[l] - mcs[m].y[l];
-            const float dz = lig_z2[l] - mcs[m].z[l];
-            elhm1 += dx * dx + dy * dy + dz * dz;
-            elhm2++;
-          }
-        } // lig loop
-
-        if (elhm2 != 0)
-          elhm += mcs_tcc[m] * sqrtf (elhm1 / (float) elhm2);
-      } // lhm loop
-
-      e_s[7] = logf (elhm / mcs_nrow);
+//#include <energy_mcs_v1.C> // correct
+//#include <energy_mcs_v2.C> // correct, not computing elhm2, no faster
+#include <energy_mcs_v3_ell.C> // correct, sparse matrix, ELLPACK format, the fasterest, mic improve 2%
 #endif
 
 
@@ -515,10 +343,9 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
       {
         float dst = 0;
 #pragma simd reduction(+:dst)
-        for (int bidx = 0; bidx < 3; ++bidx) {
-          float d = lig_center[bidx] + movematrix[bidx] - prt_pocket_center[bidx];
-          d = d * d;
-          dst += d;
+        for (int i = 0; i < 3; ++i) {
+          float d = lig_center[i] + movematrix[i] - prt_pocket_center[i];
+          dst += d * d;
         }
 	e_s[8] = sqrtf (dst);
       }
@@ -527,13 +354,16 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
 
       // normalization
-      for (int bidx = 0; bidx < 7; ++bidx)
-        e_s[bidx] = e_s[bidx] / lig_natom;
-      for (int bidx = 0; bidx < MAXWEI - 1; ++bidx)
-	e_s[bidx] = enepara_a_para[bidx] * e_s[bidx] + enepara_b_para[bidx];
+//#pragma unroll
+      for (int i = 0; i < 7; ++i)
+        e_s[i] = e_s[i] / lig_natom;
+//#pragma unroll
+      for (int i = 0; i < MAXWEI - 1; ++i)
+	e_s[i] = enepara_a_para[i] * e_s[i] + enepara_b_para[i];
       float etotal = 0.0f;
-      for (int bidx = 0; bidx < MAXWEI - 1; ++bidx)
-	etotal += enepara->w[bidx] * e_s[bidx];
+//#pragma unroll
+      for (int i = 0; i < MAXWEI - 1; ++i)
+	etotal += enepara->w[i] * e_s[i];
       e_s[MAXWEI - 1] = etotal;
 
 
@@ -548,10 +378,10 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
       is_accept_s = (rand < expf (delta_energy * beta));  // mybeta < 0
 
       if (is_accept_s == 1) {
-        for (int bidx = 0; bidx < MAXWEI; ++bidx)
-	  rep->energy[bidx] = e_s[bidx];
-        for (int bidx = 0; bidx < 6; ++bidx)
-          rep->movematrix[bidx] = movematrix[bidx];
+        for (int i = 0; i < MAXWEI; ++i)
+	  rep->energy[i] = e_s[i];
+        for (int i = 0; i < 6; ++i)
+          rep->movematrix[i] = movematrix[i];
       }
 
 
@@ -561,7 +391,6 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
     rep->is_accept = is_accept_s;
 
   } // replica loop
-
 
 
 }

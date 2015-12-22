@@ -20,7 +20,7 @@ for (int j = 0; j < mcs_nrow; j += bdy_mcs) { // y loop, large
                 const float dy = lig_y2[l] - mcs[m].y[l];
                 const float dz = lig_z2[l] - mcs[m].z[l];
                 elhm1 += dx * dx + dy * dy + dz * dz;
-                elhm2++;
+                elhm2++; // never zero
             }
 
         } // lig loop
@@ -31,7 +31,7 @@ for (int j = 0; j < mcs_nrow; j += bdy_mcs) { // y loop, large
 
     if (threadIdx.x < bdy_mcs) {
         const int m = j + threadIdx.x;
-        if (m < mcs_nrow && elhm2 != 0)
+        if (m < mcs_nrow)
             elhm += mcs_tcc[m] * sqrtf (elhm1 / (float) elhm2);
     }
 

@@ -9,6 +9,9 @@ for (int j = 0; j < lig_natom; j += bdy_kde) { // y loop, ~30
     float ekde1 = 0.0f;
 
     const int l = j + ty;
+    //const int begin = kde_begin_idx[l];
+    //const int end = kde_end_idx[l];
+
     if (l < lig_natom) {
 
 //#pragma unroll 2

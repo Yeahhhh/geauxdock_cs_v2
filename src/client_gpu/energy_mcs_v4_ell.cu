@@ -1,7 +1,6 @@
 
 // sparse matrix in ELLPACK format
-// no performance difference
-// result is wrong
+// no performance improvement
 
 
 
@@ -23,7 +22,7 @@ for (int j = 0; j < mcs_nrow; j += bdy_mcs) { // y loop
         const float dy = lig_y2[l] - mcs_ell->y[m][i];
         const float dz = lig_z2[l] - mcs_ell->z[m][i];
         elhm1 += dx * dx + dy * dy + dz * dz;
-        elhm2++;
+        elhm2++; // never zero
       }
     }
 
@@ -32,7 +31,7 @@ for (int j = 0; j < mcs_nrow; j += bdy_mcs) { // y loop
 
   if (threadIdx.x < bdy_mcs) {
     const int m = j + threadIdx.x;
-    if (m < mcs_nrow && elhm2 != 0)
+    if (m < mcs_nrow)
       elhm += mcs_tcc[m] * sqrtf (elhm1 / (float) elhm2);
   }
 

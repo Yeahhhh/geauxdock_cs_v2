@@ -1,7 +1,3 @@
-# smic:
-# module purge
-# module load impi/4.1.3.048/intel64
-# module load intel/14.0.2
 
 TARGET_GPU := 0
 TARGET_CPU := 1
@@ -57,34 +53,24 @@ endif
 # BDX <= warpSize     (always true)
 
 
-#
-# notes:
-# __launch_bounds__ is better than -maxrregcount=64
-# -maxrregcount=69 may generate 58 registers, this option is not safe
-# lower maxrregcount usually get lower number of registers
-
-
 ifeq ($(GPU), GTX780)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_35
-#	DEVFLAGS += -maxrregcount=69
-	DEVFLAGS += -Xptxas -dlcm=ca
 	GD := 12
 	BD := 1024
 	DMARCRO += -DENABLE_CUDA_LDG
 else ifeq ($(GPU), K20X)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_35
-	DEVFLAGS += -Xptxas -dlcm=ca
 	GD := 14
 	BD := 1024
 	DMARCRO += -DENABLE_CUDA_LDG
 else ifeq ($(GPU), GTX980)
 	DEVFLAGS += -gencode arch=compute_35,code=sm_52
-	DEVFLAGS += -maxrregcount=64
-	DEVFLAGS += -Xptxas -dlcm=ca
+#	DEVFLAGS += -maxrregcount=64
 	GD := 32
 	BD := 512
 	DMARCRO += -DENABLE_CUDA_LDG
 else
+	DEVFLAGS += -arch=compute_35
 	GD := 16
 	BD := 512
 endif
@@ -115,7 +101,7 @@ OBJ += load.o data.o rmsd.o util.o util_optimize_soa.o util_print.o
 
 HEADPATH += -I. -I../common -I../server -I../client_gpu
 #LIBPATH +=
-LINKFLAGS += -lm -lrt -lyeahc
+LINKFLAGS += -lm -lrt -lyeahc -lcudart
 
 
 CXX_DEV := nvcc
@@ -125,14 +111,14 @@ HOSTFLAGS += -Wall -O3 $(HEADPATH) $(DMARCRO) $(DMARCRO_GPU)
 DEVFLAGS += $(HEADPATH) $(DMARCRO) $(DMARCRO_GPU)
 DEVFLAGS += -O3
 DEVFLAGS += -use_fast_math
+DEVFLAGS += -Xptxas -dlcm=ca
 
-# bad for performance
+# development purpose, bad for performance
 #DEVFLAGS += -lineinfo
-
 #DEVFLAGS += -Xptxas -v
 #DEVFLAGS += -keep --keep-dir tmp -G --source-in-pt
 
-LINKFLAGS += -lcudart
+
 
 
 
@@ -184,3 +170,5 @@ echo:
 
 clean:
 	@(rm -f ${EXE} *.o)
+
+

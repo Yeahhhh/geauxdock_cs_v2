@@ -72,8 +72,8 @@ MonteCarlo_d (Complex * __restrict__ complex,
     __shared__ float lig_z3[MAXLIG];
 
 
-    // gpu lig was not sorted by t
-    // kde was walways sorted
+
+    // kde is always sorted by t
     __shared__ int kde_begin_idx[MAXLIG];
     __shared__ int kde_end_idx[MAXLIG];
 
@@ -92,7 +92,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     // constant
     // mcs
-    __shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse MCS matrix
+    __shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse matrix representation
     __shared__ float mcs_tcc[MAX_MCS_ROW];
     __shared__ float elhm1s[MAX_MCS_ROW];
 
@@ -379,7 +379,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
 
 #if CALC_PRT == 1
-#include <energy_prt_v1.cu>
+#include <energy_prt_v1.cu> // correct,
 #endif
 
 __shared__ float e_s[MAXWEI];
@@ -395,16 +395,16 @@ if (threadIdx.x == 0) {
 
 
 #if CALC_KDE == 1
-//#include <energy_kde_v1.cu>
-//#include <energy_kde_v2.cu> // the best non-sparse implementation, CUDA thread 128*8
-//#include <energy_kde_v3.cu>
-#include <energy_kde_v4.cu> // sparse matrix, the fastest, CUDA thread 32*32
+//#include <energy_kde_v1.cu> // correct,
+//#include <energy_kde_v2.cu> // correct, the best non-sparse implementation, CUDA thread 128*8
+//#include <energy_kde_v3.cu> // wrong,
+#include <energy_kde_v4.cu> // correct, sparse format, the fastest, CUDA thread 32*32
 #endif
 
 
 #if CALC_MCS == 1
-#include <energy_mcs_v1.cu> // correct. the paper, row: lig, colum: mcs.  the fastest
-//#include <energy_mcs_v2.cu> // correct. not computing elhm2, no faster
+#include <energy_mcs_v1.cu> // correct, the paper, row: lig, colum: mcs.  the fastest
+//#include <energy_mcs_v2.cu> // correct, not computing elhm2, no faster
 //#include <energy_mcs_v3_r.cu> // wrong, transpose x y, reduction is inefficient
 //#include <energy_mcs_v4_ell.cu> // correct, sparse matrix, ELLPACK format, no faster than version 1
 //#include <energy_mcs_v5_coo.cu> // correct, sparse matrix, COO format, slow due to atomicAdd

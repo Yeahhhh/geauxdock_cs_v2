@@ -24,12 +24,10 @@ else ifeq ($(HOST), shelob)
         NGPU := 1
 
 else ifeq ($(HOST), ece)
-#	LIBPATH := -L/usr/local/cuda-6.5/lib64
 	GPU := GTX780
         NGPU := 1
 
 else ifeq ($(HOST), lasphi)
-#	LIBPATH := -L/usr/local/cuda-7.0/lib64
 	GPU := GTX980
         NGPU := 1
 endif
