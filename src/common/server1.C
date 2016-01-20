@@ -17,8 +17,7 @@
   const int ncomplex = conf_lig * conf_prt;
   Complex *complex = new Complex[ncomplex];
 
-
-  printf ("sizeof complex = %f MB\n", (float) sizeof (Complex) * ncomplex / 1024 / 1024);
+  printf ("task pool size = %d\n", ncomplex);
 
 
 
@@ -86,6 +85,8 @@
   Protein *prt = new Protein[MAX_CONF_PRT]; // complexsize.n_prt
   loadProtein (&inputfiles->prt_file, prt0);
   t[9].Stop ();
+
+
 
 
   t[10].Start ();

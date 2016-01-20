@@ -332,9 +332,17 @@ PrintSummary (const Complex * c)
   printf ("out file (HDF5)\t\t\t%s/%s_XXXX.h5\n", c->mcpara.outputdir, c->mcpara.outputfile);
 
   printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
-  const size_t record_sz = sizeof (Record) * c->size.n_rep;
-  printf ("per dump record size:\t\t%.3f MB\n", (float) record_sz / 1024 / 1024);
 
+  printf ("===============================================================\n");
+  printf ("Sizes\n");
+  const float sz_prt = (float) sizeof (Protein) * MAX_CONF_PRT / 1024 / 1024;
+  const float sz1 = (float) sizeof (Complex) / 1024 / 1024;
+  const float sz2 = (float) sizeof (Record) * MAX_REP / 1024 / 1024;
+  const float sz3 = (float) sizeof (Record) * c->size.n_rep / 1024 / 1024;
+  printf ("size of protein\t\t\t\t\t%.3f MB\n", sz_prt);
+  printf ("size of each complex\t\t\t\t%.3f MB\n", sz1);
+  printf ("record size (memory allocation):\t\t%.3f MB\n", sz2);
+  printf ("record size (memory size of each dump file):\t%.3f MB\n", sz3);
   printf ("===============================================================\n");
 
 
