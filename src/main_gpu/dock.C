@@ -21,8 +21,8 @@
 #include <curand_kernel.h>
 
 
-#include "../client_gpu/host_prepair.h"
-#include "../client_gpu/host_launcher.h"
+#include "../backend_gpu/prepair.h"
+#include "../backend_gpu/backend_gpu.h"
 #include <yeah/c/timing.h>
 #include <yeah/cpp/timer.hpp>
 #include <yeah/cuda/runtime/wrapper.h>
@@ -50,7 +50,7 @@ int main (int argc, char **argv)
 
 
 
-#include "../common/server1.C"
+#include "../frontend/server1.C"
 
   yeah::Timer tc[8];
 
@@ -131,7 +131,8 @@ int main (int argc, char **argv)
 
 
 
-#include "../common/server2.C"
+#include "../frontend/server2.C"
+
 
   printf ("client init time\t\t%8.3f\n", tc[0].Span ());
   printf ("client compute time\t\t%8.3f\n", tc[1].Span ());

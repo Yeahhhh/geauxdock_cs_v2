@@ -7,8 +7,8 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-#include "host_prepair.h"
-#include "host_launcher.h"
+#include "../backend_gpu/prepair.h"
+#include "../backend_gpu/backend_gpu.h"
 #include <yeah/cpp/timer.hpp>
 #include <yeah/cuda/runtime/wrapper.h>
 

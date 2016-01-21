@@ -26,7 +26,7 @@ MPI_Datatype MPI_JOB;
 
 void Server (int argc, char **argv, const int id, const int nclient)
 {
-#include "../common/server1.C"
+#include "../frontend/server1.C"
 
   // send jobs
 
@@ -62,7 +62,7 @@ void Server (int argc, char **argv, const int id, const int nclient)
     MPI_Wait (&req[i], &st[i]);
   }
 
-#include "../common/server2.C"
+#include "../frontend/server2.C"
 }
 
 

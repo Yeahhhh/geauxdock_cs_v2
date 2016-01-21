@@ -1,5 +1,5 @@
-#ifndef HOST_LAUNCHER_H
-#define HOST_LAUNCHER_H
+#ifndef BACKEND_CPU_MIC_H
+#define BACKEND_CPU_MIC_H
 
 void Dock (Complex * complex, Record * record);
 

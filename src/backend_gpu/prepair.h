@@ -1,5 +1,5 @@
-#ifndef HOST_PREPAIR_H
-#define HOST_PREPAIR_H
+#ifndef PREPAIR_H
+#define PREPAIR_H
 
 void SetDevice ();
 void DeviceAlloc (Complex ** c, Record **r, curandState **s);

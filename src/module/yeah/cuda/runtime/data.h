@@ -67,8 +67,8 @@ namespace cuda {
     void Alloc () {
       this->dh = (T0 *) malloc (this->sz);
       assert (this->dh != NULL);
-      CUDA_ERR (cudaMalloc ((void **) &this->dd, this->sz))
-    ;}
+      CUDA_ERR (cudaMalloc ((void **) &this->dd, this->sz));
+    }
     void Free () {
       CUDA_ERR (cudaFree (this->dd));
       free (this->dh);
@@ -99,6 +99,15 @@ namespace cuda {
   class DataHostMapped: public Data <T0>
   {
   public:
+  };
+
+
+  template <class T0>
+  class DataAuto: public DataPinned <T0>
+  {
+  public:
+      DataAuto (int num = 1) {this->n = num; this->sz = sizeof (T0) * this->n; this->Alloc ();}
+      ~DataAuto () {this->Free ();}
   };
 
 

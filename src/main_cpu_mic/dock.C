@@ -13,7 +13,7 @@
 #include <toggle.h>
 #include <load.h>
 
-#include "../client_cpu_mic/host_launcher.h"
+#include "../backend_cpu_mic/backend_cpu_mic.h"
 #include <yeah/c/timing.h>
 #include <yeah/cpp/timer.hpp>
 
@@ -25,7 +25,7 @@
 int main (int argc, char **argv)
 {
 
-#include "../common/server1.C"
+#include "../frontend/server1.C"
 
 
   Record *record = (Record *) malloc (sizeof (Record) * MAX_REP);
@@ -37,7 +37,7 @@ int main (int argc, char **argv)
   free (record);
 
 
-#include "../common/server2.C"
+#include "../frontend/server2.C"
 
   return 0;
 }

@@ -6,7 +6,6 @@
 #include <yeah/cuda/runtime/wrapper.h>
 
 
-
 // reference:
 // nvidia/cuda7/helper_cuda.h
 
@@ -43,7 +42,6 @@ int _ConvertSMVer2Cores_2 (int major, int minor)
   
     
     // an alternative implementation
-  
     /*
       const int sp_per_mp =
       major == 1 ? 8 :
@@ -55,22 +53,18 @@ int _ConvertSMVer2Cores_2 (int major, int minor)
 }
 
 
-/*
-  void
-  PrintDeviceProp (const int d)
-  {
-  cudaDeviceProp prop;
-  cudaGetDeviceProperties (&prop, d);
-  // ...
-  }
-*/
 
+
+
+//cudaDeviceProp prop;
+//CUDA_ERR (cudaGetDeviceProperties (&prop, d));
+//PrintCudaDeviceProp
 void
 PrintCudaDeviceProp (const cudaDeviceProp *prop, const int d)
 {
 
     if (prop->major == 9999 && prop->minor == 9999) {
-        printf ("device %d is not a CUDA device\n", d);
+        printf ("device %d is invalid\n", d);
     }
 
     const char *NOorYES[] = {"NO", "YES"}; // 0-NO, 1-YES
@@ -86,11 +80,13 @@ PrintCudaDeviceProp (const cudaDeviceProp *prop, const int d)
 
     printf ("GPU %d: %s with CC %d.%d\n", d, prop->name, prop->major, prop->minor);
     printf ("---------------------------------------\n");
+    // core
     printf ("core clock rate \t\t%.2f GHz\n", prop->clockRate / 1e6);
     printf ("MP/GPU \t\t\t\t%d\n", prop->multiProcessorCount);
     printf ("SP/MP \t\t\t\t%d\n", sp_per_mp);
-    printf ("SP FLOPS/GPU \t\t\t%.2f GB/s\n", chip_sp_flops * 1e-9);
+    printf ("SP FLOPS/GPU \t\t\t%.2f GFLOPS/s\n", chip_sp_flops * 1e-9);
     putchar ('\n');
+    // memory
     printf ("memory clock rate \t\t%.2f GHz\n", (float) prop->memoryClockRate / 1e6);
     printf ("memory bus width \t\t%d b\n", prop->memoryBusWidth);
     printf ("memory bandwidth \t\t%.2f GB/s\n", chip_bw_Bps * 1e-9);
@@ -100,8 +96,10 @@ PrintCudaDeviceProp (const cudaDeviceProp *prop, const int d)
     printf ("size constant/GPU \t\t%.2f KiB\n", (float) prop->totalConstMem / 1024.0f);
     printf ("size global/GPU \t\t%.2f MiB\n", (float) prop->totalGlobalMem / (1024.0f * 1024.0f));
     printf ("\n");
+    // core / memory
     printf ("SP FLOPS/BW ratio \t\t%.2f\n", 4 * chip_sp_flops / chip_bw_Bps);
     putchar ('\n');
+    // feature
     printf ("unifiedAddressing: \t\t%s\n", NOorYES[prop->unifiedAddressing]);
     printf ("canMapHostMemory: \t\t%s\n", NOorYES[prop->canMapHostMemory]); // support cudaHostAlloc(), cudaHostGetDevicePointer()
     printf ("concurrentKernels: \t\t%s\n", NOorYES[prop->concurrentKernels]); // simultaneously executing multiple kernels
@@ -109,28 +107,16 @@ PrintCudaDeviceProp (const cudaDeviceProp *prop, const int d)
     printf ("asyncEngineCount: \t\t%d\n", prop->asyncEngineCount); // overlaping kernel and memcpy (single/bi-direction)
     printf ("ECCEnabled:\t\t\t%s\n", NOorYES [prop->ECCEnabled]);
     putchar ('\n');
-    printf ("CUDA restrictions:\n");
+    // CUDA restrictions
     printf ("size of warp: \t\t\t%d\n", prop->warpSize);
     printf ("max threads/block: \t\t%d\n", prop->maxThreadsPerBlock);
     printf ("kernelExecTimeoutEnabled: \t%s\n", NOorYES[prop->kernelExecTimeoutEnabled]);
-
     putchar ('\n');
 }
 
 
 
 
-
-
-/*
-// PrintFuncArributes ((void (*) ()) MyKernel, "MyKernel");
-void PrintFuncArributes (void (*f) (), const char * s);
-{
-cudaFuncAttributes fa;
-CUDA_ERR (cudaFuncGetAttributes (&fa, f));
-// ...
-}
-*/
 
 
 void PrintCudaFuncArributes (const cudaFuncAttributes * fa, const char * s)
@@ -147,6 +133,8 @@ void PrintCudaFuncArributes (const cudaFuncAttributes * fa, const char * s)
 }
 
 
+
+//GetPrintCudaFuncArributes ((void (*)) MyKernel, "MyKernel");
 void GetPrintCudaFuncArributes (void (*func), const char * s)
 {
     cudaFuncAttributes fa;

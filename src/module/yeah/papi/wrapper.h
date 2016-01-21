@@ -11,8 +11,16 @@
 
 #define PAPI_ERR(err) __GetPapiError1 (err, __FILE__, __LINE__)
 
+
+
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 inline void
-__GetPapiError1 (int err, char *file, int line)
+__GetPapiError1 (int err, const char * const file, int line)
 {
     if (err < PAPI_OK) {
         printf ("%s\tFAILED\nLine # %d\n", file, line);
@@ -33,6 +41,9 @@ __GetPapiError1 (int err, char *file, int line)
     }
 }
 
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif

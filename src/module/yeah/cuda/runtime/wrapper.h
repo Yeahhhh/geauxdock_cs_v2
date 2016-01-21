@@ -21,7 +21,7 @@
 #define CUDA_ERR(err) __GetError1 (err, __FILE__, __LINE__)
 
 inline void
-__GetError1 (const cudaError_t err, const char *file, const int line)
+__GetError1 (const cudaError_t err, const char * const file, const int line)
 {
   if (err != cudaSuccess) {
     printf ("%s(%d) : CUDA error : (%d) : %s.\n",
@@ -57,7 +57,7 @@ __GetError1 (const cudaError_t err, const char *file, const int line)
 #define CUDA_LAST_ERR() __GetLastError1 (__FILE__, __LINE__)
 
 inline void
-__GetLastError1 (const char *file, const int line)
+__GetLastError1 (const char * const file, const int line)
 {
   cudaError_t err = cudaGetLastError ();
   if (err != cudaSuccess) {

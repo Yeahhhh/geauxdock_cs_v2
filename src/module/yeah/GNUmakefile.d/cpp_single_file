@@ -1,5 +1,6 @@
 #HEADERS = $(wildcard *.hpp)
 SRC = $(wildcard *.cpp)
+#SRC = $(wildcard */*.cpp)
 OBJ = $(SRC:.cpp=.o)
 EXE = $(SRC:.cpp=)
 
@@ -9,20 +10,24 @@ EXE = $(SRC:.cpp=)
 #LINKFLAGS += -lx
 
 
-CXX = g++ -O2 -std=c++11
+CXX = g++
+CXXFLAGS += -O2
+CXXFLAGS += -std=c++11
 
 
 all: $(EXE)
 
 
 % : %.cpp
-	$(CXX) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
+	$(CXX) $(CXXFLAGS) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
 
 echo:
-#	@(echo $(HEADERS))
-	@(echo $(SRC))
-	@(echo $(OBJ))
-	@(echo $(EXE))
+#	@echo $(HEADERS)
+	@echo $(SRC)
+	@echo $(OBJ)
+	@echo $(EXE)
+      	@for bin in $(EXE); do echo $$bin; done
+
 clean:
 	$(RM) $(OBJ)
 	$(RM) $(EXE)

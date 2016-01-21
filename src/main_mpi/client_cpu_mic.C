@@ -4,22 +4,22 @@
 
 #include <dock.h>
 
+#include "../backend_cpu_mic/backend_cpu_mic.h"
+#include <yeah/cpp/timer.hpp>
+
+
 MPI_Datatype MPI_JOB;
-
-
-void
-DockDummy (Complex *recv_msg, char * name, const int id)
-{
-  printf ("%-20s \t\t\t\t\t client %02d: %d %s\n",
-          name, id, recv_msg->signal, recv_msg->lig_file);
-}
-
 
 
 
 void Client (int argc, char **argv, const int id)
 {
-  Complex *recv_msg = new Complex[1];
+  yeah::Timer t[2];
+  t[0].Start ();
+
+  // data
+  Complex *recv_msg = (Complex *) malloc (sizeof (Complex));
+  Record *record = (Record *) malloc (sizeof (Record) * MAX_REP);
 
 
   int send_msg = id;
@@ -38,14 +38,22 @@ void Client (int argc, char **argv, const int id)
     }
     else {
       printf ("%s start docking\n", argv[0]);
-      DockDummy (recv_msg, argv[0], id);
+      t[1].Start ();
+      Dock (recv_msg, record);
+      t[1].Stop ();
     }
   }
 
+  free (record);
+  free (recv_msg);
 
 
-  delete[]recv_msg;
+  t[0].Stop ();
+  printf ("client:\n");
+  printf ("client wall time\t\t%8.3f\n", t[0].Span ());
+  printf ("Run MC time time\t\t%8.3f\n", t[1].Span ());
 }
+
 
 
 
@@ -60,6 +68,7 @@ main (int argc, char **argv)
     printf ("nprocs < 2. exit\n");
     exit (-1);
   }
+
 
   MPI_Type_contiguous (sizeof (Complex), MPI_BYTE, &MPI_JOB);
   MPI_Type_commit (&MPI_JOB);

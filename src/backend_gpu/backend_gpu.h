@@ -1,5 +1,5 @@
-#ifndef HOST_LAUNCHER_H
-#define HOST_LAUNCHER_H
+#ifndef BACKEND_GPU_H
+#define BACKEND_GPU_H
 
 void InitCurand (curandState **s);
 
