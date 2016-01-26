@@ -22,13 +22,11 @@
 #endif
 
 
-#define MYALIGN ALIGN(32)
+//#define MYALIGN ALIGN(32)
 //#define MYALIGN ALIGN(128)
 
 // CPU AVX
-//#define MYALIGN ALIGN(64)
-
-//#define MYALIGN ALIGN(16)
+#define MYALIGN ALIGN(64)
 
 #define RESTRICT __restrict__
 

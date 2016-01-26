@@ -8,8 +8,15 @@
 
 
 #pragma loop count (384)
+
+#ifndef NOVEC
 #pragma simd reduction(+:evdw, eele, epmf, epsp, ehdb, ehpc, ehpc1)
+#pragma vector aligned
 //#pragma simd vectorlength(8)
+#else
+#pragma novector
+#endif
+
 //#pragma unroll (2)
 
 	for (int p = 0; p < prt_npoint; ++p) { // prt loop, ~300

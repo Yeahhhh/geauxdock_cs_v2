@@ -6,8 +6,13 @@ for (int m = 0; m < mcs_nrow; ++m) {
     const int ncol = mcs_ncol[m];
 
 #pragma loop count (32)
+    
+#ifndef NOVEC
 #pragma simd reduction(+:elhm1)
 //#pragma vector aligned
+#else
+#pragma novector
+#endif
     for (int i = 0; i < ncol; ++i) {
         const int l = mcs_ell->i[m][i];
         const float dx = lig_x2[l] - mcs_ell->x[m][i];

@@ -158,11 +158,12 @@ ifeq ($(COMPILER), intel)
 #	CXXFLAGS_HOST += -fma
 #	CXXFLAGS_HOST += -ip -ipo
 #	CXXFLAGS_HOST += -xAVX
-#	CXXFLAGS_HOST += 
+#	CXXFLAGS_HOST += -xSSE4.2
+#	CXXFLAGS_HOST += -no-vec -DNOVEC
 #	CXXFLAGS_HOST += -vec-guard-write
-#	CXXFLAGS_HOST += -no-vec # disable SIMD code generation
 #	CXXFLAGS_HOST += -no-simd # ignore SIMD pragmas, slow down 2%
 #	CXXFLAGS_HOST += -vec-threshold0   # should consistantly turn this off thoughout the benchmarks
+#	CXXFLAGS_HOST += -fp-model source
 	CXXFLAGS_HOST += -fno-fnalias -ansi-alias -fargument-noalias
 #	CXXFLAGS_HOST += -mavx
 	CXXFLAGS_HOST += -openmp

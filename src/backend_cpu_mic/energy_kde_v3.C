@@ -14,8 +14,16 @@ for (int l = 0; l < lig_natom; ++l) { // lig loop, ~30
 
 //#pragma unroll (2)
 #pragma loop count (1024)
+
+
+#ifndef NOVEC
 #pragma simd reduction(+:ekde1)
 //#pragma simd private(dx, dy, dz, kde_dst_pow2)
+#else
+#pragma novector
+#endif
+
+
     for (int k = begin; k < end; ++k) { // kde loop, ~400
         const float dx = lig_x1[l] - kde->x[k];
         const float dy = lig_y1[l] - kde->y[k];

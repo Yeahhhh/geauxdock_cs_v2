@@ -6,8 +6,15 @@ for (int m = 0; m < mcs_nrow; ++m) {
     float elhm1 = 0.0f;
 
 #pragma loop count (32)
+
+#ifndef NOVEC
 #pragma simd reduction(+:elhm1)
 //#pragma vector aligned
+#else
+#pragma novector
+#endif
+
+    
     for (int l = 0; l < lig_natom; ++l) {
         if (mcs[m].x[l] != MCS_INVALID_COORD OROR1) {
             const float dx = lig_x2[l] - mcs[m].x[l];
