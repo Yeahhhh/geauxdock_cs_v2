@@ -114,7 +114,7 @@ Dock (Complex *complex, Record *record)
 #include "kernel_print_timer.C"
 #include "kernel_print_benchmark.C"
 
-  PrintSummary (complex);
+  //PrintSummary (complex);
 
 
 #if IS_PAPI == 1

@@ -1,14 +1,11 @@
-include ../GNUmakefile.mk
-
-
-
-DMARCRO += -DTARGET_DEVICE=$(TARGET_GPU)
+include ../GNUmakefile.common.mk
 
 
 EXE := dock
 OBJ += dock.o
 OBJ += prepair.o backend_gpu.o
-OBJ += load.o data.o rmsd.o util.o util_optimize_soa.o util_print.o
+OBJ += util_optimize_soa_gpu.o
+OBJ += load.o data.o rmsd.o util.o util_print.o
 
 
 default: $(EXE)
@@ -18,13 +15,9 @@ $(EXE): $(OBJ)
 	$(CXX_HOST) $(LIBPATH) $(OBJ) -o $@ $(LINKFLAGS) -lcudart
 
 dock.o: ./dock.C
-	$(CXX_HOST) $(CXXFLAGS_HOST) $(DMARCRO_GPU) -c $< -o $@
-
-run: $(EXE)
-	(cd ../../data && ../src/main_gpu/$(EXE) -nt $(GD))
+	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_GPU) -c $< -o $@
 
 
-
-include ../GNUmakefile.common_rules
-
+NT := $(GD) # number of temperatures passing to the runtime
+include ../GNUmakefile.common.rules
 
