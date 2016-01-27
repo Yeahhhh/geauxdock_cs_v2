@@ -28,10 +28,7 @@
 #define CUDAASSERT(condition, code) \
   if (!(condition)) printf("Assertion failure. Code %s%n\n", code)
 
-
-//#include "kernel_cuda_prologue_epilogue.cu"
 #include "kernel_cuda_l2_reduce_notemplate.cu"
-#include "kernel_cuda_l2_reduce_template.cu"
 #include "kernel_cuda_l2_util.cu"
 #include "kernel_cuda_l1_initcurand.cu"
 #include "kernel_cuda_l1_montecarlo.cu"

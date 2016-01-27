@@ -23,6 +23,7 @@
 #endif
 
 
+#define WARPperB_MAX 32
 
 
 
@@ -34,11 +35,11 @@ BlockReduceSum_5_d_2 (float &a0, float &a1, float &a2, float &a3, float &a4)
 
   const int bidx = threadIdx.x;
 
-  __shared__ float a0s[WARPperB];
-  __shared__ float a1s[WARPperB];
-  __shared__ float a2s[WARPperB];
-  __shared__ float a3s[WARPperB];
-  __shared__ float a4s[WARPperB];
+  __shared__ float a0s[WARPperB_MAX];
+  __shared__ float a1s[WARPperB_MAX];
+  __shared__ float a2s[WARPperB_MAX];
+  __shared__ float a3s[WARPperB_MAX];
+  __shared__ float a4s[WARPperB_MAX];
 
   // 1st level warp reduction
 #pragma unroll
@@ -63,11 +64,12 @@ BlockReduceSum_5_d_2 (float &a0, float &a1, float &a2, float &a3, float &a4)
   }
 
   __syncthreads ();
-  a0 = (bidx < WARPperB) ? a0s[bidx] : 0.0f;
-  a1 = (bidx < WARPperB) ? a1s[bidx] : 0.0f;
-  a2 = (bidx < WARPperB) ? a2s[bidx] : 0.0f;
-  a3 = (bidx < WARPperB) ? a3s[bidx] : 0.0f;
-  a4 = (bidx < WARPperB) ? a4s[bidx] : 0.0f;
+  const int cond = (bidx * warpSize) < blockDim.x;
+  a0 = cond ? a0s[bidx] : 0.0f;
+  a1 = cond ? a1s[bidx] : 0.0f;
+  a2 = cond ? a2s[bidx] : 0.0f;
+  a3 = cond ? a3s[bidx] : 0.0f;
+  a4 = cond ? a4s[bidx] : 0.0f;
 
   // 2nd level warp reduction
 #pragma unroll
@@ -88,7 +90,7 @@ BlockReduceSum_1_d_2 (float &a0)
 
   const int bidx = threadIdx.x;
 
-  __shared__ float a0s[WARPperB];
+  __shared__ float a0s[WARPperB_MAX];
 
   // 1st level warp reduction
 #pragma unroll
@@ -103,7 +105,8 @@ BlockReduceSum_1_d_2 (float &a0)
   }
 
   __syncthreads ();
-  a0 = (bidx < WARPperB) ? a0s[bidx] : 0.0f;
+  const int cond = (bidx * warpSize) < blockDim.x;
+  a0 = cond ? a0s[bidx] : 0.0f;
 
   // 2nd level warp reduction
 #pragma unroll
@@ -143,8 +146,8 @@ BlockReduceSum_2D_2_d_2 (const int bdy, const int bdx, float &a0, int &a1)
 {
   const int bidx = threadIdx.x;
 
-  __shared__ float a0s[WARPperB];
-  __shared__ int a1s[WARPperB];
+  __shared__ float a0s[WARPperB_MAX];
+  __shared__ int a1s[WARPperB_MAX];
   const int warp_lane = bidx & WARPmask;
 
 
@@ -193,7 +196,7 @@ BlockReduceSum_2D_1_d_2 (const int bdy, const int bdx, float &a0)
 {
   const int bidx = threadIdx.x;
 
-  __shared__ float a0s[WARPperB];
+  __shared__ float a0s[WARPperB_MAX];
   const int warp_lane = bidx & WARPmask;
 
 
