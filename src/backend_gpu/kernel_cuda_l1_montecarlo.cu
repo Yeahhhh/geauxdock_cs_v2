@@ -21,7 +21,7 @@
 #endif
 */
 
-#define MY_KERNEL_MIN_BLOCKS 1
+#define MY_KERNEL_MIN_BLOCKS 2
 
 
 

@@ -1,16 +1,23 @@
-smic.hpc.lsu.edu:
 
-vim ~/.modules
-module load cuda/6.5
-module load impi/4.1.3.048
-module load intel/14.0.2 
+source src/module/sourceme.bash         # require Bash
 
 
-cd src/server && make -j8 -B install
-cd ../client_cpu_mic && make -j8 -B install
-cd ../client_gpu && make -j8 -B install
 
-cd ../../bin
-mpirun -np 1 ./dock_server : -np 1 ./dock_client_cpu
-mpirun -np 1 ./dock_server : -np 1 ./dock_client_gpu
+cd src/main_cpu && make -B -j10 run
 
+
+cd src/main_mic && make -B -j10 run
+
+
+cd src/main_gpu && make -B -j10 run
+
+
+cd src/main_mpi && make -B -j10 run
+cd src/../bin
+./runmpi.sh
+
+
+
+
+# you may define a target computer (HOST) as follows
+make HOST=lasphi -B -j10 run
