@@ -332,7 +332,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 #if CALC_MCS == 1
 //#include <energy_mcs_v1.C> // correct
 //#include <energy_mcs_v2.C> // correct, not computing elhm2, no faster
-#include <energy_mcs_v3_ell.C> // correct, sparse matrix, ELLPACK format, the fastest, mic improve 2%
+#include <energy_mcs_v3_ell.C> // correct, sparse matrix, ELLPACK format, the fastest, mic improve 2%, automatic unrolling ??
 #endif
 
 

@@ -119,6 +119,12 @@ endif
 
 
 
+INTEL_REPORT_FLAGS += -vec-report
+INTEL_REPORT_FLAGS += -par-report
+INTEL_REPORT_FLAGS += -opt-report=3
+INTEL_REPORT_FLAGS += -opt-report-phase=all
+INTEL_REPORT_FLAGS += -opt-report-file=tmp/optrpt.txt
+
 
 
 
@@ -131,10 +137,7 @@ LINKFLAGS += -lm -lrt -lyeahc
 #LINKFLAGS += -lpapi
 ifeq ($(COMPILER), intel)
 	LINKFLAGS += -openmp
-#	LINKFLAGS += -opt-report=3
-#	LINKFLAGS += -opt-report-phase=vec
-#	LINKFLAGS += -opt-report-file=tmp/optrpt.txt
-
+#	LINKFLAGS += $(INTEL_REPORT_FLAGS)
 else
 	LINKFLAGS += -fopenmp
 endif
