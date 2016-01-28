@@ -1,3 +1,5 @@
+#pragma scop
+
 
 float elhm = 0.0f;
 
@@ -5,14 +7,6 @@ for (int m = 0; m < mcs_nrow; ++m) {
   float elhm1 = 0.0f;
   const int ncol = mcs_ncol[m];
 
-//#pragma loop count (32)
-
-#ifndef NOVEC
-//#pragma simd reduction(+:elhm1)
-//#pragma vector aligned
-#else
-#pragma novector
-#endif
   for (int i = 0; i < ncol; ++i) {
     const int l = mcs_ell->i[m][i];
     const float dx = lig_x2[l] - mcs_ell->x[m][i];
@@ -25,3 +19,7 @@ for (int m = 0; m < mcs_nrow; ++m) {
 }
 
 e_s[7] = logf (elhm / mcs_nrow);
+
+
+#pragma endscop
+

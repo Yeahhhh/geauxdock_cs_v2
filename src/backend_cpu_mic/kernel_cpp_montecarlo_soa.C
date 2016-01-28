@@ -304,7 +304,9 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
 
 #if CALC_PRT == 1
-#include <energy_prt_v1.C>
+#include <energy_prt_v1.C> // correct, the fastest
+//#include <energy_prt_v1_mod_orig.C> // correct
+//#include <energy_prt_v1_mod_tiling.C> // correct, no faster
 #endif
 
 
@@ -330,7 +332,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 #if CALC_MCS == 1
 //#include <energy_mcs_v1.C> // correct
 //#include <energy_mcs_v2.C> // correct, not computing elhm2, no faster
-#include <energy_mcs_v3_ell.C> // correct, sparse matrix, ELLPACK format, the fasterest, mic improve 2%
+#include <energy_mcs_v3_ell.C> // correct, sparse matrix, ELLPACK format, the fastest, mic improve 2%
 #endif
 
 
