@@ -1,7 +1,6 @@
 #!/bin/sh -x
 
-
-MAKE="gmake -B -j8"
+MAKE="gmake -B -j10"
 ARCH=gpuk20
 #ARCH=gpu780
 #ARCH=gpu780x2

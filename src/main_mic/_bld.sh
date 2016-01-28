@@ -1,10 +1,7 @@
 #!/bin/sh -x
 
-
-MAKE="gmake -B -j8"
-#ARCH=cpuomp1
-ARCH=cpuomp20
-#ARCH=mic
+MAKE="gmake -B -j10"
+ARCH=mic
 
 ${MAKE} MARCRO_MAKE="-DIS_NO_BRANCH=1 -DCALC_PRT=1 -DCALC_KDE=1 -DCALC_MCS=1 -DCALC_DST=1" EXE=${ARCH}_nobranch_full
 ${MAKE} MARCRO_MAKE="-DIS_NO_BRANCH=1 -DCALC_PRT=0 -DCALC_KDE=0 -DCALC_MCS=0 -DCALC_DST=0" EXE=${ARCH}_nobranch_none
