@@ -113,10 +113,10 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 1000
+#define STEPS_PER_DUMP 100
 
 // steps that no not have to be defined as macro
-#define STEPS_TOTAL 1000
+#define STEPS_TOTAL 100
 
 
 // signal the MPI client to terminate

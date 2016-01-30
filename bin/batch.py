@@ -25,12 +25,12 @@ def Run2 (cmd, dir):
       cmd3 = 'grep "\<Benchmark\>" ' + file + '.txt > ' + file + '_bench.csv'
       cmd4 = 'grep "\<Benchmark_papi\>" ' + file + '.txt > ' + file + '_benchpapi.csv'
 
-      print(cmd2)
+      #print(cmd2)
       #print(cmd3)
       #print(cmd4)
-      #os.system (cmd2)
-      #os.system (cmd3)
-      #os.system (cmd4)
+      os.system (cmd2)
+      os.system (cmd3)
+      os.system (cmd4)
 
 
 
@@ -40,7 +40,7 @@ def Run1 (bin, output_dir2):
         cmd = cmd + ' -nt ' + str (nt)
 
         cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/list.txt'
-#	cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/ligs_5cppA1.txt'
+#        cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/ligs_5cppA1.txt'
 
         cmd = cmd + ' -lp /worka/work/yfang11/geauxdock_cs_v2/data/astex/proteins/prt1.txt'
 #       cmd = cmd + ' -lp /worka/work/yfang11/geauxdock_cs_v2/data/astex/proteins/prt11.txt'
@@ -76,30 +76,4 @@ if __name__ == '__main__':
 
     Run1 (bin, output_dir2)
 
-
-
-
-# export OMP_PROC_BIND=true
-# export MIC_OMP_PROC_BIND=true
-# export MIC_KMP_AFFINITY=SCATTER
-
-
-# for bin in ./bin/smic_100/gpuk20*; do echo $bin; done
-
-# benchmark kernel components
-# for bin in ../bin/smic_100/cpu*; do ./batch.py $bin 2 2 1 1 8; done
-# for bin in ../bin/smic_100/gpuk20*; do ./batch.py $bin 28 28 1 1 8; done
-# for bin in ../bin/smic_100/cpu*; do ./batch.py $bin 40 40 1 1 8; done
-# for bin in ../bin/smic_100/mic*; do ./batch.py $bin 240 240 1 1 8; done
-# for bin in ../bin/lasphi_100/gpu980*; do ./batch.py $bin 64 64 1 1 8; done
-# for bin in ../bin/ece_100/gpu780_*; do ./batch.py $bin 24 24 1 1 8; done
-
-
-# production runs
-# ./batch.py ../bin/production_run_1000/smic_cpu 1 1 1 1 8
-
-# reps
-# ./batch.py ../bin/smic_100/cpu_branch_full 1 100 1 1 8
-# ./batch.py ../bin/smic_100/gpuk20_branch_full 1 70 1 1 8
-# ./batch.py ../bin/smic_100/mic_branch_full 1 960 1 1 8
 
