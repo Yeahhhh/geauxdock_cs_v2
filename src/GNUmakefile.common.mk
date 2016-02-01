@@ -155,7 +155,7 @@ CXXFLAGS_HOST += -Wall
 ifeq ($(COMPILER), intel)
 	CXXFLAGS_HOST += -O3
 #	CXXFLAGS_HOST += -fast
-	CXXFLAGS_HOST += -fma
+#	CXXFLAGS_HOST += -fma
 	CXXFLAGS_HOST += -ip -ipo
 #	CXXFLAGS_HOST += -xAVX
 #	CXXFLAGS_HOST += -xSSE4.2

@@ -11,7 +11,11 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
 
 #ifndef NOVEC
 
-//#pragma simd reduction(+:evdw, eele, epmf, epsp, ehdb, ehpc, ehpc1)
+// the effects of Intel vector pragmas:
+//    nobranch PRT code: much fuster (about 10X)
+//    branch PRT code: slightly slower
+
+#pragma simd reduction(+:evdw, eele, epmf, epsp, ehdb, ehpc, ehpc1)
 //#pragma vector aligned
 //#pragma simd vectorlength(8)
 
