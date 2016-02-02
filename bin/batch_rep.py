@@ -40,7 +40,7 @@ def Run1 (bin, output_dir2):
         cmd = cmd + ' -nt ' + str (nt)
 
 #        cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/list.txt'
-        cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/ligs_5cppA1.txt'
+        cmd = cmd + ' -ll /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/lig_5cppA1.txt'
 
         cmd = cmd + ' -lp /worka/work/yfang11/geauxdock_cs_v2/data/astex/proteins/prt1.txt'
 #       cmd = cmd + ' -lp /worka/work/yfang11/geauxdock_cs_v2/data/astex/proteins/prt11.txt'
