@@ -29,3 +29,23 @@ TEST_CASE( "Load", "[ligand]" )
 
   delete[]lig0;
 }
+
+TEST_CASE( "LoadLHM", "[force field input]" )
+{
+
+  LhmFile *lhm_file = new LhmFile;
+  Psp0 *psp = new Psp0;
+  Kde0 *kde = new Kde0;
+  Mcs0 *mcs = new Mcs0;
+
+  lhm_file->path = "../../test/1b9vA_3.ff";
+  lhm_file->ligand_id = "ZINC49076157";
+
+
+  loadLHM(lhm_file, psp, kde, mcs);
+
+  delete mcs;
+  delete psp;
+  delete kde;
+  delete lhm_file;
+}
