@@ -23,22 +23,22 @@ ifeq ($(HOST), smic)
 	LIBPATH += -L/usr/local/packages/cuda/6.5/lib64
 	HEADPATH += -I/usr/local/packages/cuda/6.5/include
 	GPU := K20X
-        NGPU := 1
+	NGPU := 1
 
 else ifeq ($(HOST), shelob)
 	COMPILER := gnu
 	GPU := K20X
-        NGPU := 2
+	NGPU := 2
 
 else ifeq ($(HOST), ece)
 	COMPILER := gnu
 	GPU := GTX780
-        NGPU := 1
+	NGPU := 1
 
 else ifeq ($(HOST), lasphi)
 	COMPILER := gnu
 	GPU := GTX980
-        NGPU := 1
+	NGPU := 1
 endif
 
 
@@ -62,18 +62,25 @@ endif
 
 ifeq ($(GPU), GTX780)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
-	GD := 12
+	MC_BperMP := 1
+	GD := 24
 	BD := 1024
 else ifeq ($(GPU), K20X)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
-	GD := 14
-	BD := 1024
+	MC_BperMP := 2
+	GD := 56
+	BD := 512
+#	MC_BperMP := 1
+#	GD := 14
+#	BD := 1024
 else ifeq ($(GPU), GTX980)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
+	MC_BperMP := 2
 	GD := 32
 	BD := 512
 else
 	CXXFLAGS_DEV += -arch=compute_35
+	MC_BperMP := 2
 	GD := 16
 	BD := 512
 endif
@@ -87,6 +94,7 @@ endif
 #BD_POWER2 := $(shell echo "from math import log; a=2**int(log($(BD),2)); print a" | python)
 
 
+MARCRO_GPU += -DMC_BperMP=$(MC_BperMP)
 MARCRO_GPU += -DGD=$(GD)
 MARCRO_GPU += -DBD=$(BD)
 MARCRO_GPU += -DNGPU=$(NGPU)

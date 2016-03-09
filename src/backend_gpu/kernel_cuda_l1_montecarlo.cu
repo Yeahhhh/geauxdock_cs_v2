@@ -21,13 +21,13 @@
 #endif
 */
 
-#define MY_KERNEL_MIN_BLOCKS 1
+//#define MY_KERNEL_MIN_BLOCKS 2
 
 
 
 
 __global__ void
-__launch_bounds__(BD, MY_KERNEL_MIN_BLOCKS)
+__launch_bounds__(BD, MC_BperMP)
 MonteCarlo_d (Complex * __restrict__ complex,
               Record * __restrict__ record,
               const int s1, const int s2max, curandState *curandstate_d)
@@ -57,9 +57,9 @@ MonteCarlo_d (Complex * __restrict__ complex,
     __shared__ float rot[3][3]; // rotz roty rotx
 
     // gpu lig was not sorted
-    __shared__ float lig_x1[MAXLIG];
-    __shared__ float lig_y1[MAXLIG];
-    __shared__ float lig_z1[MAXLIG];
+    //__shared__ float lig_x1[MAXLIG];
+    //__shared__ float lig_y1[MAXLIG];
+    //__shared__ float lig_z1[MAXLIG];
 
     // never sorted
     __shared__ float lig_x2[MAXLIG];
@@ -92,9 +92,9 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     // constant
     // mcs
-    __shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse matrix representation
+    //__shared__ int mcs_ncol[MAX_MCS_ROW]; // row length in the sparse matrix representation
     __shared__ float mcs_tcc[MAX_MCS_ROW];
-    __shared__ float elhm1s[MAX_MCS_ROW];
+    //__shared__ float elhm1s[MAX_MCS_ROW];
 
 
     // constant
@@ -153,12 +153,12 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     for (int l = 0; l < MAXTP2; ++l) {
       for (int p = threadIdx.x; p < MAXTP1; p += blockDim.x) {
-	enepara_p1a[l][p] = enepara->p1a[l][p];
-	enepara_p2a[l][p] = enepara->p2a[l][p];
-	enepara_pmf0[l][p] = enepara->pmf0[l][p];
-	enepara_pmf1[l][p] = enepara->pmf1[l][p];
-	enepara_hdb0[l][p] = enepara->hdb0[l][p];
-	enepara_hdb1[l][p] = enepara->hdb1[l][p];
+        enepara_p1a[l][p] = enepara->p1a[l][p];
+        enepara_p2a[l][p] = enepara->p2a[l][p];
+        enepara_pmf0[l][p] = enepara->pmf0[l][p];
+        enepara_pmf1[l][p] = enepara->pmf1[l][p];
+        enepara_hdb0[l][p] = enepara->hdb0[l][p];
+        enepara_hdb1[l][p] = enepara->hdb1[l][p];
       }
     }
 
@@ -213,7 +213,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
     }
 
     for (int m = threadIdx.x; m < mcs_nrow; m += blockDim.x) {
-        mcs_ncol[m] = mcs[m].ncol; 
+        //mcs_ncol[m] = mcs[m].ncol; 
         mcs_tcc[m] = mcs[m].tcc;
     }
 
@@ -340,18 +340,18 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
       // rotation, translation, coordinate system transformation
       for (int l = threadIdx.x; l < lig_natom; l += blockDim.x) {
-	const float x1 = lig->x[l];
-	const float y1 = lig->y[l];
-	const float z1 = lig->z[l];
+	//const float x1 = lig->x[l];
+	//const float y1 = lig->y[l];
+	//const float z1 = lig->z[l];
 	const float x2 = lig->x2[l];
 	const float y2 = lig->y2[l];
 	const float z2 = lig->z2[l];
 	const float x3 = lig->x3[l];
 	const float y3 = lig->y3[l];
 	const float z3 = lig->z3[l];
-	lig_x1[l] = rot[0][0] * x1 + rot[0][1] * y1 + rot[0][2] * z1 + movematrix[0] + lig_center[0];
-	lig_y1[l] = rot[1][0] * x1 + rot[1][1] * y1 + rot[1][2] * z1 + movematrix[1] + lig_center[1];
-	lig_z1[l] = rot[2][0] * x1 + rot[2][1] * y1 + rot[2][2] * z1 + movematrix[2] + lig_center[2];
+	//lig_x1[l] = rot[0][0] * x1 + rot[0][1] * y1 + rot[0][2] * z1 + movematrix[0] + lig_center[0];
+	//lig_y1[l] = rot[1][0] * x1 + rot[1][1] * y1 + rot[1][2] * z1 + movematrix[1] + lig_center[1];
+	//lig_z1[l] = rot[2][0] * x1 + rot[2][1] * y1 + rot[2][2] * z1 + movematrix[2] + lig_center[2];
 	lig_x2[l] = rot[0][0] * x2 + rot[0][1] * y2 + rot[0][2] * z2 + movematrix[0] + lig_center[0];
 	lig_y2[l] = rot[1][0] * x2 + rot[1][1] * y2 + rot[1][2] * z2 + movematrix[1] + lig_center[1];
 	lig_z2[l] = rot[2][0] * x2 + rot[2][1] * y2 + rot[2][2] * z2 + movematrix[2] + lig_center[2];

@@ -59,7 +59,7 @@
 #define  MAXSDF  500
 /* sdf length */
 
-#define MAXTP1 32 // using 32 does not help imporoving performance
+#define MAXTP1 31 // using 32 does not help imporoving performance
 /* point types */
 
 #define MAXTP2 24
