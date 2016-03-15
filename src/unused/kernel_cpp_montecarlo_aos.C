@@ -22,7 +22,7 @@ MonteCarlo_d (ParaD pd, const int s1, const int s2max)
 #pragma omp parallel for
   for (int r = pd.rep_begin; r <= pd.rep_end; ++r) {
     // GPU shared vars
-    Replica *rep = &pd.replica[r];
+    ReplicaMC *rep = &pd.replica[r];
     const Ligand * const lig = &pd.lig[rep->idx_lig];
     const Protein * const prt = &pd.prt[rep->idx_prt];
     const Psp * const psp = pd.psp;

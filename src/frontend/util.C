@@ -42,7 +42,7 @@ Banner ()
        << "                         GeauxDock                          " << endl
        << "                        version 0.1                         " << endl << endl
        << "   GPU-accelerated mixed-resolution ligand docking using    " << endl
-       << "                Replica Exchange Monte Carlo                " << endl
+       << "                ReplicaMC Exchange Monte Carlo                " << endl
        << "------------------------------------------------------------" << endl << endl;
 }
 
@@ -369,7 +369,7 @@ SetTemperature (Temp * temp, ExchgPara * exchgpara)
 // replica[n_rep]
 // replica[n_prt][n_tmp][n_lig]
 void
-SetReplica (Replica * replica, const ComplexSize complexsize)
+SetReplica (ReplicaMC * replica, const ComplexSize complexsize)
 {
   const int n_lig = complexsize.n_lig;
   const int n_prt = complexsize.n_prt;

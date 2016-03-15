@@ -136,7 +136,7 @@ INTEL_REPORT_FLAGS += -opt-report-file=tmp/optrpt.txt
 
 
 
-HEADPATH += -I. -I../common -I../frontend -I../backend_gpu -I../backend_cpu_mic
+HEADPATH += -I. -I../common -I../frontend -I../backend_gpu -I../backend_cpu_mic -I../analysis
 
 #LIBPATH +=
 LIBPATH += #-Wl,-rpath=/usr/local/compilers/Intel/cluster_studio_xe_2013.1.046/composer_xe_2013_sp1.2.144/compiler/lib/mic

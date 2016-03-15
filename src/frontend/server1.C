@@ -160,7 +160,7 @@
 
 
     Temp *temp = new Temp[MAX_TMP]; // complexsize.n_tmp
-    Replica *replica = new Replica[MAX_REP]; // complexsize.n_rep
+    ReplicaMC *replica = new ReplicaMC[MAX_REP]; // complexsize.n_rep
     SetTemperature (temp, exchgpara);
     SetReplica (replica, sz);
 

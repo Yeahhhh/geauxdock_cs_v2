@@ -86,7 +86,7 @@ MonteCarlo_d (ParaD pd, const int s1, const int s2max, curandState* curandstate_
     // temporary write-read vars
     __shared__ int is_accept_s;
 
-    __shared__ Replica rep;
+    __shared__ ReplicaMC rep;
 
     if (bidx == 0) {
       rep = pd.replica[r];

@@ -20,7 +20,7 @@ void InitLigCoord (Ligand *, const ComplexSize);
 
 void SetPocketCenter (Protein *, const float, const float, const float, const int);
 void SetTemperature (Temp *, ExchgPara *);
-void SetReplica (Replica *, const ComplexSize);
+void SetReplica (ReplicaMC *, const ComplexSize);
 void SetMcLog (McLog *);
 
 void DumpRecord (const Record *, const int, const char*);

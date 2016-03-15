@@ -320,7 +320,7 @@ struct Temp
 // replica[n_rep]
 // replica[n_prt][n_tmp][n_lig]
 
-struct MYALIGN Replica
+struct MYALIGN ReplicaMC
 {
   int idx_rep; // n_rep, replica
 
@@ -373,7 +373,7 @@ struct McLog
 
 struct Record
 {
-  Replica replica[STEPS_PER_DUMP];
+  ReplicaMC replica[STEPS_PER_DUMP];
   int next_entry;
 };
 
@@ -403,7 +403,7 @@ struct Complex
   Temp temp[MAX_TMP];
 
   // GPU writable arrays that duplicate on multiple GPUs
-  Replica replica[MAX_REP];
+  ReplicaMC replica[MAX_REP];
   //float *etotal; // used by replica exchange
   //MoveVector *movevector; // used by replcia exchange
 

@@ -8,7 +8,7 @@
     \______  /|____|   |______/           \____ |\____/ \___  >__|_ \/_______  /\____|__  /
            \/                                  \/           \/     \/        \/         \/ 
 
-      GPU-accelerated hybrid-resolution ligand docking using Replica Exchange Monte Carlo
+      GPU-accelerated hybrid-resolution ligand docking using ReplicaMC Exchange Monte Carlo
 
 ==============================================================================================
 */

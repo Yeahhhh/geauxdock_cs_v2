@@ -103,7 +103,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
     // constant
     // pointers
-    Replica *rep = &complex->replica[r];
+    ReplicaMC *rep = &complex->replica[r];
     const Ligand * const lig = &complex->lig[rep->idx_lig];
     const Protein * const prt = &complex->prt[rep->idx_prt];
     const Psp * const psp = &complex->psp;

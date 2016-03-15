@@ -1,4 +1,6 @@
 
+#include <vector>
+#include <map>
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
@@ -7,6 +9,7 @@
 #include <size.h>
 #include <toggle.h>
 #include <util_print.h>
+#include <record.h>
 
 #include <yeah/cpp/timer.hpp>
 
@@ -31,6 +34,11 @@ void
 Dock (Complex *complex, Record *record)
 {
   yeah::Timer e[16];
+
+  // data for analysis
+  std::map < int, std::vector < LigRecordSingleStep > > multi_reps_records;
+
+
 
 
 #if IS_PAPI == 1
@@ -100,6 +108,16 @@ Dock (Complex *complex, Record *record)
     #include <kernel_dump.C>
   }
   e[4].Stop ();
+
+
+
+/*
+	for (int s = 0; s < ligrecord[rep].next_ptr; ++s) {
+		LigRecordSingleStep my_step = ligrecord[rep].step[s];
+		multi_reps_records[rep].push_back(my_step);
+	}
+*/
+
 
 #if IS_PAPI == 1
   PAPI_ERR (PAPI_read_counters (papi_event_val, papi_event_n));

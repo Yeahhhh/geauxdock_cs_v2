@@ -26,7 +26,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
     // constant
     // pointers
-    __shared__ Replica * __restrict__ rep;
+    __shared__ ReplicaMC * __restrict__ rep;
     __shared__ Ligand * __restrict__ lig;
     __shared__ Protein * __restrict__ prt;
     __shared__ Psp * __restrict__ psp;

@@ -19,7 +19,7 @@ using namespace std;
 // arg = 3      print all
 
 void
-PrintStepTrack (const Replica *rep, const int arg)
+PrintStepTrack (const ReplicaMC *rep, const int arg)
 {
 
   char names[11][30] = {
@@ -60,7 +60,7 @@ PrintTrack (Record * record, int r, int iter_begin, int iter_end, int arg)
   PrintStepTrack (NULL, 1);
 
   for (int s = iter_begin; s <= iter_end; ++s) {
-    const Replica *rep = &record[r].replica[s];
+    const ReplicaMC *rep = &record[r].replica[s];
     PrintStepTrack (rep, arg);
   }
 }
@@ -126,7 +126,7 @@ PrintMoveRecord (const Record * record, const int steps_per_dump, const int r,
 		 const int iter_begin, const int iter_end, const int arg)
 {
   for (int s = iter_begin; s <= iter_end; ++s) {
-    const Replica *rep = &record[r].replica[s];
+    const ReplicaMC *rep = &record[r].replica[s];
     PrintMoveVector (rep->movematrix, rep->step);
   }
 
@@ -144,7 +144,7 @@ PrintRecord (Record * record, int steps_per_dump, int r, int iter_begin, int ite
   //PrintCsv (NULL, 0, 0, 1);
 
   for (int s = iter_begin; s <= iter_end; ++s) {
-    const Replica *rep = &record[r].replica[s];
+    const ReplicaMC *rep = &record[r].replica[s];
     PrintCsv (rep->energy, r, rep->step, arg);
   }
 
@@ -176,7 +176,7 @@ PrintRepRecord (const Record * record, const int steps_per_dump, const int rep_b
     printf ("%3d |\t", s);
 
     for (int r = rep_begin; r <= rep_end; ++r) {
-      const Replica *myrep = &record[r].replica[s];
+      const ReplicaMC *myrep = &record[r].replica[s];
       //printf ("%2d ", myrep->idx_prt);
       //printf ("%2d ", myrep->idx_tmp);
       //printf ("%2d ", myrep->idx_lig);
@@ -220,7 +220,7 @@ PrintRepRecord2 (Record * record, ComplexSize complexsize,
     for (int t = 0; t < complexsize.n_tmp; ++t) {
       const int r =
 	complexsize.n_tmp * complexsize.n_lig * idx_prt + complexsize.n_lig * t + idx_lig;
-      const Replica *myrep = &record[r].replica[s];
+      const ReplicaMC *myrep = &record[r].replica[s];
       //printf ("%2d ", myrep->idx_prt);
       printf ("%2d ", myrep->idx_tmp);
       //printf ("%2d ", myrep->idx_lig);
