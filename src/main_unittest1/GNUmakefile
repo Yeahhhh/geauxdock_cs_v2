@@ -14,6 +14,8 @@ $(EXE): $(OBJ)
 dock.o: dock.C
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
+include ../GNUmakefile.common.rules
+
 test: dock
 	./dock
 
