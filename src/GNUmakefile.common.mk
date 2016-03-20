@@ -75,9 +75,10 @@ else ifeq ($(GPU), K20X)
 #	BD := 1024
 else ifeq ($(GPU), GTX980)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
-	MC_BperMP := 2
-	GD := 32
-	BD := 512
+	MC_BperMP := 4
+	GD := 64
+#	BD := 320
+	BD := 256
 else
 	CXXFLAGS_DEV += -arch=compute_35
 	MC_BperMP := 2
@@ -189,7 +190,7 @@ CXXFLAGS_DEV += -Xptxas -dlcm=ca
 
 # for development purpose, making performance worse
 #CXXFLAGS_DEV += -lineinfo
-#CXXFLAGS_DEV += -Xptxas -v
+XXFLAGS_DEV += -Xptxas -v
 #CXXFLAGS_DEV += -keep --keep-dir tmp -G --source-in-pt
 
 

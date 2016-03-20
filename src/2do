@@ -144,7 +144,6 @@ BUG:
 	client/server
 		the client would not compute, if #client is greater #lig,			server side problem
 		client CPU, openmp performacne scale up to 10 threads on a 2 socket 20 thread node
-		
 
 
 
@@ -165,14 +164,8 @@ BUG:
 
 profiling
 
-nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_count_sp ../src/dock -ns 100
-nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_sp_efficiency ../src/dock -ns 100
-nvprof --devices 0 --kernels MonteCarlo_d --analysis-metrics --output-profile XXX.nvprof_out ../src/dock -ns 100
-
-
-
-metrics: atom-atom interations per secoonds
-our GTX980:     561.0 * 34 * 334 / 1000000000.0 / 0.131 = 0.0486 G
-Smith et al p12, GTX680: 44.0 / 37.0 = 1.20 G
-
+app="./main_gpu/dock -nt 11"
+nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_count_sp $app
+nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_sp_efficiency $app
+nvprof --devices 0 --kernels MonteCarlo_d --analysis-metrics --output-profile XXX.nvprof_out $app
 

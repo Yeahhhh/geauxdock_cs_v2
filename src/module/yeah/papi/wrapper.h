@@ -9,9 +9,9 @@
 #include <papi.h>
 
 
+
+
 #define PAPI_ERR(err) __GetPapiError1 (err, __FILE__, __LINE__)
-
-
 
 
 
@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-inline void
+void
 __GetPapiError1 (int err, const char * const file, int line)
 {
     if (err < PAPI_OK) {
@@ -44,6 +44,8 @@ __GetPapiError1 (int err, const char * const file, int line)
 #ifdef __cplusplus
 }
 #endif
+
+
 
 
 #endif

@@ -24,7 +24,7 @@ MyRand_d (int seed)
 
 
 // Intel MKL VSL Random Number Generator
-#include <mkl_vsl.h>
+//#include <mkl_vsl.h>
 
 
 
