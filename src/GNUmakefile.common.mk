@@ -19,24 +19,25 @@ ifeq ($(HOST), smic)
 # module load impi/4.1.3.048/intel64
 # module load intel/14.0.2
 # module load cuda/6.5
-	COMPILER := intel
+	COMPILER_HOST := intel
+	#COMPILER_HOST := gnu
 	LIBPATH += -L/usr/local/packages/cuda/6.5/lib64
 	HEADPATH += -I/usr/local/packages/cuda/6.5/include
-	GPU := K20X
+	GPU := K20XM
 	NGPU := 1
 
 else ifeq ($(HOST), shelob)
-	COMPILER := gnu
-	GPU := K20X
+	COMPILER_HOST := gnu
+	GPU := K20XM
 	NGPU := 2
 
 else ifeq ($(HOST), ece)
-	COMPILER := gnu
+	COMPILER_HOST := gnu
 	GPU := GTX780
 	NGPU := 1
 
 else ifeq ($(HOST), lasphi)
-	COMPILER := gnu
+	COMPILER_HOST := gnu
 	GPU := GTX980
 	NGPU := 1
 endif
@@ -62,17 +63,22 @@ endif
 
 ifeq ($(GPU), GTX780)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
-	MC_BperMP := 1
+	MC_BperMP := 2
 	GD := 24
-	BD := 1024
-else ifeq ($(GPU), K20X)
+	BD := 512
+else ifeq ($(GPU), K20XM)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
 	MC_BperMP := 2
-	GD := 56
+	GD := 28
 	BD := 512
+
 #	MC_BperMP := 1
 #	GD := 14
 #	BD := 1024
+
+#	MC_BperMP := 4
+#	GD := 56
+#	BD := 256
 else ifeq ($(GPU), GTX980)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
 	MC_BperMP := 4
@@ -87,7 +93,7 @@ else
 endif
 
 
-# CUDA warp parameters 
+# CUDA warp parameters
 #WARP_SZ := 32
 # Threads Per Block
 #WARPperB := $(shell echo $(BD)/$(WARP_SZ) | bc)
@@ -107,17 +113,17 @@ MARCRO_GPU += -DENABLE_CUDA_LDG
 
 
 
-ifeq ($(COMPILER), intel)
+ifeq ($(COMPILER_HOST), intel)
 	CXX_MPI := mpiicpc
 	CXX_HOST := icpc
 	FC_HOST := ifort
 	CXX_DEV := nvcc
-else ifeq ($(COMPILER), gnu)
+else ifeq ($(COMPILER_HOST), gnu)
 	CXX_MPI := mpicxx
 	CXX_HOST := g++
 	FC_HOST := gfortran
 	CXX_DEV := nvcc
-else ifeq ($(COMPILER), customized)
+else ifeq ($(COMPILER_HOST), customized1)
 	CXX_MPI := mpicxx
 	CXX_HOST := g++
 	FC_HOST := gfortran
@@ -144,7 +150,7 @@ LIBPATH += #-Wl,-rpath=/usr/local/compilers/Intel/cluster_studio_xe_2013.1.046/c
 
 LINKFLAGS += -lm -lrt -lyeahc
 #LINKFLAGS += -lpapi
-ifeq ($(COMPILER), intel)
+ifeq ($(COMPILER_HOST), intel)
 	LINKFLAGS += -openmp
 #	LINKFLAGS += $(INTEL_REPORT_FLAGS)
 else
@@ -161,7 +167,7 @@ FCFLAGS_HOST += -O3
 
 CXXFLAGS_HOST += $(HEADPATH) $(MARCRO_MAKE)
 CXXFLAGS_HOST += -Wall
-ifeq ($(COMPILER), intel)
+ifeq ($(COMPILER_HOST), intel)
 	CXXFLAGS_HOST += -O3
 #	CXXFLAGS_HOST += -fast
 #	CXXFLAGS_HOST += -fma

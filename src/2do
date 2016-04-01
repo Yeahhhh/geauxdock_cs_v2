@@ -169,3 +169,5 @@ nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_count_sp $app
 nvprof --devices 0 --kernels MonteCarlo_d --metrics flop_sp_efficiency $app
 nvprof --devices 0 --kernels MonteCarlo_d --analysis-metrics --output-profile XXX.nvprof_out $app
 
+
+

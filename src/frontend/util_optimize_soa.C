@@ -25,12 +25,11 @@ DataSortInc (DataSort a, DataSort b)
 void
 CopyLigandPoint (const Ligand0 * lig0, Ligand * lig, const int i0, const int i)
 {
-  lig->x[i] = lig0->coord_orig.x[i0];
-  lig->y[i] = lig0->coord_orig.y[i0];
-  lig->z[i] = lig0->coord_orig.z[i0];
-  lig->t[i] = lig0->t[i0];
-  lig->c[i] = lig0->c[i0];
-//  lig->n[i] = lig0->n[i0];
+  lig->x1[i] = lig0->coord_orig.x[i0];
+  lig->y1[i] = lig0->coord_orig.y[i0];
+  lig->z1[i] = lig0->coord_orig.z[i0];
+  lig->t1[i] = lig0->t[i0];
+  lig->c1[i] = lig0->c[i0];
 }
 
 
@@ -60,6 +59,9 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
     }
 
 #if 1
+    // PRT compute:
+    // CPU/MIC: sort
+    // GPU:     no sort
 #if TARGET_DEVICE == TARGET_CPU || TARGET_DEVICE == TARGET_MIC
     //if (i == 0)
     //printf ("sort ligand\n");
@@ -81,21 +83,29 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
     printf ("\n\n");
 #endif
 
-    // xyz
+
+
+    // xyz, might sort
     for (int j = 0; j < lig_natom; ++j)
       CopyLigandPoint (src, dst, ds[j].id, j);
 
 
 
-
-    // xyz2
+    // xyz2, no sort
     for (int j = 0; j < lig_natom; ++j) {
       dst->x2[j] = src->coord_orig.x[j];
       dst->y2[j] = src->coord_orig.y[j];
       dst->z2[j] = src->coord_orig.z[j];
+      dst->t2[j] = src->t[j];
+      dst->c2[j] = src->c[j];
+      //dst->c2[j] = 1.1f; // mode
     }
 
-
+    /*
+    if (i == 0)
+        for (int j = 0; j < lig_natom; ++j)
+            printf ("lig_c[%2d] = %26.18f\n", j, src->c[j]);
+    */
 
 
 
@@ -112,6 +122,7 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
         dst->y3[j] = src->coord_orig.y[j2];
         dst->z3[j] = src->coord_orig.z[j2];
         dst->t3[j] = src->t[j2];
+        dst->c3[j] = src->c[j2];
     }
   }
 

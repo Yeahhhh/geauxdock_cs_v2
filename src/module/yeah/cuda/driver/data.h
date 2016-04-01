@@ -12,17 +12,17 @@ namespace yeah {
     namespace cu {
 
         template <class T0>
-            class Data
+            class Data0
             {
             public:
-                T0 *dh;
-                CUdeviceptr dd;
+                T0 *dh;         // host
+                CUdeviceptr dd; // device
                 size_t sz;
                 int n;
 
-                //Data (int num = 1) {n = num; sz = sizeof (T0) * n;}
-                //~Data () {}
-                void Init (int num = 1) {n = num; sz = sizeof (T0) * n;}
+                //Data0 (int num = 1) { this->Init (num); }
+                //~Data0 () {}
+                void Init (int num) {n = num; sz = sizeof (T0) * num;}
 
                 // sync copy
                 void H2Dsync () {CU_ERR (cuMemcpyHtoD (dd, dh, sz));}
@@ -33,26 +33,39 @@ namespace yeah {
             };
 
 
+
+        /*
+           template <class T0>
+           class Data: public Data0 <T0>
+           {
+           public:
+           Data (int num = 1) { this->Init (num); }
+           ~Data () {}
+           };
+           */
+
+
+
         template <class T0>
-            class DataDummy: public Data <T0>
+            class DataDummy: public Data0 <T0>
         {
         public:
-            DataDummy (int num = 1) {this->n = num; this->sz = sizeof (T0) * this->n;}
+            DataDummy (int num = 1) { this->Init (num); }
             ~DataDummy () {}
         };
 
 
         template <class T0>
-            class DataNonPinned: public Data <T0>
+            class DataNonPinned: public Data0 <T0>
         {
         public:
-            DataNonPinned (int num = 1) {this->n = num; this->sz = sizeof (T0) * this->n;}
+            DataNonPinned (int num = 1) { this->Init (num); }
             ~DataNonPinned () {}
             void Alloc () {
                 this->dh = (T0 *) malloc (this->sz);
                 assert (this->dh != NULL);
                 CU_ERR (cuMemAlloc (&this->dd, this->sz));
-                ;}
+            }
             void Free () {
                 CU_ERR (cuMemFree (this->dd));
                 free (this->dh);
@@ -61,15 +74,7 @@ namespace yeah {
 
 
         template <class T0>
-            class DataPinned: public Data <T0>
-        {
-        public:
-        };
-
-
-
-        template <class T0>
-            class DataHostMapped: public Data <T0>
+            class DataPinned: public Data0 <T0>
         {
         public:
         };

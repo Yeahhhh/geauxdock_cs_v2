@@ -234,7 +234,7 @@ void GetPrint_potencial_occupancy (void (*func), const char * s,
     int active_warps_per_mp = threads_per_block * active_blocks_per_mp / prop.warpSize;
     int max_warps_per_mp = prop.maxThreadsPerMultiProcessor / prop.warpSize;
     float warp_occupancy = (float) active_warps_per_mp / (float) max_warps_per_mp;
-    printf ("warps_occupancy: \t\t%d/%d, %.3f\n", active_warps_per_mp, max_warps_per_mp, warp_occupancy);
+    printf ("warp_occupancy: \t\t%d/%d, %.3f\n", active_warps_per_mp, max_warps_per_mp, warp_occupancy);
     printf ("\n");
 }
 
@@ -271,6 +271,7 @@ void GetPrintCudaFuncArributes2 (void (*func), const char * s,
     //GetPrint_potencial_occupancy (func, s, 32, 768, 0);
     //GetPrint_potencial_occupancy (func, s, 64, 512, 0);
     GetPrint_potencial_occupancy (func, s, bperg, tperb, dynamic_smem_sz);
+
     //GetPrintCurrentCudaDeviceProp ();
 }
 

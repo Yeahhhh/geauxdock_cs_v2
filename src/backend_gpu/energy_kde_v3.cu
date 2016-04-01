@@ -1,6 +1,6 @@
 
 
-// wrong code
+// computing kde_sz in a different way
 
 
 
@@ -12,24 +12,22 @@ tx = threadIdx.x % bdx_kde;
 // lig loop, ~30
 for (int j = 0; j < lig_natom; j += bdy_kde) { // y loop
     float ekde1 = 0.0f;
+    const int l = j + ty;
 
-    {
-	const int l = j + ty;
-	if (l < lig_natom) {
+    if (l < lig_natom) {
 
-            // kde loop, ~400
-            for (int k = tx; k < kde_npoint; k += bdx_kde) { // x loop
-                if (lig_t[l] == CUDA_LDG_D (kde->t[k]) OROR1) {
-                    const float dx = lig_x1[l] - CUDA_LDG_D (kde->x[k]);
-                    const float dy = lig_y1[l] - CUDA_LDG_D (kde->y[k]);
-                    const float dz = lig_z1[l] - CUDA_LDG_D (kde->z[k]);
-                    const float kde_dst_pow2 = dx * dx + dy * dy + dz * dz;
-                    ekde1 += expf (enepara_kde2 * kde_dst_pow2);
-                }
+        // kde loop, ~400
+        for (int k = tx; k < kde_npoint; k += bdx_kde) { // x loop
+            if (lig_t3[l] == CUDA_LDG_D (kde->t[k]) OROR1) {
+                const float dx = lig_x3[l] - CUDA_LDG_D (kde->x[k]);
+                const float dy = lig_y3[l] - CUDA_LDG_D (kde->y[k]);
+                const float dz = lig_z3[l] - CUDA_LDG_D (kde->z[k]);
+                const float kde_dst_pow2 = dx * dx + dy * dy + dz * dz;
+                ekde1 += expf (enepara_kde2 * kde_dst_pow2);
+            }
 
-            } // kde loop
-	} // if (l < lig_natom)
-    }
+        } // kde loop
+    } // if (l < lig_natom)
 
     BlockReduceSum_2D_1_d_2 (bdy_kde, bdx_kde, ekde1);
     if (threadIdx.x < bdy_kde) {

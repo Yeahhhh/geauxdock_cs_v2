@@ -2,15 +2,15 @@
 #define TILE_P1 64
 #define min(x,y) ((x) < (y)? (x) : (y))
 /*
-for tile_p1_i
-  for l
-    for p
-*/
+   for tile_p1_i
+   for l
+   for p
+   */
 
 
 float hpc1_s[MAXLIG];
 for (int l = 0; l < lig_natom; ++l)
-    hpc1_s[l] = 0.0f;
+hpc1_s[l] = 0.0f;
 
 
 

@@ -121,7 +121,6 @@ int main (int argc, char **argv)
 
   tc[3].Stop ();
 
-  printf ("CUDA mem free time\t\t%8.3f\n", tc[3].Span ());
 
 
   for (int g = 0; g < NGPU; ++g) {
@@ -134,8 +133,9 @@ int main (int argc, char **argv)
 #include "../frontend/server2.C"
 
 
-  printf ("client init time\t\t%8.3f\n", tc[0].Span ());
+  printf ("client mem alloc time\t\t%8.3f\n", tc[0].Span ());
   printf ("client compute time\t\t%8.3f\n", tc[1].Span ());
+  printf ("client mem free time\t\t%8.3f\n", tc[3].Span ());
 
 
   return 0;
