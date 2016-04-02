@@ -28,7 +28,7 @@ GeauxDock  employs a novel hybrid force field and a Monte Carlo protocol for
 the efficient sampling of conformational space.
 
 The GPU codes use features that are supported since Kepler-Generation Graphics 
-processing unit(GPU), and been tunned for Kepler and Maxwell GPUs.
+processing unit(GPU), and been tunned for Kepler GK110 and Maxwell 2.0 GPUs.
 
 GeauxDock has applications in:
 1. ligand virtual screening
@@ -90,12 +90,12 @@ GeauxDock has been tested on the following OS:
 
 GeauxDock has been tested with the following packages:
 
- CUDA 6.5 and the NVidia binary GPU drivers
- CUDA 7.0 and the NVidia binary GPU drivers
- CUDA 7.5 and the NVidia binary GPU drivers
- intel compiler 15.0.0
- gcc 4.4.6
- Bash (required for setting environment variables)
+  CUDA 6.5 and the NVidia binary GPU drivers
+  CUDA 7.0 and the NVidia binary GPU drivers
+  CUDA 7.5 and the NVidia binary GPU drivers
+  intel compiler 15.0.0
+  gcc 4.4.6
+  Bash (required for setting environment variables)
 
 
 === Steps - Initial Setup and Simple Run
@@ -110,7 +110,7 @@ readme file would be “/home/smith/geauxdock/README.txt”.
       needed.
 
 
- [ ]  Prepair The Input Data
+ [ ]  Prepare The Input Data
       Commands:
 
       $ cd /home/smith/geauxdock/run
@@ -197,7 +197,7 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 -ll ligand_text_file
     a list of ligands to be docked
-    defualt:   /home/smith/geauxdock/data/astex/ligands/ligs.txt
+    default:   /home/smith/geauxdock/data/astex/ligands/ligs.txt
 
 -s ff_file
     force field parameters to calculate ligand-target interaction
@@ -254,7 +254,7 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 == Output format
 screen output, including 
-   * info on intput and output data paths
+   * info on input and output data paths
    * simulation parameter setup
    * runtime performance measurements
 
