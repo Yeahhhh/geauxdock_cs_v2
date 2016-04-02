@@ -111,12 +111,15 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 
  [ ]  Prepair The Input Data
+      Commands:
 
-      $ cd /home/smith/geauxdock/bin
+      $ cd /home/smith/geauxdock/run
       $ ./mklist.sh
 
 
  [ ]  Run The pre-build binary (Linux x86-64, Intel)
+      Commands:
+
       $ cd /home/smith/geauxdock/bin
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
@@ -134,7 +137,7 @@ readme file would be “/home/smith/geauxdock/README.txt”.
       $ cd /home/smith/geauxdock/src/main_gpu && make HOST=smic
 
       The variable for builing the code is speficied in
-      /home/smith/geauxdock/src/src/GNUmakefile.common.mk
+      /home/smith/geauxdock/src/GNUmakefile.common.mk
       You might modifity it to suit your environment.
 
       If the build is successful a executable named "geauxdock" will be created
