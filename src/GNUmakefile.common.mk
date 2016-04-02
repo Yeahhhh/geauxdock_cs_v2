@@ -31,9 +31,14 @@ else ifeq ($(HOST), shelob)
 	GPU := K20XM
 	NGPU := 2
 
-else ifeq ($(HOST), ece)
+else ifeq ($(HOST), frost)
 	COMPILER_HOST := gnu
 	GPU := GTX780
+	NGPU := 1
+
+else ifeq ($(HOST), simplex)
+	COMPILER_HOST := gnu
+	GPU := GTX970
 	NGPU := 1
 
 else ifeq ($(HOST), lasphi)
@@ -97,11 +102,16 @@ else ifeq ($(GPU), K20XM)
 #	GD := 56
 #	BD := 256
 
+else ifeq ($(GPU), GTX970)
+	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
+	MC_BperMP := 4
+	GD := 52
+	BD := 256
+
 else ifeq ($(GPU), GTX980)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
 	MC_BperMP := 4
 	GD := 64
-#	BD := 320
 	BD := 256
 
 else ifeq ($(GPU), yourgpu)

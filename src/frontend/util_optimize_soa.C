@@ -54,7 +54,7 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
     // this violate the order of "n"
     std::vector <DataSort> ds;
     for (int j = 0; j < lig_natom; ++j) {
-      DataSort d = {j, src->t[j]};
+      DataSort d = {j, (double) src->t[j]};
       ds.push_back (d);
     }
 
@@ -112,7 +112,7 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
     // sort ligand in increament order of t 
     std::vector <DataSort> ds2;
     for (int j = 0; j < lig_natom; ++j) {
-      DataSort d = {j, src->t[j]};
+      DataSort d = {j, (double) src->t[j]};
       ds2.push_back (d);
     }
     std::sort (ds2.begin(), ds2.end(), DataSortInc);
@@ -236,7 +236,7 @@ OptimizeProtein (Protein0 * prt0, Protein * prt, const EnePara0 * enepara0,
     // sort protein in increament order of: c
     std::vector <DataSort> ds;
     for (int j = 0; j < prt_npoint; ++j) {
-      DataSort d = {j, src->c[j]};
+      DataSort d = {j, (double) src->c[j]};
       ds.push_back (d);
     }
 
@@ -342,7 +342,7 @@ OptimizeKde (const Kde0 * kde0, Kde * kde)
   // sort kde in increament order of: t
   std::vector <DataSort> ds;
   for (int j = 0; j < kde_npoint; ++j) {
-    DataSort d = {j, kde0->t[j]};
+    DataSort d = {j, (double) kde0->t[j]};
     ds.push_back (d);
   }
 
