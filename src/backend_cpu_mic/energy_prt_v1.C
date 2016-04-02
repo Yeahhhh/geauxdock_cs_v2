@@ -71,7 +71,7 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
         /* electrostatic potential */
         const float s1 = enepara_el1 * dst;
         float g1;
-        if (s1 < 1 OROR1)
+        if (s1 < 1.0f OROR1)
             g1 = enepara_el0 + enepara_a1 * s1 * s1 + enepara_b1 * s1 * s1 * s1;
         else
             g1 = 1.0f / s1;
