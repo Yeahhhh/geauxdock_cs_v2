@@ -15,7 +15,7 @@
 #include <toggle.h>
 #include <load.h>
 
-#include "catch.hpp"
+#include <Catch/include/catch.hpp>
 
 TEST_CASE( "Load", "[ligand]" )
 {
@@ -30,6 +30,7 @@ TEST_CASE( "Load", "[ligand]" )
   delete[]lig0;
 }
 
+/*
 TEST_CASE( "LoadLHM", "[force field input]" )
 {
 
@@ -49,3 +50,4 @@ TEST_CASE( "LoadLHM", "[force field input]" )
   delete kde;
   delete lhm_file;
 }
+*/

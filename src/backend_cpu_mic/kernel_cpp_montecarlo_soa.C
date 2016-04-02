@@ -391,7 +391,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
                     rep->movematrix[i] = movematrix[i];
             }
 
-#if 1
+#if 0
         if (r == 0 && s2max == 1) {
             printf ("k1  ");
             for (int i = 0; i < MAXWEI; ++i)

@@ -18,6 +18,6 @@ geauxdock.o: geauxdock.C
 
 
 
-NT := 240 # number of temperatures passing to the runtime
+NT := 3 # number of temperatures passing to the runtime
 include ../GNUmakefile.common.rules
 
