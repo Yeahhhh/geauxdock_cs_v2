@@ -230,8 +230,8 @@ CXXFLAGS_DEV += -use_fast_math
 CXXFLAGS_DEV += -Xptxas -dlcm=ca
 
 # for development purpose, making performance worse
-#CXXFLAGS_DEV += -lineinfo
-XXFLAGS_DEV += -Xptxas -v
+CXXFLAGS_DEV += -lineinfo
+#CXXFLAGS_DEV += -Xptxas -v
 #CXXFLAGS_DEV += -keep --keep-dir tmp -G --source-in-pt
 
 
