@@ -4,7 +4,7 @@
               Copyright 2014 Louisiana State University
 	      
 This package contains codes and sample data for running molecular
-docking simulation on multi-core CPU, or NVidia GPU. 
+docking simulation on multi-core CPU, or NVIDIA GPU. 
 	      
 For the latest version and other resources visit
 http://lasigma.loni.org/package/dock/
@@ -90,9 +90,9 @@ GeauxDock has been tested on the following OS:
 
 GeauxDock has been tested with the following packages:
 
-  CUDA 6.5 and the NVidia binary GPU drivers
-  CUDA 7.0 and the NVidia binary GPU drivers
-  CUDA 7.5 and the NVidia binary GPU drivers
+  CUDA 6.5 and the NVIDIA binary GPU drivers
+  CUDA 7.0 and the NVIDIA binary GPU drivers
+  CUDA 7.5 and the NVIDIA binary GPU drivers
   intel compiler 15.0.0
   gcc 4.4.6
   Bash (required for setting environment variables)
