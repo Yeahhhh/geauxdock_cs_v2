@@ -73,7 +73,7 @@ Dock (Complex *ch,
     //yeah::cuda::EventSD e[11];
 
 
-    GetPrintCudaFuncArributes ((void (*)) MonteCarlo_d, "MonteCarlo_d");
+    //GetPrintCudaFuncArributes ((void (*)) MonteCarlo_d, "MonteCarlo_d");
     //GetPrintCudaFuncArributes2 ((void (*)) MonteCarlo_d, "MonteCarlo_d", GD, BD, 0);
 
 
