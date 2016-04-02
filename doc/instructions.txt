@@ -146,7 +146,7 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 
  [ ]  Run The Code
-      The command below will run GeauxDock using the provided parameter file.
+      The command below will run GeauxDock using the provided parameter files.
 
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
@@ -169,12 +169,12 @@ readme file would be “/home/smith/geauxdock/README.txt”.
       $ PATH/TO/geauxdock -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
 
 
-      The execution using the provided input and parameter file should complete
+      The execution using the provided inputs and parameter files should complete
       in a few seconds.
 
 
   [ ]  Results Verification
-       In case of a successful simulation using the example input file of
+       In case of a successful simulation using the example input files of
        "1a07C1.sdf" and "1a07C-1.pdb"
        initial energy state as part of standard output should agree with the
        lines below:
