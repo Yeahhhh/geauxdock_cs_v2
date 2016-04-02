@@ -102,8 +102,8 @@ GeauxDock has been tested with the following packages:
 
 Follow these steps to setup and run the code the first time. The sample 
 commands are for a user with home directory "/home/smith/“ and who has unpacked 
-the GeauxDock distribution into a directory “dock/“, so that the path to the 
-readme file would be “/home/smith/dock/README.txt”.
+the GeauxDock distribution into a directory “geauxdock/“, so that the path to the 
+readme file would be “/home/smith/geauxdock/README.txt”.
 
  [ ]  Install Prerequisites
       Review the list of prerequisites, and install what is
@@ -112,29 +112,29 @@ readme file would be “/home/smith/dock/README.txt”.
 
  [ ]  Prepair The Input Data
 
-      $ cd /home/smith/dock/bin
+      $ cd /home/smith/geauxdock/bin
       $ ./mklist.sh
 
 
  [ ]  Run The pre-build binary (Linux x86-64, Intel)
-      $ cd /home/smith/dock/data
+      $ cd /home/smith/geauxdock/bin
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
-      $ ../bin/bin/geauxdock_linux_x64 -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
+      $ ./geauxdock_linux_x64 -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
 
 
  [ ]  Build the Code
       Commands:
 
       $ source module/sourceme.bash
-      $ cd /home/smith/dock/src/main_cpu && make HOST=smic
+      $ cd /home/smith/geauxdock/src/main_cpu && make HOST=smic
       or
-      $ cd /home/smith/dock/src/main_mic && make HOST=smic
+      $ cd /home/smith/geauxdock/src/main_mic && make HOST=smic
       or
-      $ cd /home/smith/dock/src/main_gpu && make HOST=smic
+      $ cd /home/smith/geauxdock/src/main_gpu && make HOST=smic
 
       The variable for builing the code is speficied in
-      /home/smith/dock/src/src/GNUmakefile.common.mk
+      /home/smith/geauxdock/src/src/GNUmakefile.common.mk
       You might modifity it to suit your environment.
 
       If the build is successful a executable named "geauxdock" will be created
@@ -147,7 +147,7 @@ readme file would be “/home/smith/dock/README.txt”.
 
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
-      $ cd /home/smith/dock/src/main_cpu && make run
+      $ cd /home/smith/geauxdock/src/main_cpu && make run
 
       or
 
@@ -190,11 +190,11 @@ readme file would be “/home/smith/dock/README.txt”.
 
 -lp protein_text_file
     a target protein
-    default:   /home/smith/dock/data/astex/proteins/prt.txt
+    default:   /home/smith/geauxdock/data/astex/proteins/prt.txt
 
 -ll ligand_text_file
     a list of ligands to be docked
-    defualt:   /home/smith/dock/data/astex/ligands/ligs.txt
+    defualt:   /home/smith/geauxdock/data/astex/ligands/ligs.txt
 
 -s ff_file
     force field parameters to calculate ligand-target interaction
