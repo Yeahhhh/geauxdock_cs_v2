@@ -8,7 +8,7 @@
 
 
 #include <size.h>
-#include <dock.h>
+#include <geauxdock.h>
 #include <util.h>
 #include <util_optimize.h>
 #include <util_print.h>

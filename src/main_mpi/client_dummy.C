@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <dock.h>
+#include <geauxdock.h>
 
 MPI_Datatype MPI_JOB;
 

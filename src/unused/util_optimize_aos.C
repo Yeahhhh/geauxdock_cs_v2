@@ -4,7 +4,7 @@
 
 #include "size.h"
 #include "toggle.h"
-#include "dock.h"
+#include "geauxdock.h"
 #include "util_optimize.h"
 
 

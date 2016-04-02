@@ -1,7 +1,7 @@
 #include <mpi.h>
 #include <cstdio>
 
-#include <dock.h>
+#include <geauxdock.h>
 
 #include <cuda_runtime.h>
 #include <curand.h>

@@ -6,7 +6,7 @@
 #include <string>
 
 #include <size.h>
-#include <dock.h>
+#include <geauxdock.h>
 
 
 void PrintTrack (Record *,  int,  int,  int,  int);

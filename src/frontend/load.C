@@ -26,7 +26,7 @@
 #include <cstring>
 #include <vector>
 
-#include <dock.h>
+#include <geauxdock.h>
 #include <data.h>
 #include <rmsd.h>
 #include <size.h>

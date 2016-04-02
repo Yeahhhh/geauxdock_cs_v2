@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <dock.h>
+#include <geauxdock.h>
 
 #include "../backend_cpu_mic/backend_cpu_mic.h"
 #include <yeah/cpp/timer.hpp>

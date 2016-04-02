@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "dock.h"
+#include "geauxdock.h"
 #include "gpu.cuh"
 
 #include <cuda.h>

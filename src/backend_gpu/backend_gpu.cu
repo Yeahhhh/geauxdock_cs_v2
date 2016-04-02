@@ -4,7 +4,7 @@
 #include <cmath>
 #include <ctime>
 
-#include <dock.h>
+#include <geauxdock.h>
 #include <size.h>
 #include <toggle.h>
 
@@ -12,7 +12,7 @@
 #include <curand.h>
 #include <curand_kernel.h>
 
-#include <dock.h>
+#include <geauxdock.h>
 #include <toggle.h>
 #include <util_print.h>
 

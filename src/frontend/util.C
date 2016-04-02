@@ -11,7 +11,7 @@
 
 #include <size.h>
 #include <toggle.h>
-#include <dock.h>
+#include <geauxdock.h>
 #include <util.h>
 #include <load.h>
 

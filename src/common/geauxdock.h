@@ -161,7 +161,7 @@ struct LigCoord
 
 
 //#if TARGET_DEVICE == TARGET_GPU
-#include "dock_soa.h"
+#include "geauxdock_soa.h"
 //#elif TARGET_DEVICE == TARGET_CPU || TARGET_DEVICE == TARGET_MIC
 //#include "dock_aos.h"
 //#endif

@@ -33,15 +33,8 @@ printf ("%d,", ch->size.prt_npoint);
 printf ("%d,", ch->size.kde_npoint);
 printf ("%d,", ch->size.mcs_nrow);
 printf ("%.3f,", e[4].Span () / 1000.0f); // seconds
-for (int i = 0; i < papi_event_n; ++i)
-  printf ("%.3f,", (float) papi_event_val[i] / 1000000.0f);
-
-
-
-printf ("\n");
-for (int i = 0; i < papi_event_n; ++i)
-  printf ("%s\t%10.3f M\n", papi_info_struct[i].str, (float) papi_event_val[i] / 1000000.0f);
-
+for (int i = 0; i < m0.papi_event_n; ++i)
+  printf ("%.3f,", (float) m0.papi_event_val[i] / 1000000.0f);
 printf ("\n");
 #endif
 

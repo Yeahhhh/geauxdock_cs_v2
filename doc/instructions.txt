@@ -140,7 +140,7 @@ readme file would be “/home/smith/dock/README.txt”.
       $ cd /home/smith/dock/src/main_gpu && make run
       or
       $ cd /home/smith/dock/data
-      $ PATH/TO/dock -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
+      $ PATH/TO/geauxdock -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
 
 
       The execution using the provided input and parameter file should complete

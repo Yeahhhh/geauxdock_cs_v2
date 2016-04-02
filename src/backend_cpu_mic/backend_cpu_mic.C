@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cmath>
 
-#include <dock.h>
+#include <geauxdock.h>
 #include <size.h>
 #include <toggle.h>
 #include <util_print.h>
@@ -16,18 +16,18 @@
 #if IS_PAPI == 1
 #include <papi.h>
 #include <yeah/papi/wrapper.h>
-
-typedef struct {
-    const int event;
-    const char * str;
-} Papi_event_struct;
-
+#include <yeah/papi/struct.h>
+#include <yeah/papi/measurer.hpp>
 #endif
 
 
 
 
 #include "kernel_cpp_montecarlo_soa.C"
+
+
+
+
 
 
 void
@@ -38,47 +38,6 @@ Dock (Complex *complex, Record *record)
     // data for analysis
     std::map < int, std::vector < LigRecordSingleStep > > multi_reps_records;
 
-
-
-
-#if IS_PAPI == 1
-    const Papi_event_struct papi_info_struct[] = {
-        //{,       ""},
-        //{PAPI_L1_TCM,       "PAPI_L1_TCM"},
-        //{PAPI_L2_TCM,       "PAPI_L2_TCM"},
-        {PAPI_L1_DCM,       "PAPI_L1_DCM"},
-        //{PAPI_L2_DCM,       "PAPI_L2_DCM"},
-        //{PAPI_L1_ICM,       "PAPI_L1_ICM"},
-        //{PAPI_L2_ICM,       "PAPI_L2_ICM"},
-
-        //{PAPI_LD_INS,       "PAPI_LD_INS"},
-        //{PAPI_SR_INS,       "PAPI_SR_INS"},
-
-
-        {PAPI_BR_MSP,       "PAPI_BR_MSP"},
-        //{PAPI_BR_PRC,       "PAPI_BR_PRC"},
-        //{PAPI_BR_INS,       "PAPI_BR_INS"},
-
-
-        {PAPI_SP_OPS,       "PAPI_SP_OPS"},
-        {PAPI_DP_OPS,       "PAPI_DP_OPS"},
-        //{PAPI_FP_OPS,       "PAPI_FP_OPS"},
-        {PAPI_VEC_SP,       "PAPI_VEC_SP"},
-        {PAPI_VEC_DP,       "PAPI_VEC_DP"},
-
-
-        {PAPI_TOT_INS,      "PAPI_TOT_INS"},
-        {PAPI_TOT_CYC,      "PAPI_TOT_CYC"}
-    };
-
-
-    const int papi_event_n = sizeof (papi_info_struct) / sizeof (Papi_event_struct);
-    int *papi_event = (int *) malloc (sizeof (int) * papi_event_n);
-    long long *papi_event_val = (long long *) malloc (sizeof (long long) * papi_event_n);
-    for (int i = 0; i < papi_event_n; ++i) {
-        papi_event[i] = papi_info_struct[i].event;
-    }
-#endif
 
 
     e[10].Start ();
@@ -96,8 +55,37 @@ Dock (Complex *complex, Record *record)
     MonteCarlo_d (complex, record, 0, 1);
     e[3].Stop ();
 
+
 #if IS_PAPI == 1
-    PAPI_ERR (PAPI_start_counters (papi_event, papi_event_n));
+    Papi_event_struct papi_event_struct1[] = {
+        //{,       ""},
+        //{PAPI_L1_TCM,       "PAPI_L1_TCM"},
+        //{PAPI_L2_TCM,       "PAPI_L2_TCM"},
+        {PAPI_L1_DCM,       "PAPI_L1_DCM"},
+        //{PAPI_L2_DCM,       "PAPI_L2_DCM"},
+        //{PAPI_L1_ICM,       "PAPI_L1_ICM"},
+        //{PAPI_L2_ICM,       "PAPI_L2_ICM"},
+
+        //{PAPI_LD_INS,       "PAPI_LD_INS"},
+        //{PAPI_SR_INS,       "PAPI_SR_INS"},
+
+        {PAPI_BR_MSP,       "PAPI_BR_MSP"},
+        //{PAPI_BR_PRC,       "PAPI_BR_PRC"},
+        //{PAPI_BR_INS,       "PAPI_BR_INS"},
+
+        {PAPI_SP_OPS,       "PAPI_SP_OPS"},
+        {PAPI_DP_OPS,       "PAPI_DP_OPS"},
+        //{PAPI_FP_OPS,       "PAPI_FP_OPS"},
+        {PAPI_VEC_SP,       "PAPI_VEC_SP"},
+        {PAPI_VEC_DP,       "PAPI_VEC_DP"},
+
+
+        {PAPI_TOT_INS,      "PAPI_TOT_INS"},
+        {PAPI_TOT_CYC,      "PAPI_TOT_CYC"},
+        {PAPI_NULL_YEAH,    "PAPI_NULL_YEAH"}
+    };
+    yeah::papi::Measurer m0 (papi_event_struct1);
+    m0.Start ();
 #endif
 
     e[4].Start ();
@@ -109,7 +97,10 @@ Dock (Complex *complex, Record *record)
     }
     e[4].Stop ();
 
-
+#if IS_PAPI == 1
+    m0.Stop ();
+    m0.Print ();
+#endif
 
     /*
        for (int s = 0; s < ligrecord[rep].next_ptr; ++s) {
@@ -117,11 +108,6 @@ Dock (Complex *complex, Record *record)
        multi_reps_records[rep].push_back(my_step);
        }
        */
-
-
-#if IS_PAPI == 1
-    PAPI_ERR (PAPI_read_counters (papi_event_val, papi_event_n));
-#endif
 
 
     e[10].Stop ();
@@ -134,11 +120,8 @@ Dock (Complex *complex, Record *record)
 
     //PrintSummary (complex);
 
-
 #if IS_PAPI == 1
-    PAPI_shutdown ();
-    free (papi_event);
-    free (papi_event_val);
+    m0.Shutdown ();
 #endif
 
 }
