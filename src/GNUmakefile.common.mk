@@ -82,7 +82,7 @@ ifeq ($(GPU), GTX780)
 else ifeq ($(GPU), K20XM)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
 
-# the best config, require "SMEM/block < 24KB"
+# the fastest config, require "SMEM/block < 24KB"
 	MC_BperMP := 2
 	GD := 28
 	BD := 512
