@@ -110,7 +110,20 @@ readme file would be “/home/smith/dock/README.txt”.
       needed.
 
 
- [ ]  Build the Code, ass
+ [ ]  Prepair The Input Data
+
+      $ cd /home/smith/dock/bin
+      $ ./mklist.sh
+
+
+ [ ]  Run The pre-build binary (Linux x86-64, Intel)
+      $ cd /home/smith/dock/data
+      $ export OMP_PROC_BIND=true
+      $ export OMP_NUM_THREADS=20
+      $ ../bin/bin/geauxdock_linux_x64 -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
+
+
+ [ ]  Build the Code
       Commands:
 
       $ source module/sourceme.bash
@@ -120,31 +133,41 @@ readme file would be “/home/smith/dock/README.txt”.
       or
       $ cd /home/smith/dock/src/main_gpu && make HOST=smic
 
-      If the build is successful a executable named "dock" will be created
+      The variable for builing the code is speficied in
+      /home/smith/dock/src/src/GNUmakefile.common.mk
+      You might modifity it to suit your environment.
+
+      If the build is successful a executable named "geauxdock" will be created
       in the src directory.  If not, find an experienced programmer
       to help identify and fix the problems.
- 
- [ ]  Prepair The Input Data
-
-      $ cd /home/smith/dock/bin
-      $ ./mklist.sh
 
 
  [ ]  Run The Code
       The command below will run GeauxDock using the provided parameter file.
 
+      $ export OMP_PROC_BIND=true
+      $ export OMP_NUM_THREADS=20
       $ cd /home/smith/dock/src/main_cpu && make run
+
       or
+
+      $ export OMP_PROC_BIND=true
+      $ export OMP_NUM_THREADS=240
+      $ export MIC_OMP_PROC_BIND=true
       $ cd /home/smith/dock/src/main_mic && make run
+
       or
+
       $ cd /home/smith/dock/src/main_gpu && make run
+
       or
+
       $ cd /home/smith/dock/data
       $ PATH/TO/geauxdock -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
 
 
       The execution using the provided input and parameter file should complete
-      in just a few seconds.
+      in a few seconds.
 
 
   [ ]  Results Verification
