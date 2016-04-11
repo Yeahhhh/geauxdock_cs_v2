@@ -92,6 +92,7 @@ int main (int argc, char **argv)
     t[2].Start ();
     *ch = complex[i];
     printf ("complex %d\n", i);
+    PrintComplexInfo (ch);
 
 
     printf ("%s start docking\n", argv[0]);

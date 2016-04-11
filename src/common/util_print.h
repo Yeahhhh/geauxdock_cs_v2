@@ -23,6 +23,7 @@ void PrintLigCoord (const Ligand *, const int);
 void PrintLigand (const Ligand *);
 void PrintProtein (const Protein *);
 void PrintDataSize (const Complex *);
+void PrintComplexInfo (const Complex *);
 void PrintSummary (const Complex *);
 
 

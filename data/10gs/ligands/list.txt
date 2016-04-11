@@ -1,0 +1,1 @@
+10gs_ligand /home/yfang11/geauxdock_cs_v2/data/10gs/ligands/10gs_ligand.sdf /home/yfang11/geauxdock_cs_v2/data/10gs/ligands/10gsA00.ff

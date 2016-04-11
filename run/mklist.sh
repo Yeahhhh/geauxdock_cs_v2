@@ -12,3 +12,9 @@ grep "1a07C-1.pdb" ../data/astex/proteins/list.txt > ../data/astex/proteins/prt1
 grep "1a07C-3.pdb" ../data/astex/proteins/list.txt > ../data/astex/proteins/prt3.txt
 grep "1a07C.pdb" ../data/astex/proteins/list.txt > ../data/astex/proteins/prt11.txt
 
+
+
+
+
+./mkliglist.py ../data/10gs/ligands/ > ../data/10gs/ligands/list.txt
+./mkprtlist.py ../data/10gs/proteins/ > ../data/10gs/proteins/list.txt

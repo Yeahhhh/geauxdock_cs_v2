@@ -314,27 +314,53 @@ PrintDataSize (const ParaH ph)
 
 
 
+
 void
-PrintSummary (const Complex * c)
+PrintComplexInfo (const Complex * c)
 {
-  putchar ('\n');
 
   printf ("===============================================================\n");
-  printf ("Inputs and Outputs\n");
+  printf ("Inputs\n");
   printf ("===============================================================\n");
   printf ("ligand file\t\t\t%s\n", c->lig_file);
   printf ("protein file\t\t\t%s\n", c->prt_file);
   printf ("lhm file\t\t\t%s\n", c->lhm_file);
   printf ("enepara file\t\t\t%s\n", c->enepara_file);
   printf ("weight file\t\t\t%s\n", c->weight_file);
-  
+
+  printf ("ligand conformations\t\t%d\n", c->size.n_lig);
+  printf ("prt conformations\t\t%d\n", c->size.n_prt);
+  printf ("temperatures\t\t\t%d\n", c->size.n_tmp);
+  printf ("replica ensembles\t\t%d\n", c->size.n_rep);
+
+  printf ("size_lig\t\t\t%d\n", c->size.lig_natom);
+  printf ("size_prt\t\t\t%d\n", c->size.prt_npoint);
+  printf ("size_pnk\t\t\t%d\n", c->size.kde_npoint);
+  printf ("size_mcs\t\t\t%d\n", c->size.mcs_nrow);
+  printf ("===============================================================\n");
+
+}
+
+
+
+
+void
+PrintSummary (const Complex * c)
+{
+  putchar ('\n');
+
+  PrintComplexInfo (c);
+
+  printf ("===============================================================\n");
+  printf ("Outputs\n");
+  printf ("===============================================================\n");
   printf ("output directory\t\t%s\n", c->mcpara.outputdir);
   printf ("out file (HDF5)\t\t\t%s/%s_XXXX.h5\n", c->mcpara.outputdir, c->mcpara.outputfile);
 
   printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
 
   printf ("===============================================================\n");
-  printf ("Sizes\n");
+  printf ("Memory Sizes\n");
   const float sz_prt = (float) sizeof (Protein) * MAX_CONF_PRT / 1024 / 1024;
   const float sz1 = (float) sizeof (Complex) / 1024 / 1024;
   const float sz2 = (float) sizeof (Record) * MAX_REP / 1024 / 1024;
@@ -362,15 +388,6 @@ PrintSummary (const Complex * c)
     printf ("%.8f ", c->mcpara.move_scale[i]);
   printf ("\n");
 
-  printf ("ligand conformations\t\t%d\n", c->size.n_lig);
-  printf ("prt conformations\t\t%d\n", c->size.n_prt);
-  printf ("temperatures\t\t\t%d\n", c->size.n_tmp);
-  printf ("replica ensembles\t\t%d\n", c->size.n_rep);
-
-  printf ("size_lig\t\t\t%d\n", c->size.lig_natom);
-  printf ("size_prt\t\t\t%d\n", c->size.prt_npoint);
-  printf ("size_pnk\t\t\t%d\n", c->size.kde_npoint);
-  printf ("size_mcs\t\t\t%d\n", c->size.mcs_nrow);
   printf ("===============================================================\n");
 
 }
