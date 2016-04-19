@@ -171,3 +171,12 @@ nvprof --devices 0 --kernels MonteCarlo_d --analysis-metrics --output-profile XX
 
 
 
+
+
+
+smic:
+module purge
+module load cuda/6.5
+module load impi/4.1.3.048
+module load intel/14.0.2 
+

@@ -1,1 +1,1 @@
-5cppA1 /home/yfang11/geauxdock_cs_v2/data/astex/ligands/5cppA1.sdf /home/yfang11/geauxdock_cs_v2/data/astex/ligands/5cppA1-0.8.ff
+5cppA1 /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/5cppA1.sdf /worka/work/yfang11/geauxdock_cs_v2/data/astex/ligands/5cppA1-0.8.ff

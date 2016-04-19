@@ -15,14 +15,8 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 HOST := smic
 
 ifeq ($(HOST), smic)
-# module purge
-# module load impi/4.1.3.048/intel64
-# module load intel/14.0.2
-# module load cuda/6.5
 	COMPILER_HOST := intel
 	#COMPILER_HOST := gnu
-	LIBPATH += -L/usr/local/packages/cuda/6.5/lib64
-	HEADPATH += -I/usr/local/packages/cuda/6.5/include
 	GPU := K20XM
 	NGPU := 1
 
@@ -31,18 +25,10 @@ else ifeq ($(HOST), shelob)
 	GPU := K20XM
 	NGPU := 2
 
-else ifeq ($(HOST), frost)
+else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
-	GPU := GTX780
-	NGPU := 1
-
-else ifeq ($(HOST), simplex)
-	COMPILER_HOST := gnu
-	GPU := GTX970
-	NGPU := 1
-
-else ifeq ($(HOST), lasphi)
-	COMPILER_HOST := gnu
+#	GPU := GTX780
+#	GPU := GTX970
 	GPU := GTX980
 	NGPU := 1
 

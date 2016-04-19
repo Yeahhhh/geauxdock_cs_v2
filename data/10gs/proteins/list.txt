@@ -1,1 +1,1 @@
-10gsA00 /home/yfang11/geauxdock_cs_v2/data/10gs/proteins/10gsA00.pdb
+10gsA00 /worka/work/yfang11/geauxdock_cs_v2/data/10gs/proteins/10gsA00.pdb
