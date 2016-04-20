@@ -34,8 +34,15 @@ MonteCarlo_d (Complex * __restrict__ complex,
 {
 
 #if 1
+    __shared__ int n_rep;
+    if (threadIdx.x == 0)
+        n_rep = complex->size.n_rep;
+    __syncthreads ();
+
+    //const int n_rep = complex->size.n_rep;
+
     // moving "r" to shared memory reduce performance by 5%
-    for (int r = complex->rep_begin + blockIdx.x; r <= complex->rep_end; r += gridDim.x) {
+    for (int r = blockIdx.x; r < n_rep; r += gridDim.x) {
 
         // constant
         // pointers
@@ -202,7 +209,7 @@ MonteCarlo_d (Complex * __restrict__ complex,
 
             is_accept_s = rep->is_accept;
 
-            record[r - complex->rep_begin].next_entry = 0; // reset the record's entry point
+            record[r].next_entry = 0; // reset the record's entry point
         }
 
         __syncthreads ();
@@ -289,11 +296,9 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
             // 1.0% time
             if (threadIdx.x == 0 && is_accept_s == 1) {
                 rep->step = s1 + s2;
-
-                const int rr = r - complex->rep_begin;
-                const int next_entry = record[rr].next_entry;
-                record[rr].replica[next_entry] = *rep;
-                record[rr].next_entry = next_entry + 1;
+                const int next_entry = record[r].next_entry;
+                record[r].replica[next_entry] = *rep;
+                record[r].next_entry = next_entry + 1;
             }
 
 

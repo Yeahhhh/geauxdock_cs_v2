@@ -3,7 +3,7 @@ include ../GNUmakefile.common.mk
 
 EXE := geauxdock
 OBJ += geauxdock.o
-OBJ += prepair.o backend_gpu.o
+OBJ += backend_gpu.o
 OBJ += util_optimize_soa_gpu.o
 OBJ += load.o data.o rmsd.o util.o util_print.o
 

@@ -305,7 +305,6 @@ struct EnePara0
 
 
 
-
 struct Temp
 {
   float t;
@@ -357,13 +356,14 @@ struct McPara
   char outputfile[MAXSTRINGLENG];
 };
 
+
 struct McLog
 {
   int ac_mc;  // MC acceptance counter
   int acs_mc[MAX_REP];   // MC acceptance counter for all replicas
   int ac_temp_exchg;
-  int acs_temp_exchg[MAX_REP]; 
-  
+  int acs_temp_exchg[MAX_REP];
+
   // int ac_lig_exchg;
   // int acs_lig_exchg[MAX_REP];
 };
@@ -371,7 +371,7 @@ struct McLog
 
 
 
-struct Record
+struct MYALIGN Record
 {
   ReplicaMC replica[STEPS_PER_DUMP];
   int next_entry;
@@ -380,40 +380,30 @@ struct Record
 
 
 
+/*
 struct MoveVector
 {
   float ele[6]; // translation xyz, rotation xyz
 };
+*/
 
 
 
 
-struct Complex
+struct MYALIGN Complex
 {
-  // GPU read only arrays
   Ligand lig[MAX_CONF_LIG];
   Protein prt[MAX_CONF_PRT];
   Psp psp;
   Kde kde;
   Mcs mcs[MAX_MCS_ROW];
-  Mcs_R mcs_r;  
+  Mcs_R mcs_r;
   Mcs_ELL mcs_ell;
   Mcs_CSR mcs_csr;
   EnePara enepara;
   Temp temp[MAX_TMP];
 
-  // GPU writable arrays that duplicate on multiple GPUs
   ReplicaMC replica[MAX_REP];
-  //float *etotal; // used by replica exchange
-  //MoveVector *movevector; // used by replcia exchange
-
-  // remove "record" pointers from Complex struct
-  // due to the limitation of Xeon Phi offloading mode
-  // GPU writable arrays that spreads over multiple GPUs
-  // Record *record;
-
-
-  // extra parameters
   ComplexSize size;
   McPara mcpara;
 
@@ -426,32 +416,10 @@ struct Complex
   char weight_file[MAX_STR_LENG];
 
 
-  // GPU read only scalars
-  // sizes for multi-device decomposition
-  int rep_begin;
-  int rep_end;
-  //int n_rep;
-  //int record_sz;
-
-
   // MPI message signal
   int signal;
 };
 
-
-
-
-
-
-
-struct ParaT // Data transter parameters
-{
-  int rep_begin; // replica range
-  int rep_end; // replica range
-  int n_rep; // replica number
-
-  int record_sz; // record size
-};
 
 
 #endif // DOCK_H

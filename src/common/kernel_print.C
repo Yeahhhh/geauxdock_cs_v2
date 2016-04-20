@@ -24,7 +24,8 @@
 
   const int myreplica = 0;
   const int iter_begin = 0;
-  const int iter_end = minimal_int (steps_per_dump, 1) - 1;
+  //const int iter_end = minimal_int (steps_per_dump, 1) - 1;
+  const int iter_end = 0;
   const int arg = 2;
 
   PrintRecord (record, steps_per_dump, myreplica, iter_begin, iter_end, arg);

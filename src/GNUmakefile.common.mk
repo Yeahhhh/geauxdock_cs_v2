@@ -14,28 +14,24 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 
 HOST := smic
 
-ifeq ($(HOST), smic)
+ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
-	#COMPILER_HOST := gnu
-	GPU := K20XM
-	NGPU := 1
-
-else ifeq ($(HOST), shelob)
-	COMPILER_HOST := gnu
-	GPU := K20XM
-	NGPU := 2
 
 else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
+#	GPU := K20XM
 #	GPU := GTX780
 #	GPU := GTX970
 	GPU := GTX980
-	NGPU := 1
+
+else ifeq ($(HOST), smic)
+	COMPILER_HOST := intel
+	#COMPILER_HOST := gnu
+	GPU := K20XM
 
 else ifeq ($(HOST), yourhost)
 	COMPILER_HOST := gnu
 	GPU := yourgpu
-	NGPU := 1
 endif
 
 
@@ -126,7 +122,6 @@ endif
 MARCRO_GPU += -DMC_BperMP=$(MC_BperMP)
 MARCRO_GPU += -DGD=$(GD)
 MARCRO_GPU += -DBD=$(BD)
-MARCRO_GPU += -DNGPU=$(NGPU)
 MARCRO_GPU += -DENABLE_CUDA_LDG
 
 

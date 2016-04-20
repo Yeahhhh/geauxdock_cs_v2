@@ -208,8 +208,6 @@
     std::strcpy (cc->lhm_file, inputfiles->lhm_files[i].path.c_str ());
     std::strcpy (cc->enepara_file, inputfiles->enepara_file.path.c_str ());
     std::strcpy (cc->weight_file, inputfiles->weight_file.path.c_str ());
-    cc->rep_begin = 0;
-    cc->rep_end = sz.n_rep - 1;
     cc->signal = i;
 
     delete[]temp;

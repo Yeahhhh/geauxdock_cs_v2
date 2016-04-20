@@ -33,11 +33,12 @@ static void
 MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 {
 
+    const int n_rep = complex->size.n_rep;
+
 #if TARGET_DEVICE == TARGET_MIC
-    const int reps = complex->rep_end - complex->rep_begin + 1;
 #pragma offload target(mic) \
     inout (complex:length(1) alloc_if(1) free_if(1)), \
-    out (rec:length(reps) alloc_if(1) free_if(1))
+    out (rec:length(n_rep) alloc_if(1) free_if(1))
 #endif
 
 #if TARGET_DEVICE == TARGET_CPU
@@ -47,7 +48,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 #pragma omp parallel for schedule (dynamic,1)
 #endif
 
-    for (int r = complex->rep_begin; r <= complex->rep_end; ++r) {
+    for (int r = 0; r < n_rep; ++r) {
 
         // constant
         // pointers
@@ -187,7 +188,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
         mcs_nrow = complex->size.mcs_nrow;
         is_accept_s = rep->is_accept;
 
-        rec[r - complex->rep_begin].next_entry = 0; // reset the record's next_entry
+        rec[r].next_entry = 0; // reset the record's next_entry
 
 
         for (int l = 0; l < lig_natom; ++l) {
@@ -223,11 +224,9 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
             // record old states
             if (is_accept_s == 1) {
                 rep->step = s1 + s2;
-
-                const int rr = r - complex->rep_begin;
-                const int next_entry = rec[rr].next_entry;
-                rec[rr].replica[next_entry] = *rep;
-                rec[rr].next_entry = next_entry + 1;
+                const int next_entry = rec[r].next_entry;
+                rec[r].replica[next_entry] = *rep;
+                rec[r].next_entry = next_entry + 1;
             }
 
 
