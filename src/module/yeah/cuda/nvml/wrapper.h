@@ -5,6 +5,7 @@
 
 #include <nvidia/nvml.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 
@@ -15,8 +16,8 @@ inline void
 __GetErrorNVML (const nvmlReturn_t err, const char *file, const int line)
 {
     if (err != NVML_SUCCESS) {
-        printf ("%s(%d) : CUDA error : (%d) : %s.\n",
-            file, line, (int) err, nvmlErrorString (err));
+        const char* s = nvmlErrorString (err);
+        printf ("%s(%d) : CUDA error : (%d) : %s.\n", file, line, (int) err, s);
         exit (EXIT_FAILURE);
     }
 }

@@ -1,4 +1,5 @@
 Ye Fang's programming tool box
+
 public domain
 no responsibility
 
@@ -8,7 +9,6 @@ no responsibility
 vi GNUmakefile
 gmake clean
 gmake
-
 
 
 -lyeahc -lrt

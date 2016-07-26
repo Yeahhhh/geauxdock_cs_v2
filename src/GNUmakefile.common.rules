@@ -1,29 +1,46 @@
+.PHONY: common frontend backend_cpu_mic backend_gpu
+
+common:
+	@cd ../$@ && make
+
+frontend:
+	@cd ../$@ && make
+
+backend_cpu_mic:
+	@cd ../$@ && make
+
+backend_gpu:
+	@cd ../$@ && make
+
+
+
+# common
+
+../common/util_print.o: ../common/util_print.cpp
+	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
 
 # frontend
 
-rmsd.o: ../frontend/rmsd.f
+../frontend/rmsd.o: ../frontend/rmsd.f
 	$(FC_HOST) $(FCFLAGS_HOST) -c $< -o $@
 
-load.o: ../frontend/load.C
+../frontend/load.o: ../frontend/load.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
-data.o: ../frontend/data.C
+../frontend/data.o: ../frontend/data.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
-util.o: ../frontend/util.C
+../frontend/frontend.o: ../frontend/frontend.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
-util_print.o: ../common/util_print.C
-	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
-
-util_optimize_soa_cpu.o: ../frontend/util_optimize_soa.C
+../frontend/util_optimize_soa_cpu.o: ../frontend/util_optimize_soa.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_CPU)  -c $< -o $@
 
-util_optimize_soa_mic.o: ../frontend/util_optimize_soa.C
+../frontend/util_optimize_soa_mic.o: ../frontend/util_optimize_soa.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_MIC)  -c $< -o $@
 
-util_optimize_soa_gpu.o: ../frontend/util_optimize_soa.C
+../frontend/util_optimize_soa_gpu.o: ../frontend/util_optimize_soa.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_GPU)  -c $< -o $@
 
 
@@ -31,17 +48,17 @@ util_optimize_soa_gpu.o: ../frontend/util_optimize_soa.C
 
 # backend_cpu_mic
 
-backend_cpu.o: ../backend_cpu_mic/backend_cpu_mic.C
+../backend_cpu_mic/backend_cpu.o: ../backend_cpu_mic/backend_cpu_mic.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_CPU) -c $< -o $@
 
-backend_mic.o: ../backend_cpu_mic/backend_cpu_mic.C
+../backend_cpu_mic/backend_mic.o: ../backend_cpu_mic/backend_cpu_mic.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_MIC) -c $< -o $@
 
 
 
 # backend_gpu
 
-backend_gpu.o: ../backend_gpu/backend_gpu.cu
+../backend_gpu/backend_gpu.o: ../backend_gpu/backend_gpu.cu
 	$(CXX_DEV) $(CXXFLAGS_DEV) -c $< -o $@
 
 
@@ -55,8 +72,7 @@ run: $(EXE)
 echo:
 	@(echo EXE $(EXE))
 	@(echo OBJ $(OBJ))
-	@(echo GD $(GD))
-	@(echo BD $(BD))
+	@(echo TperB $(TperB))
 	@(echo WARPperB $(WARPperB))
 	@(echo NGPU $(NGPU))
 

@@ -11,7 +11,7 @@ default: $(EXE)
 $(EXE): $(OBJ)
 	$(CXX_HOST) $(LIBPATH) $(OBJ) -o $@ $(LINKFLAGS)
 
-geauxdock.o: geauxdock.C
+geauxdock.o: geauxdock.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
 include ../GNUmakefile.common.rules

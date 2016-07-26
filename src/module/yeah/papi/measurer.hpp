@@ -15,7 +15,7 @@
 Papi_event_struct papi_event_struct1[] = {
     //{PAPI_L1_TCM,       "PAPI_L1_TCM"},
     //{PAPI_L2_TCM,       "PAPI_L2_TCM"},
-    {PAPI_L1_DCM,       "PAPI_L1_DCM"},
+    {PAPI_L1_DCM,         "PAPI_L1_DCM"},
     //{PAPI_L2_DCM,       "PAPI_L2_DCM"},
     //{PAPI_L1_ICM,       "PAPI_L1_ICM"},
     //{PAPI_L2_ICM,       "PAPI_L2_ICM"},

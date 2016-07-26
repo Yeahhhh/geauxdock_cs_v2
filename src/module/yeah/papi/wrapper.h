@@ -9,7 +9,7 @@
 #include <papi.h>
 
 
-
+// BUG ???
 // can't use wrapper in the followsing APIs
 //PAPI_ERR (PAPI_shutdown ()); // error: invalid use of void expression
 

@@ -14,3 +14,26 @@
 * TODO Data analysis
 1. Clustering
 2. Dump trajectories to plain text csv format
+
+
+
+
+magic number: geauxdock:                "a4a6b25c"
+magic number: geauxdock_inputstringtag: "a7ae9a29"
+magic number: geauxdock_inputstring:    "1cdd253c"
+
+
+# Unix shell:
+str=geauxdock
+echo $str | openssl dgst -sha1
+str=geauxdock_inputstring
+echo $str | openssl dgst -sha1
+str=geauxdock_inputstringtag
+echo $str | openssl dgst -sha1
+
+
+#python shell:
+import hashlib
+m = hashlib.sha1()
+str = "geauxdock"; m.update(str); m.hexdigest()                    # '114a945d61650c87ee2c1568703028edaf86c007'
+

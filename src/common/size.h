@@ -97,11 +97,14 @@
 
 #define PI 3.1415926535f
 
-/* value used for return statement in data.C for missing atoms */
+/* value used for return statement in data.cpp for missing atoms */
 #define BADKDE 50
 
 // maximum string length for file names
-#define MAXSTRINGLENG 128
+#define MAXSTRINGLENG 256
+
+// maximum input string length
+#define MAXINPUTSTRINGLENG 2048
 
 // if mcs equal to 123456789.0f, it is invalid
 #define MCS_INVALID_COORD 0.01234f
@@ -113,11 +116,7 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 200
-
-// steps that no not have to be defined as macro
-#define STEPS_TOTAL 200
-
+#define STEPS_PER_DUMP 100
 
 // signal the MPI client to terminate
 #define FINISH_SIGNAL 0XFFFFFF

@@ -28,6 +28,7 @@
 #define CUDAASSERT(condition, code) \
     if (!(condition)) printf("Assertion failure. Code %s%n\n", code)
 
+#include <backend_gpu.h>
 #include "kernel_cuda_l2_reduce_notemplate.cu"
 #include "kernel_cuda_l2_util.cu"
 #include "kernel_cuda_l1_initcurand.cu"
@@ -40,16 +41,22 @@
 
 
 
-void
+static void
 InitCurand (curandState *s)
 {
+    const int mydevice = 0;
+    cudaDeviceProp prop;
+    CUDA_ERR (cudaGetDeviceProperties (&prop, mydevice));
+    const int BperG = prop.multiProcessorCount * BperMP; // blocks per GPU
+
+
     srand (time (0));
-    InitCurand_d <<< GD, BD >>> (s, rand ());
+    InitCurand_d <<< BperG, TperB >>> (s, rand ());
 }
 
 
 
-void
+static void
 Dock (Complex *ch,
     Record *rh,
     Complex *cd,
@@ -61,20 +68,27 @@ Dock (Complex *ch,
     const size_t record_sz = sizeof (Record) * ch->size.n_rep;
 
 
+    const int mydevice = 0;
+    cudaDeviceProp prop;
+    CUDA_ERR (cudaGetDeviceProperties (&prop, mydevice));
+    const int BperG = prop.multiProcessorCount * BperMP; // blocks per GPU
+
+
+
     yeah::Timer e[11];
     //yeah::cuda::EventSD e[11];
 
     CUDA_ERR (cudaMemcpyAsync (cd, ch, sizeof (Complex), cudaMemcpyHostToDevice));
 
     //GetPrintCudaFuncArributes ((void (*)) MonteCarlo_d, "MonteCarlo_d");
-    //GetPrintCudaFuncArributes2 ((void (*)) MonteCarlo_d, "MonteCarlo_d", GD, BD, 0);
+    //GetPrintCudaFuncArributes2 ((void (*)) MonteCarlo_d, "MonteCarlo_d", BperG, TperB, 0);
 
 
     e[10].Start ();
 
 
     e[3].Start ();
-    MonteCarlo_d <<< GD, BD >>> (cd, rd, 0, 1, curandstate_d);
+    MonteCarlo_d <<< BperG, TperB >>> (cd, rd, 0, 1, curandstate_d);
     CUDA_LAST_ERR ();
     e[3].Stop ();
 
@@ -84,7 +98,7 @@ Dock (Complex *ch,
         printf ("\t%d / %d \n", s1, steps_total);
 
         e[4].Start ();
-        MonteCarlo_d <<< GD, BD >>> (cd, rd, s1, steps_per_dump, curandstate_d);
+        MonteCarlo_d <<< BperG, TperB >>> (cd, rd, s1, steps_per_dump, curandstate_d);
         CUDA_LAST_ERR ();
         //cudaDeviceSynchronize();
 
@@ -94,21 +108,71 @@ Dock (Complex *ch,
         // eeee.Stop ();
         // printf ("launcher: time of memory copy D2H %f\n", eeee.Span());
         e[4].Stop ();
-//#include <kernel_dump.C>
+//#include <kernel_dump.cpp>
     }
 
     Record *record = rh;
-#include <kernel_print.C>
+#include <kernel_print.cpp>
 
 
     e[10].Stop ();
 
 
-#include <kernel_print_timer.C>
+#include <kernel_print_timer.cpp>
     //PrintSummary (ch);
-#include <kernel_print_benchmark.C>
+#include <kernel_print_benchmark.cpp>
 
 }
 
+
+
+
+
+
+Docker::Docker()
+{
+    const int mydevice = 0;
+    cudaDeviceProp prop;
+    CUDA_ERR (cudaGetDeviceProperties (&prop, mydevice));
+    const int BperG = prop.multiProcessorCount * BperMP; // blocks per GPU
+    printf ("BperG = %d\n", BperG);
+
+
+
+
+    printf ("Initilizing GPU\n");
+    printf ("sizeof record = %f MB\n", (float) sizeof (Record) * MAX_REP / 1024 / 1024);
+
+
+    CUDA_ERR (cudaMallocHost ((void **) &complex, sizeof (Complex)));
+    CUDA_ERR (cudaMallocHost ((void **) &record, sizeof (Record) * MAX_REP));
+
+    CUDA_ERR (cudaMalloc ((void **) &cd, sizeof (Complex)));
+    CUDA_ERR (cudaMalloc ((void **) &rd, sizeof (Record) * MAX_REP));
+    CUDA_ERR (cudaMalloc ((void **) &sd, sizeof (curandState) * TperB * BperG));
+
+    cudaDeviceSetCacheConfig (cudaFuncCachePreferShared);
+    InitCurand (sd);
+}
+
+
+
+Docker::~Docker()
+{
+    CUDA_ERR (cudaFree (cd));
+    CUDA_ERR (cudaFree (rd));
+    CUDA_ERR (cudaFree (sd));
+    CUDA_ERR (cudaFreeHost (record));
+    CUDA_ERR (cudaFreeHost (complex));
+
+    cudaDeviceReset ();
+}
+
+
+
+void Docker::run()
+{
+    Dock (complex, record, cd, rd, sd);
+}
 
 

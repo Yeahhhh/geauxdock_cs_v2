@@ -27,7 +27,7 @@
 
 
 __global__ void
-__launch_bounds__(BD, MC_BperMP)
+__launch_bounds__(TperB, BperMP)
 MonteCarlo_d (Complex * __restrict__ complex,
     Record * __restrict__ record,
     const int s1, const int s2max, curandState *curandstate_d)

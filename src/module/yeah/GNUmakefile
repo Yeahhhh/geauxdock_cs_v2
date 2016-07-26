@@ -46,8 +46,8 @@ all: libc
 libc: $(OBJ_C)
 	ar rcs ../lib/libyeahc.a $(OBJ_C)
 
-libcpp: $(OBJ_C) $(OBJ_CPP)
-	ar rcs ../lib/libyeahcpp.a $(OBJ_C) $(OBJ_CPP)
+libcxx: $(OBJ_C) $(OBJ_CPP)
+	ar rcs ../lib/libyeahcxx.a $(OBJ_C) $(OBJ_CPP)
 
 libopencl: $(OBJ_OPENCL)
 	ar rcs ../lib/libyeahopencl.a $(OBJ_OPENCL)

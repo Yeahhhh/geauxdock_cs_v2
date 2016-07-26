@@ -32,15 +32,11 @@
 
 
 
-struct TraceFile
-{
-  std::string path;  // ligand trace path
-};
 
 struct LigandFile
 {
   std::string path; // lig file path
-  std::string conf_path;
+  //std::string conf_path;
   std::string id;	// ligand name
   std::string molid; // MOLID;
 
@@ -89,19 +85,22 @@ struct WeightFile
   std::string path;
 };
 
+struct TraceFile
+{
+  std::string path;
+};
+
 struct InputFiles
 {
-  std::string lig_list;
-  std::string prt_list;
-
-  int lig_files_num;
-  LigandFile * lig_files;
-  LhmFile * lhm_files;
-
+  int id;
   ProteinFile prt_file;
   EneParaFile enepara_file;
   WeightFile weight_file;
   NorParaFile norpara_file;
+
+  LigandFile lig_file;
+  LhmFile lhm_file;
+
   TraceFile trace_file;
 };
 
@@ -346,9 +345,9 @@ struct ExchgPara
 
 struct McPara
 {
-  int steps_total;
   int steps_per_dump;
-  int steps_per_exchange;
+  int steps_n_dump;
+  int steps_total;
 
   float move_scale[6]; // translation x y z, rotation x y z
 
@@ -389,7 +388,7 @@ struct MoveVector
 
 
 
-
+// variable "complex" used in this offload region must be bitwise copyable
 struct MYALIGN Complex
 {
   Ligand lig[MAX_CONF_LIG];
@@ -408,16 +407,20 @@ struct MYALIGN Complex
   McPara mcpara;
 
 
+  //InputFiles inputfiles;
+
+#if 1
   // file names
   char lig_file[MAX_STR_LENG];
   char prt_file[MAX_STR_LENG];
   char lhm_file[MAX_STR_LENG];
   char enepara_file[MAX_STR_LENG];
   char weight_file[MAX_STR_LENG];
+#endif
 
 
   // MPI message signal
-  int signal;
+  //int signal;
 };
 
 

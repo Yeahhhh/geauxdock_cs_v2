@@ -9,8 +9,8 @@
 float elhm = 0.0f;
 ty = threadIdx.x / bdx_mcs;
 tx = threadIdx.x % bdx_mcs;
-__shared__ float elhm1_s[BD];
-__shared__ int elhm2_s[BD];
+__shared__ float elhm1_s[TperB];
+__shared__ int elhm2_s[TperB];
 
 for (int i = 0; i < mcs_nrow; i += bdx_mcs) { // x
     float elhm1 = 0.0f;

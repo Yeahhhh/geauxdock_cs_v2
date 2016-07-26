@@ -1,5 +1,5 @@
 # extracted from "cudnn-sample-v4.tgz"
-# heavily utilize on external command
+# heavily depends on external command
 
 
 
@@ -147,7 +147,6 @@ echo:
 	@echo LDFLAGS:       $(LDFLAGS)
 	@echo ALL_CCFLAGS:   $(ALL_CCFLAGS)
 	@echo ALL_LDFLAGS:   $(ALL_LDFLAGS)
-
 
 
 

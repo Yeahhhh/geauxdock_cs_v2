@@ -4,6 +4,7 @@
 
 #include <cuda_runtime.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 
@@ -23,11 +24,11 @@
 inline void
 __GetError1 (const cudaError_t err, const char * const file, const int line)
 {
-  if (err != cudaSuccess) {
-    printf ("%s(%d) : CUDA error : (%d) : %s.\n",
-            file, line, (int) err, cudaGetErrorString (err));
-    exit (EXIT_FAILURE);
-  }
+    if (err != cudaSuccess) {
+        const char *s = cudaGetErrorString (err);
+        printf ("%s(%d) : CUDA error : (%d) : %s.\n", file, line, (int) err, s);
+        exit (EXIT_FAILURE);
+    }
 }
 
 #else
@@ -59,12 +60,12 @@ __GetError1 (const cudaError_t err, const char * const file, const int line)
 inline void
 __GetLastError1 (const char * const file, const int line)
 {
-  cudaError_t err = cudaGetLastError ();
-  if (err != cudaSuccess) {
-    printf ("%s(%d) : CUDA error : (%d) : %s.\n",
-            file, line, (int) err, cudaGetErrorString (err));
-    exit (EXIT_FAILURE);
-  }
+    cudaError_t err = cudaGetLastError ();
+    const char *s = cudaGetErrorString (err);
+    if (err != cudaSuccess) {
+        printf ("%s(%d) : CUDA error : (%d) : %s.\n", file, line, (int) err, s);
+        exit (EXIT_FAILURE);
+    }
 }
 
 
@@ -73,20 +74,20 @@ __GetLastError1 (const char * const file, const int line)
 
 
 #define CUDAMALLOCHOST(ptr, sz, type) \
-  CUDA_ERR (cudaMallocHost ((void **) &ptr, sz))
+    CUDA_ERR (cudaMallocHost ((void **) &ptr, sz))
 
 #define CUDAMALLOC(ptr, sz, type) \
-  CUDA_ERR (cudaMalloc ((void **) &ptr, sz))
+    CUDA_ERR (cudaMalloc ((void **) &ptr, sz))
 
 #define CUDAMEMCPY_SYMBOL(dst, src, type) \
-  CUDA_ERR (cudaMemcpyToSymbol (dst, src, sizeof (type), 0, cudaMemcpyHostToDevice))
+    CUDA_ERR (cudaMemcpyToSymbol (dst, src, sizeof (type), 0, cudaMemcpyHostToDevice))
 
 #define CUDAKERNEL_ASYNC(func, dim_grid, dim_block, ...) \
-  func <<< dim_grid, dim_block >>> (__VA_ARGS__); \
-  CUDA_LAST_ERR ()
+    func <<< dim_grid, dim_block >>> (__VA_ARGS__); \
+    CUDA_LAST_ERR ()
 
 #define CUDAKERNEL_STREAM_ASYNC(func, dim_grid, dim_block, n, stream, ...) \
-  func <<< dim_grid, dim_block, n, stream >>> (__VA_ARGS__); \
-  CUDA_LAST_ERR ()
+    func <<< dim_grid, dim_block, n, stream >>> (__VA_ARGS__); \
+    CUDA_LAST_ERR ()
 
 #endif

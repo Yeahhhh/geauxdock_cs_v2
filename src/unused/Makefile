@@ -150,7 +150,7 @@ else ifeq ($(TARGET_DEVICE), $(TARGET_CPU))
 #	CPP_HOST := g++
 #	FC_HOST := gfortran
 #	CPP_DEV := g++
-#	SRC_DEV := kernel_cpp.C
+#	SRC_DEV := kernel_cpp.cpp
 #	OBJ_DEV := kernel_cpp.o
 #	DEVFLAGS += -fopenmp
 #	LINKFLAGS += -fopenmp
@@ -164,7 +164,7 @@ else ifeq ($(TARGET_DEVICE), $(TARGET_CPU))
 	CPP_HOST := icpc $(MPIFLAGS)
 	FC_HOST := ifort $(MPIFLAGS)
 	CPP_DEV := icpc $(MPIFLAGS)
-	SRC_DEV := kernel_cpp.C
+	SRC_DEV := kernel_cpp.cpp
 	OBJ_DEV := kernel_cpp.o
 
 	DEVFLAGS += -Wall
@@ -195,7 +195,7 @@ else ifeq ($(TARGET_DEVICE), $(TARGET_MIC))
 	CPP_HOST := icc -mmic
 	FC_HOST := ifort -mmic
 	CPP_DEV := icc -mmic
-	SRC_DEV := kernel_cpp.C
+	SRC_DEV := kernel_cpp.cpp
 	OBJ_DEV := kernel_cpp.o
 	LINKFLAGS += -openmp
 	DEVFLAGS += -openmp
@@ -217,7 +217,7 @@ $(EXE): $(OBJ_HOST) $(OBJ_DEV)
 $(OBJ_DEV): $(SRC_DEV) kernel_cuda_l1_initcurand.cu kernel_cuda_l1_montecarlo.cu kernel_cuda_l2_util.cu kernel_cuda_prologue_epilogue.cu
 	$(CPP_DEV) $(DEVFLAGS) -c $<
 
-%.o: %.C
+%.o: %.cpp
 	$(CPP_HOST) $(HOSTFLAGS) -c $<
 
 %.o: %.f
