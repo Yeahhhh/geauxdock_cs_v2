@@ -6,8 +6,7 @@ EXE += 2_check
 EXE += 3_geauxdock_cpu
 EXE += 3_geauxdock_mic
 EXE += 3_geauxdock_gpu
-#EXE := runx
-#EXE := 2_check #unittest1 unittest2 unittest3
+#EXE := runall
 
 OBJ_FRONTEND += ../frontend/load.o
 OBJ_FRONTEND += ../frontend/data.o
@@ -16,7 +15,7 @@ OBJ_FRONTEND += ../frontend/frontend.o
 OBJ_FRONTEND += ../common/util_print.o
 
 default: $(EXE)
-#default: runx
+#default: runall
 
 
 #CXX_HOST += -g
@@ -37,9 +36,6 @@ default: $(EXE)
 
 
 
-
-
-
 2_check: 2_check.o ../frontend/util_optimize_soa_cpu.o $(OBJ_FRONTEND)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
 
@@ -53,34 +49,23 @@ default: $(EXE)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS) -lcudart
 
 
-unittest1: unittest1.o ../frontend/util_optimize_soa_gpu.o $(OBJ_FRONTEND)
-	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
-
-unittest2: unittest2.o ../backend_gpu/backend_gpu.o ../frontend/util_optimize_soa_gpu.o $(OBJ_FRONTEND)
-	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS) -lcudart
-
-
 
 run1: 1_mklist.py.sh
 	./1_mklist.py.sh
 
-
 run2: 2_check
-	./2_check a1.csv
+	./2_check.sh
 
-
-run3: 3_geauxdock_cpu
-	./3_geauxdock_cpu a2.csv
-
-
-runx: unittest2
-	./unittest2
+run3: 3_geauxdock_gpu
+	./3_geauxdock_gpu a2.csv
 
 runall:
-	ls
+	./1_mklist.py.sh
+	./2_check.sh
+	./3_geauxdock_gpu
+
 
 
 include ../GNUmakefile.common.rules
-
 
 
