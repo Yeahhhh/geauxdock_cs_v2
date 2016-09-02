@@ -42,11 +42,11 @@ void client(int argc, char **argv)
         printf ("%-20s \t\t\t\t\t client %02d request\n", argv[0], id);
         MPI_Recv (recv_msg, 1, MPI_MSG, dst, mytag, MPI_COMM_WORLD, &status);
 
-        if (strcmp(recv_msg, "FINISH_SIGNAL") != 0) { // if not equal
+        if (strcmp(recv_msg, "FINISH_SIGNAL") != 0) { // if not "FINISH_SIGNAL"
             printf ("%s start docking\n", argv[0]);
             //Dock (recv_msg, argv[0], id);
         }
-        else {
+        else { // if received "FINIASH_SIGNAL"
             printf ("%-20s \t\t\t\t\t\t\t\t\t\t client %02d retired\n", argv[0], id);
             break;
         }

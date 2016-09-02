@@ -45,8 +45,9 @@
 //#define MAX_TMP 1
 /* number of temperature replicas */
 
-#define MAX_REP 16384
+//#define MAX_REP 16384
 //#define MAX_REP 4096
+#define MAX_REP 2048
 //#define MAX_REP 1024
 /* max replicas */
 
@@ -116,7 +117,7 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 100
+#define STEPS_PER_DUMP 1000
 
 // signal the MPI client to terminate
 #define FINISH_SIGNAL 0XFFFFFF

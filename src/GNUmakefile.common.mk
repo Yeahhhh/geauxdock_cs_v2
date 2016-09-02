@@ -20,7 +20,9 @@ ifeq ($(HOST), intelhost)
 else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
 #	GPU := CC35
-	GPU := CC52
+	GPU := CC50
+#	GPU := CC52
+#	GPU := CC61
 
 else ifeq ($(HOST), smic)
 	COMPILER_HOST := intel
@@ -64,6 +66,11 @@ ifeq ($(GPU), CC35)
 #	BperMP := 4
 #	TperB := 256
 
+## Maxwell Generation GPUs
+else ifeq ($(GPU), CC50)
+	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_50
+	BperMP := 2
+	TperB := 512
 
 ## Maxwell Generation GPUs
 else ifeq ($(GPU), CC52)
@@ -175,11 +182,11 @@ ifeq ($(COMPILER_HOST), intel)
 	CXXFLAGS_HOST += -fno-fnalias -ansi-alias -fargument-noalias
 #	CXXFLAGS_HOST += -mavx
 	CXXFLAGS_HOST += -openmp
-	CXXFLAGS_HOST += -std=c++0x
+	CXXFLAGS_HOST += -std=c++11
 else
 	CXXFLAGS_HOST += -O3
 	CXXFLAGS_HOST += -fopenmp
-	CXXFLAGS_HOST += --std=c++0x
+	CXXFLAGS_HOST += --std=c++11
 endif
 
 
