@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/bin/env python2
 
 from __future__ import print_function
 import glob
@@ -74,7 +74,7 @@ def func1 (argv):
 
     i = 0
     for lig_str in lig_strs:
-	print('magicnumber_a4a6b25c', end = ',')
+        print('magicnumber_a4a6b25c', end = ',')
         print(i, end = ',')
         print(prt_str, end = ',')
         print(lig_str, end = ',')

@@ -2,10 +2,10 @@
              GeauxDock: GPU Accelerated Molecular Docking
                           Version 20160328
               Copyright 2014 Louisiana State University
-	      
+
 This package contains codes and sample data for running molecular
-docking simulation on multi-core CPU, or NVIDIA GPU. 
-	      
+docking simulation on multi-core CPU, or NVIDIA GPU.
+
 For the latest version and other resources visit
 http://lasigma.loni.org/package/dock/
 
@@ -24,10 +24,10 @@ additional support from the Louisiana Board of Regents.
 GeauxDock is an ultra-fast automated docking program, designed to predict
 how small ligands bind to pharmacologically relevant macromolecules.
 
-GeauxDock  employs a novel hybrid force field and a Monte Carlo protocol for 
+GeauxDock  employs a novel hybrid force field and a Monte Carlo protocol for
 the efficient sampling of conformational space.
 
-The GPU codes use features that are supported since Kepler-Generation Graphics 
+The GPU codes use features that are supported since Kepler-Generation Graphics
 processing unit(GPU), and been tunned for Kepler GK110 and Maxwell 2.0 GPUs.
 
 GeauxDock has applications in:
@@ -37,47 +37,47 @@ GeauxDock has applications in:
 
 
 === Purpose
-The purpose of molecular docking is to predict the preferred orientation of 
-small ligands within the binding sites of pharmacologically relevant 
-macromolecules as well as to reliably estimate the associated strength of 
-binding. GeauxDock simulates small molecule binding to proteins expanding the 
+The purpose of molecular docking is to predict the preferred orientation of
+small ligands within the binding sites of pharmacologically relevant
+macromolecules as well as to reliably estimate the associated strength of
+binding. GeauxDock simulates small molecule binding to proteins expanding the
 repertoire of tools for computer-aided structure-based drug discovery.
 
-=== Specifications 
-Compared to other ligand docking programs, GeauxDock offers several unique 
+=== Specifications
+Compared to other ligand docking programs, GeauxDock offers several unique
 features:
 
-1. A mixed-resolution of protein-ligand complexes. Ligands are treated at the 
-atomic level, whereas proteins are coarse-grained representing individual 
-residues by sets of effective points: the backbone alpha carbon, the geometric 
-center of a peptide plate, and either one or two effective points representing 
+1. A mixed-resolution of protein-ligand complexes. Ligands are treated at the
+atomic level, whereas proteins are coarse-grained representing individual
+residues by sets of effective points: the backbone alpha carbon, the geometric
+center of a peptide plate, and either one or two effective points representing
 the side chain (depending on the size).
 
-2. A high tolerance to target structure deformations. As a consequence of the 
-mixed-resolution, GeauxDock is fairly insensitive to distortions in protein 
-structures. Thus, experimental structures in their apo conformational states as 
-well as various quality protein models can be used as targets for small 
+2. A high tolerance to target structure deformations. As a consequence of the
+mixed-resolution, GeauxDock is fairly insensitive to distortions in protein
+structures. Thus, experimental structures in their apo conformational states as
+well as various quality protein models can be used as targets for small
 molecule docking.
 
-3. A combined evolution/physics-based force field. The energy function 
-implemented in GeauxDock integrates evolution- and physics-based components. 
-The relative contribution of these terms depends on the amount of evolutionary 
-information extracted from homologous complexes. In the absence of homologues, 
-weaker evolutionary-derived restraints are compensated by the stronger 
-contribution of physics-based energy terms.The capability of the force field to 
-reproduce experimental ligand binding poses and the corresponding binding 
-affinities was tested on the Astex/CCDC and BindingDB datasets of 
+3. A combined evolution/physics-based force field. The energy function
+implemented in GeauxDock integrates evolution- and physics-based components.
+The relative contribution of these terms depends on the amount of evolutionary
+information extracted from homologous complexes. In the absence of homologues,
+weaker evolutionary-derived restraints are compensated by the stronger
+contribution of physics-based energy terms.The capability of the force field to
+reproduce experimental ligand binding poses and the corresponding binding
+affinities was tested on the Astex/CCDC and BindingDB datasets of
 pharmacologically relevant protein-ligand complexes.
 
-4. Monte Carlo sampling scheme. GeauxDock uses the Replica Exchange Monte Carlo 
-algorithm to efficiently explore the conformational space of protein-ligand 
-interactions. This protocol was optimized to rapidly discover near-native 
+4. Monte Carlo sampling scheme. GeauxDock uses the Replica Exchange Monte Carlo
+algorithm to efficiently explore the conformational space of protein-ligand
+interactions. This protocol was optimized to rapidly discover near-native
 ligand configurations.
 
-4. Computations on graphics processing units (GPU). GeauxDock is implemented in 
-CUDA-C. The code exploits the coarse-grained parallelisms for multiple 
-replicas; specifically, replica simulations are dispatched on multiple CUDA 
-thread blocks. The computation of molecular interactions utilizes the 
+4. Computations on graphics processing units (GPU). GeauxDock is implemented in
+CUDA-C. The code exploits the coarse-grained parallelisms for multiple
+replicas; specifically, replica simulations are dispatched on multiple CUDA
+thread blocks. The computation of molecular interactions utilizes the
 fine-grained parallelism using massive CUDA threads.
 
 
@@ -87,6 +87,7 @@ GeauxDock has been tested on the following OS:
 
   Red Hat Enterprise Linux Version 6.5
   Red Hat Enterprise Linux Server release 6.2
+  Debian Linux 8
 
 GeauxDock has been tested with the following packages:
 
@@ -95,15 +96,17 @@ GeauxDock has been tested with the following packages:
   CUDA 7.5 and the NVIDIA binary GPU drivers
   intel compiler 15.0.0
   gcc 4.4.6
+  gcc 4.9.2
   Bash (required for setting environment variables)
+  Python 2.7
 
 
 === Steps - Initial Setup and Simple Run
 
-Follow these steps to setup and run the code the first time. The sample 
-commands are for a user with home directory "/home/smith/“ and who has unpacked 
-the GeauxDock distribution into a directory “geauxdock/“, so that the path to the 
-readme file would be “/home/smith/geauxdock/README.txt”.
+Follow these steps to setup and run the code the first time. The sample
+commands are for a user with home directory "/home/smith/“ and who has unpacked
+the GeauxDock distribution into a directory “geauxdock/“, so that the path to the
+readme file would be “/home/smith/geauxdock/doc/instructions.txt".
 
  [ ]  Install Prerequisites
       Review the list of prerequisites, and install what is
@@ -113,38 +116,36 @@ readme file would be “/home/smith/geauxdock/README.txt”.
  [ ]  Prepare The Input Data
       Commands:
 
-      $ cd /home/smith/geauxdock/run
-      $ ./mklist.sh
+      $ cd /home/smith/geauxdock/src/main
+      $ ./1_mklist.py.sh
+
+ [ ]  Verify The Input Data using the pre-build binary (Linux x86-64)
+      $ cd /home/smith/geauxdock/src/main
+      $ ./2_check.sh
 
 
- [ ]  Run The pre-build binary (Linux x86-64, CPU)
+ [ ]  Run docking simulation using the pre-build binary (Linux x86-64, CPU)
       Commands:
 
-      $ cd /home/smith/geauxdock/bin
+      $ cd /home/smith/geauxdock/src/main
       $ export OMP_PROC_BIND=true
-      $ export OMP_NUM_THREADS=20
-      $ ./geauxdock_linux_x64 -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
+      $ ./3_geauxdock_cpu_linux_x64
 
 
  [ ]  Build the Code
       Commands:
 
       $ cd /home/smith/geauxdock/src/module/yeah && make -B
-      $ source home/smith/geauxdock/src/module/sourceme.bash
-
-
-      $ cd /home/smith/geauxdock/src/main_cpu && make HOST=smic
-      or
-      $ cd /home/smith/geauxdock/src/main_mic && make HOST=smic
-      or
-      $ cd /home/smith/geauxdock/src/main_gpu && make HOST=smic
+      $ source /home/smith/geauxdock/src/module/sourceme.bash
+      $ cd /home/smith/geauxdock/src/main
+      $ make
 
       Building variables are speficied in
       /home/smith/geauxdock/src/GNUmakefile.common.mk
       eg: HOST, COMPILER_HOST, GPU ...
       They might be modifity to suit your environment.
 
-      If the build is successful a executable named "geauxdock" will be created
+      If the build is successful, a few executable named "3_geauxdock_*" will be created
       in the current directory.  If not, find an experienced programmer
       to help identify and fix the problems.
 
@@ -154,24 +155,18 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
-      $ cd /home/smith/geauxdock/src/main_cpu && make run
+      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_cpu
 
       or
 
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=240
       $ export MIC_OMP_PROC_BIND=true
-      $ cd /home/smith/dock/src/main_mic && make run
+      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_mic
 
       or
 
-      $ cd /home/smith/dock/src/main_gpu && make run
-
-      or
-
-      $ cd /home/smith/dock/data
-      $ PATH/TO/geauxdock -ll ./astex/ligands/list.txt -lp ./astex/proteins/prt.txt -nt 1
-
+      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_gpu
 
       The execution using the provided inputs and parameter files should complete
       in a few seconds.
@@ -190,6 +185,10 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 
 
+
+
+
+####################### OBSOLETE ########################################
 
 === Documentation of Features
 
@@ -220,12 +219,12 @@ readme file would be “/home/smith/geauxdock/README.txt”.
 
 -ns <integer>
     total Monte Carlo steps, 3000 by default
-    This iteration parameter should be multiple of STEPS_PER_DUMP 
+    This iteration parameter should be multiple of STEPS_PER_DUMP
     (defined in src/size.h).
 
 -nc <integer>
     Monte Carlo steps between two consecutive replica exchange, 5 by default
-    This iteration parameter should divide STEPS_PER_DUMP 
+    This iteration parameter should divide STEPS_PER_DUMP
     (defined in src/size.h).
 
 -floor_temp <float>
@@ -238,11 +237,11 @@ readme file would be “/home/smith/geauxdock/README.txt”.
     temperature replica numbers, 1 by default
 
 -t <float>
-    transnational scale in each perturbation of the ligand, 0.02 (in Angstrom) 
+    transnational scale in each perturbation of the ligand, 0.02 (in Angstrom)
     by default
 
 -r <float>
-    rotational scale in each perturbation of the ligand, 0.08 (in Angstrom) by 
+    rotational scale in each perturbation of the ligand, 0.08 (in Angstrom) by
     default
 
 
@@ -278,7 +277,7 @@ void ParseArguments (int argc, char **argv, ...)
    protein input file (http://www.rcsb.org/pdb/home/home.do)
 
 3. ff
-   force field parameters that can be generated using utils/prepare_ff and 
+   force field parameters that can be generated using utils/prepare_ff and
    files generated by eFindSite (http://brylinski.cct.lsu.edu/efindsite)
 
 
@@ -292,7 +291,7 @@ void ParseArguments (int argc, char **argv, ...)
 
 
 == Output format
-screen output, including 
+screen output, including
    * info on input and output data paths
    * simulation parameter setup
    * runtime performance measurements
@@ -301,12 +300,12 @@ screen output, including
 === Development History
 
 == Discussion of the code origin
-GeauxDock was designed to use computer-generated protein models as targets for 
-small molecule docking in structure-based drug discovery. The current 
-high-performance implementation is based on a serial C++ version written by 
+GeauxDock was designed to use computer-generated protein models as targets for
+small molecule docking in structure-based drug discovery. The current
+high-performance implementation is based on a serial C++ version written by
 Michal Brylinski at Louisiana State University.
 
 
 == Changes in each release.
-Third release.
+Fourth release.
 
