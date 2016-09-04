@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 {
     InputFiles inputfiles;
     inputfiles.lig_file.path = "../../data/astex/ligands/1a07C1.sdf";
+    //inputfiles.lig_file.path = "../../data/edud_1b9vA/ouput_sdf/ZINC16996483.sdf";
     inputfiles.lig_file.molid = "MOLID"; // this is a constant
 
     Ligand0 *lig0;
