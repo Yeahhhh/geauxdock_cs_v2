@@ -12,10 +12,13 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 
 
 
-HOST := smic
+HOST := gnuhost
 
 ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
+
+else ifeq ($(HOST), gnuhost)
+	COMPILER_HOST := gnu
 
 else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
@@ -183,6 +186,17 @@ ifeq ($(COMPILER_HOST), intel)
 #	CXXFLAGS_HOST += -mavx
 	CXXFLAGS_HOST += -openmp
 	CXXFLAGS_HOST += -std=c++11
+else ifeq ($(COMPILER_HOST), gnu)
+	CXXFLAGS_HOST += -O3
+	CXXFLAGS_HOST += -fopenmp
+	CXXFLAGS_HOST += --std=c++11
+	CXXFLAGS_HOST += -fomit-frame-pointer
+#	CXXFLAGS_HOST += -floop-block
+#	CXXFLAGS_HOST += -floop-interchange
+#	CXXFLAGS_HOST += -floop-nest-optimize
+#	CXXFLAGS_HOST += -floop-strip-mine
+#	CXXFLAGS_HOST += -funroll-loops
+#	CXXFLAGS_HOST += -funswitch-loops
 else
 	CXXFLAGS_HOST += -O3
 	CXXFLAGS_HOST += -fopenmp
