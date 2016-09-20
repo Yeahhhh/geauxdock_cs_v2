@@ -12,7 +12,7 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 
 
 
-HOST := gnuhost
+HOST := smic
 
 ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
@@ -34,7 +34,7 @@ else ifeq ($(HOST), smic)
 
 else ifeq ($(HOST), yourhost)
 	COMPILER_HOST := gnu
-	GPU := YOURGPU
+	GPU := CC52
 endif
 
 
@@ -78,17 +78,18 @@ else ifeq ($(GPU), CC50)
 ## Maxwell Generation GPUs
 else ifeq ($(GPU), CC52)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
-
-#	BperMP := 4
-#	TperB := 256
-
 	BperMP := 4
-	TperB := 288
+	TperB := 256
 
-else ifeq ($(GPU), YOURGPU)
-	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_52
-	BperMP := 2
-	TperB := 512
+# buggy but faster
+#	BperMP := 4
+#	TperB := 288
+
+## Pascal Generation GPUs
+else ifeq ($(GPU), CC61)
+	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_61
+	BperMP := 4
+	TperB := 256
 
 else
 	CXXFLAGS_DEV += -arch=compute_35
@@ -209,6 +210,7 @@ CXXFLAGS_DEV += $(HEADPATH) $(MARCRO_MAKE) $(MARCRO_GPU)
 CXXFLAGS_DEV += -O3
 CXXFLAGS_DEV += -use_fast_math
 CXXFLAGS_DEV += -Xptxas -dlcm=ca
+#CXXFLAGS_DEV += -D_FORCE_INLINES		# fixing CUDA 7.5 + GCC 5 compatibility issue
 
 # for development purpose, making performance worse
 #CXXFLAGS_DEV += -lineinfo

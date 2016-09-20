@@ -37,6 +37,7 @@ y = blockDim.x / x
 
  */
 
+# if 0
 __device__
 void
 CalcThreadBlockShape (const int data_x, const int data_y, int & bdx, int & bdy)
@@ -65,4 +66,39 @@ CalcThreadBlockShape (const int data_x, const int data_y, int & bdx, int & bdy)
     //if (blockIdx.x == 0 && threadIdx.x == 0)
     //printf ("data: %3d x %3d     TB: %03dx%03d\n", data_x, data_y, bdx, bdy);
 }
+#endif
+
+
+
+
+# if 1
+__device__
+void
+CalcThreadBlockShape (const int data_x, const int data_y, int & bdx, int & bdy)
+{
+    int x_select = 32;
+    int var_min = data_x * data_y / 32; // some rediculas large number
+
+    for (int x = 32; x <= blockDim.x / 2; x += 32) { // 32, 64, 96, 128
+        const int y = blockDim.x / x;
+        if (blockDim.x % x == 0) {
+            int var = ceil ((float) data_x / x) * ceil ((float) data_y / y);
+            if (var < var_min) {
+                x_select = x;
+                var_min = var;
+            }
+            if (blockIdx.x == 0 && threadIdx.x == 0) {
+                printf ("%03dx%03d: %3d\n", x, y, var);
+            }
+        }
+    }
+
+    bdx = x_select;
+    bdy = blockDim.x / bdx;
+
+    //if (blockIdx.x == 0 && threadIdx.x == 0)
+    //printf ("data: %3d x %3d     TB: %03dx%03d\n", data_x, data_y, bdx, bdy);
+}
+#endif
+
 

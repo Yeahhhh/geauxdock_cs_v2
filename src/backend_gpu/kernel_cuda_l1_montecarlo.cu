@@ -255,8 +255,25 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
 
 
 #if 1
+# if 1
         bdy_prt = 8;
         bdx_prt = blockDim.x / bdy_prt;
+#endif
+# if 0
+        if (blockDim.x < 256)
+            bdx_prt = 32;
+        else if (blockDim.x < 512)
+            bdx_prt = 64;
+        else
+            bdx_prt = 128;
+        bdy_prt = blockDim.x / bdx_prt;
+#endif
+# if 0
+        bdx_prt = 128;
+        bdy_prt = blockDim.x / bdx_prt;
+#endif
+
+
         bdx_kde = 32;
         bdy_kde = blockDim.x / bdx_kde;
         //bdx_mcs = lig_natom >= 48 ? 64 : 32;
