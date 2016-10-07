@@ -8,6 +8,7 @@
 
 
 #include <frontend.h>
+#include <load.h>
 
 #if TARGET_DEVICE == TARGET_CPU || TARGET_DEVICE == TARGET_MIC
 #include <backend_cpu_mic.h>
@@ -22,23 +23,17 @@ using namespace std;
 
 void process_lines(vector<string> & lines)
 {
-
-    const int nlines = lines.size();  // number of lines
-    const int n = nlines - 1; // number of input data
-    if (nlines < 2) {
+    if (lines.size() < 2) {
         cout << "number of lines is wrong" << endl;
         exit(EXIT_FAILURE);
     }
 
-
     Loader loader; // frontend
     Docker docker; // backend
 
-    for (int i = 0; i < n; ++i) {
-        string input = lines[i + 1];
-        //cout << input << endl;
-
-        loader.load(input);
+    for (auto line = lines.begin() + 1; line < lines.end(); line++) {
+        //cout << *line << endl;
+        loader.load(*line);
         loader.check();
 
 #if 1
@@ -49,46 +44,29 @@ void process_lines(vector<string> & lines)
 #endif
         cout << endl;
 
-
         loader.build_complex(docker.complex);
         docker.run();
     }
 }
 
-void load(const string fnpath)
-{
-    ifstream ifn(fnpath.c_str());
-    if (!ifn.is_open()) {
-        cout << "Failed to open " << fnpath << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    string line;
-    vector<string> lines;
-
-    while (getline(ifn, line)) {
-        //cout << line << endl;
-        lines.push_back(line);
-    }
-
-    ifn.close();
-
-    process_lines(lines);
-}
-
 
 int main(int argc, char **argv)
 {
+    string fn;
     if (argc == 1) {
-        load("a2.csv");
+        fn = "a1.csv";
     }
-    else if (argc == 2) {
-        load(argv[1]);
+    if (argc == 2) {
+        fn = argv[1];
     }
-    else {
+    if (argc > 2) {
         printf("%s <FILE(*.csv)>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
+
+    vector<string> lines;
+    LoadFnToVecstr(fn, lines);
+    process_lines(lines);
 
     return 0;
 }

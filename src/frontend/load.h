@@ -7,6 +7,9 @@
 
 using namespace std;
 
+void PrintVecstr(const std::vector<std::string> &lines);
+void LoadFnToVecstr(const std::string fnpath, std::vector<std::string> &lines);
+
 void loadTrace(TraceFile *, float *);
 
 void loadLigConf (LigandFile *);

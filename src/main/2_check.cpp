@@ -9,6 +9,7 @@
 
 #include <geauxdock.h>
 #include <frontend.h>
+#include <load.h>
 
 #include <yeah/cpp/timer.hpp>
 
@@ -17,15 +18,10 @@ using namespace std;
 
 void process_lines(vector<string> & lines)
 {
-
-    const int nlines = lines.size();  // number of lines
-    const int n = nlines - 1; // number of input data
-    if (nlines < 2) {
+    if (lines.size() < 2) {
         cout << "number of lines is wrong" << endl;
         exit(EXIT_FAILURE);
     }
-
-
 
     // prints modified CSV title
     vector<string> tokens;
@@ -47,19 +43,16 @@ void process_lines(vector<string> & lines)
     cout << endl;
 
 
-
     // CSV contents
     Loader loader;
-    for (int i = 0; i < n; ++i) {
-        string input = lines[i + 1];
-        //cout << input << endl;
-
-        loader.load(input);
+    for (auto line = lines.begin() + 1; line < lines.end(); line++) {
+        //cout << *line << endl;
+        loader.load(*line);
         loader.check();
 
 #if 1
         tokens = loader.get_tokens();
-	McPara mcpara = loader.get_mcpara();
+        McPara mcpara = loader.get_mcpara();
         ComplexSize sz = loader.get_sz();
 
         tokens[18] = num2string(mcpara.steps_total);
@@ -80,38 +73,23 @@ void process_lines(vector<string> & lines)
     }
 }
 
-void load(const string fnpath)
-{
-    ifstream ifn(fnpath.c_str());
-    if (!ifn.is_open()) {
-        cout << "Failed to open " << fnpath << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    string line;
-    vector<string> lines;
-
-    while (getline(ifn, line)) {
-        //cout << line << endl;
-        lines.push_back(line);
-    }
-
-    ifn.close();
-
-    process_lines(lines);
-}
-
 int main(int argc, char **argv)
 {
-#if 0
-    if (argc != 2) {
+    string fn;
+    if (argc == 1) {
+        fn = "a1.csv";
+    }
+    if (argc == 2) {
+        fn = argv[1];
+    }
+    if (argc > 2) {
         printf("%s <FILE(*.csv)>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    load(argv[1]);
-#endif
-    load("a1.csv");
+    vector<string> lines;
+    LoadFnToVecstr(fn, lines);
+    process_lines(lines);
 
     return 0;
 }
