@@ -3,9 +3,16 @@ include ../GNUmakefile.common.mk
 
 
 EXE += 2_check
-EXE += 3_geauxdock_cpu
-EXE += 3_geauxdock_mic
-EXE += 3_geauxdock_gpu
+ifeq ($(BUILD_CPU), 1)
+	EXE += 3_geauxdock_cpu
+endif
+ifeq ($(BUILD_MIC), 1)
+	EXE += 3_geauxdock_mic
+endif
+ifeq ($(BUILD_GPU), 1)
+	EXE += 3_geauxdock_gpu
+endif
+
 #EXE := runall
 
 OBJ_FRONTEND += ../frontend/load.o
@@ -18,7 +25,7 @@ default: $(EXE)
 #default: runall
 
 
-#CXX_HOST += -g
+CXX_HOST += -g
 
 
 %.o: %.cpp
@@ -56,8 +63,8 @@ run1: 1_mklist.py.sh
 run2: 2_check
 	./2_check.sh
 
-run3: 3_geauxdock_gpu
-	./3_geauxdock_gpu a2.csv
+run3: 3_geauxdock_cpu
+	./3_geauxdock_cpu a2.csv
 
 runall:
 	./1_mklist.py.sh

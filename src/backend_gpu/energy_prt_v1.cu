@@ -20,7 +20,7 @@ for (int j = 0; j < lig_natom; j += bdy_prt) { // y loop
             const float dx = lig_x2[l] - CUDA_LDG_D (prt->x[p]);
             const float dy = lig_y2[l] - CUDA_LDG_D (prt->y[p]);
             const float dz = lig_z2[l] - CUDA_LDG_D (prt->z[p]);
-            const float dst_pow2 = dx * dx + dy * dy + dz * dz;
+            const float dst_pow2 = dx * dx + dy * dy + dz * dz + SMALL_NUMBER;
             const float dst_pow4 = dst_pow2 * dst_pow2;
             const float dst = sqrtf (dst_pow2);
             //const float dst = 1.111f;

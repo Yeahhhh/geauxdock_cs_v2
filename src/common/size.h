@@ -1,12 +1,12 @@
 
 /*
 ==============================================================================================
-     __________________ ____ ___              .___             __      _________   _____   
-    /  _____/\______   \    |   \           __| _/____   ____ |  | __ /   _____/  /     \  
-   /   \  ___ |     ___/    |   /  ______  / __ |/  _ \_/ ___\|  |/ / \_____  \  /  \ /  \ 
+     __________________ ____ ___              .___             __      _________   _____
+    /  _____/\______   \    |   \           __| _/____   ____ |  | __ /   _____/  /     \
+   /   \  ___ |     ___/    |   /  ______  / __ |/  _ \_/ ___\|  |/ / \_____  \  /  \ /  \
    \    \_\  \|    |   |    |  /  /_____/ / /_/ (  <_> )  \___|    <  /        \/    Y    \
     \______  /|____|   |______/           \____ |\____/ \___  >__|_ \/_______  /\____|__  /
-           \/                                  \/           \/     \/        \/         \/ 
+           \/                                  \/           \/     \/        \/         \/
 
       GPU-accelerated hybrid-resolution ligand docking using ReplicaMC Exchange Monte Carlo
 
@@ -117,10 +117,13 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 100
+#define STEPS_PER_DUMP 10
 
 // signal the MPI client to terminate
 #define FINISH_SIGNAL 0XFFFFFF
+
+// a small number, so that " / 0 + SMALL_NUMBER" is a legal expression
+#define SMALL_NUMBER 0.0f
 
 #endif
 

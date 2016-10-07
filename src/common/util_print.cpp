@@ -237,78 +237,82 @@ PrintRepRecord2 (Record * record, ComplexSize complexsize,
 
 
 
-
-/*
 void
-PrintLigand (const Ligand * lig)
+PrintLigand0 (const Ligand0 * lig0)
 {
-  printf ("center:\t\t%+10.6f\t%+10.6f\t%+10.6f\n", lig->center[0], lig->center[1], lig->center[2]);
-  printf ("lig_natom:\t\t%d\n", lig->lig_natom);
-
-  printf ("x \t\ty \t\tz \t\tc \t\t t \t n \tindex\n");
-  printf ("-----------------------------------------------\n");
-  const int lig_natom = lig->lig_natom;
-  for (int i = 0; i < lig_natom; ++i) {
-    printf ("%+10.6f\t", lig->x[i]);
-    printf ("%+10.6f\t", lig->y[i]);
-    printf ("%+10.6f\t", lig->z[i]);
-    printf ("%+10.6f\t", lig->c[i]);
-    printf ("%2d\t", lig->t[i]);
-    printf ("%2d\t", lig->n[i]);
-    printf ("%3d\n", i);
-  }
+    const int lig_natom = lig0->lig_natom;
+    for (int i = 0; i < lig_natom; ++i) {
+        printf("Ligand0: %02d: x %8.4f, y %8.4f, z %8.4f, t %2d, c %8.4f, n %2d\n",
+            i,
+            lig0->coord_orig.x[i],
+            lig0->coord_orig.y[i],
+            lig0->coord_orig.z[i],
+            lig0->t[i],
+            lig0->c[i],
+            lig0->n[i]
+            );
+    }
+    printf ("Ligand0 center: %+10.6f\t%+10.6f\t%+10.6f\n",
+        lig0->coord_orig.center[0],
+        lig0->coord_orig.center[1],
+        lig0->coord_orig.center[2]
+        );
 }
-*/
 
-/*
-void
-PrintProtein (const Protein * prt)
-{
-  printf ("prt_npoint:\t\t%d\n", prt->prt_npoint);
 
-  printf ("x \t\ty \t\tz \t\t t \t c \t d \tindex\n");
-  printf ("-----------------------------------------------\n");
-  const int prt_npoint = prt->prt_npoint;
-  for (int i = 0; i < prt_npoint; ++i) {
-    printf ("%+10.6f\t", prt->x[i]);
-    printf ("%+10.6f\t", prt->y[i]);
-    printf ("%+10.6f\t", prt->z[i]);
-    printf ("%2d\t", prt->t[i]);
-    printf ("%2d\t", prt->c[i]);
-    printf ("%4d\n", i);
-  }
 
-}
-*/
+
 
 
 /*
-void
-PrintDataSize (const ParaH ph)
-{
-  float lig_sz = sizeof (Ligand) / 1024;
-  float prt_sz = sizeof (Protein) / 1024;
-  float psp_sz = sizeof (Psp) / 1024;
-  float kde_sz = sizeof (Kde) / 1024;
-  float mcs_sz = sizeof (Mcs) / 1024;
-  float enepara_sz = sizeof (EnePara) / 1024;
+   void
+   PrintProtein (const Protein * prt)
+   {
+   printf ("prt_npoint:\t\t%d\n", prt->prt_npoint);
 
-  printf ("lig \t\tprt \t\tpsp \t\tkde \t\tmcs \t\tenepara\n");
-  printf ("%f \t%f \t%f \t%f \t%f \t%f\t\t",
-	  lig_sz, prt_sz, psp_sz, kde_sz, mcs_sz, enepara_sz);
-  printf ("KB per struct\n");
+   printf ("x \t\ty \t\tz \t\t t \t c \t d \tindex\n");
+   printf ("-----------------------------------------------\n");
+   const int prt_npoint = prt->prt_npoint;
+   for (int i = 0; i < prt_npoint; ++i) {
+   printf ("%+10.6f\t", prt->x[i]);
+   printf ("%+10.6f\t", prt->y[i]);
+   printf ("%+10.6f\t", prt->z[i]);
+   printf ("%2d\t", prt->t[i]);
+   printf ("%2d\t", prt->c[i]);
+   printf ("%4d\n", i);
+   }
+
+   }
+   */
 
 
-  printf ("%f \t%f \t%f \t%f \t%f \t%f\t\t",
-	  lig_sz * ph.complexsize->n_lig,
-          prt_sz * ph.complexsize->n_prt,
-          psp_sz,
-          kde_sz,
-          mcs_sz * ph.complexsize->mcs_nrow,
-	  enepara_sz);
-  printf ("KB total\n");
-}
-*/
+/*
+   void
+   PrintDataSize (const ParaH ph)
+   {
+   float lig_sz = sizeof (Ligand) / 1024;
+   float prt_sz = sizeof (Protein) / 1024;
+   float psp_sz = sizeof (Psp) / 1024;
+   float kde_sz = sizeof (Kde) / 1024;
+   float mcs_sz = sizeof (Mcs) / 1024;
+   float enepara_sz = sizeof (EnePara) / 1024;
+
+   printf ("lig \t\tprt \t\tpsp \t\tkde \t\tmcs \t\tenepara\n");
+   printf ("%f \t%f \t%f \t%f \t%f \t%f\t\t",
+   lig_sz, prt_sz, psp_sz, kde_sz, mcs_sz, enepara_sz);
+   printf ("KB per struct\n");
+
+
+   printf ("%f \t%f \t%f \t%f \t%f \t%f\t\t",
+   lig_sz * ph.complexsize->n_lig,
+   prt_sz * ph.complexsize->n_prt,
+   psp_sz,
+   kde_sz,
+   mcs_sz * ph.complexsize->mcs_nrow,
+   enepara_sz);
+   printf ("KB total\n");
+   }
+   */
 
 
 
@@ -319,27 +323,27 @@ void
 PrintComplexInfo (const Complex * c)
 {
 
-  printf ("===============================================================\n");
-  printf ("Inputs\n");
-  printf ("===============================================================\n");
-  printf ("ligand file\t\t\t%s\n", c->lig_file);
-  printf ("protein file\t\t\t%s\n", c->prt_file);
-  printf ("lhm file\t\t\t%s\n", c->lhm_file);
-  printf ("enepara file\t\t\t%s\n", c->enepara_file);
-  printf ("weight file\t\t\t%s\n", c->weight_file);
+    printf ("===============================================================\n");
+    printf ("Inputs\n");
+    printf ("===============================================================\n");
+    printf ("ligand file\t\t\t%s\n", c->lig_file);
+    printf ("protein file\t\t\t%s\n", c->prt_file);
+    printf ("lhm file\t\t\t%s\n", c->lhm_file);
+    printf ("enepara file\t\t\t%s\n", c->enepara_file);
+    printf ("weight file\t\t\t%s\n", c->weight_file);
 
-/*
-  printf ("ligand conformations\t\t%d\n", c->size.n_lig);
-  printf ("prt conformations\t\t%d\n", c->size.n_prt);
-  printf ("temperatures\t\t\t%d\n", c->size.n_tmp);
-  printf ("replica ensembles\t\t%d\n", c->size.n_rep);
+    /*
+       printf ("ligand conformations\t\t%d\n", c->size.n_lig);
+       printf ("prt conformations\t\t%d\n", c->size.n_prt);
+       printf ("temperatures\t\t\t%d\n", c->size.n_tmp);
+       printf ("replica ensembles\t\t%d\n", c->size.n_rep);
 
-  printf ("size_lig\t\t\t%d\n", c->size.lig_natom);
-  printf ("size_prt\t\t\t%d\n", c->size.prt_npoint);
-  printf ("size_pnk\t\t\t%d\n", c->size.kde_npoint);
-  printf ("size_mcs\t\t\t%d\n", c->size.mcs_nrow);
-*/
-  printf ("===============================================================\n");
+       printf ("size_lig\t\t\t%d\n", c->size.lig_natom);
+       printf ("size_prt\t\t\t%d\n", c->size.prt_npoint);
+       printf ("size_pnk\t\t\t%d\n", c->size.kde_npoint);
+       printf ("size_mcs\t\t\t%d\n", c->size.mcs_nrow);
+       */
+    printf ("===============================================================\n");
 
 }
 
@@ -349,48 +353,48 @@ PrintComplexInfo (const Complex * c)
 void
 PrintSummary (const Complex * c)
 {
-  putchar ('\n');
+    putchar ('\n');
 
-  PrintComplexInfo (c);
+    PrintComplexInfo (c);
 
-  printf ("===============================================================\n");
-  printf ("Outputs\n");
-  printf ("===============================================================\n");
-  printf ("output directory\t\t%s\n", c->mcpara.outputdir);
-  printf ("out file (HDF5)\t\t\t%s/%s_XXXX.h5\n", c->mcpara.outputdir, c->mcpara.outputfile);
+    printf ("===============================================================\n");
+    printf ("Outputs\n");
+    printf ("===============================================================\n");
+    printf ("output directory\t\t%s\n", c->mcpara.outputdir);
+    printf ("out file (HDF5)\t\t\t%s/%s_XXXX.h5\n", c->mcpara.outputdir, c->mcpara.outputfile);
 
-  printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
+    printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
 
-  printf ("===============================================================\n");
-  printf ("Memory Sizes\n");
-  const float sz_prt = (float) sizeof (Protein) * MAX_CONF_PRT / 1024 / 1024;
-  const float sz1 = (float) sizeof (Complex) / 1024 / 1024;
-  const float sz2 = (float) sizeof (Record) * MAX_REP / 1024 / 1024;
-  const float sz3 = (float) sizeof (Record) * c->size.n_rep / 1024 / 1024;
-  printf ("size of protein\t\t\t\t\t%.3f MB\n", sz_prt);
-  printf ("size of each complex\t\t\t\t%.3f MB\n", sz1);
-  printf ("record size (memory allocation):\t\t%.3f MB\n", sz2);
-  printf ("record size (memory size of each dump file):\t%.3f MB\n", sz3);
-  printf ("===============================================================\n");
-
-
-  printf ("Monte Carlo parameters\n");
-  printf ("===============================================================\n");
-  printf ("steps_total\t\t\t%d\n", c->mcpara.steps_total);
-  printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
+    printf ("===============================================================\n");
+    printf ("Memory Sizes\n");
+    const float sz_prt = (float) sizeof (Protein) * MAX_CONF_PRT / 1024 / 1024;
+    const float sz1 = (float) sizeof (Complex) / 1024 / 1024;
+    const float sz2 = (float) sizeof (Record) * MAX_REP / 1024 / 1024;
+    const float sz3 = (float) sizeof (Record) * c->size.n_rep / 1024 / 1024;
+    printf ("size of protein\t\t\t\t\t%.3f MB\n", sz_prt);
+    printf ("size of each complex\t\t\t\t%.3f MB\n", sz1);
+    printf ("record size (memory allocation):\t\t%.3f MB\n", sz2);
+    printf ("record size (memory size of each dump file):\t%.3f MB\n", sz3);
+    printf ("===============================================================\n");
 
 
-  printf ("translational scale\t\t");
-  for (int i = 0; i < 3; ++i)
-    printf ("%.8f ", c->mcpara.move_scale[i]);
-  printf ("\n");
+    printf ("Monte Carlo parameters\n");
+    printf ("===============================================================\n");
+    printf ("steps_total\t\t\t%d\n", c->mcpara.steps_total);
+    printf ("steps_per_dump\t\t\t%d\n", c->mcpara.steps_per_dump);
 
-  printf ("rotational scale\t\t");
-  for (int i = 3; i < 6; ++i)
-    printf ("%.8f ", c->mcpara.move_scale[i]);
-  printf ("\n");
 
-  printf ("===============================================================\n");
+    printf ("translational scale\t\t");
+    for (int i = 0; i < 3; ++i)
+        printf ("%.8f ", c->mcpara.move_scale[i]);
+    printf ("\n");
+
+    printf ("rotational scale\t\t");
+    for (int i = 3; i < 6; ++i)
+        printf ("%.8f ", c->mcpara.move_scale[i]);
+    printf ("\n");
+
+    printf ("===============================================================\n");
 
 }
 

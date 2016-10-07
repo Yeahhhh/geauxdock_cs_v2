@@ -9,16 +9,25 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 #MARCRO_TARGET += -DTARGET_DEVICE=$(TARGET_GPU)
 
 
+# selecting build target
+BUILD_GPU := 1
+BUILD_CPU := 1
+BUILD_MIC := 1
+
 
 
 
 HOST := smic
+#HOST := gnuhost
 
 ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
 
 else ifeq ($(HOST), gnuhost)
 	COMPILER_HOST := gnu
+	BUILD_GPU := 0		# overwrite degault build target list
+	BUILD_CPU := 1
+	BUILD_MIC := 0
 
 else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
@@ -169,9 +178,9 @@ FCFLAGS_HOST += -O3
 
 
 CXXFLAGS_HOST += $(HEADPATH) $(MARCRO_MAKE)
-CXXFLAGS_HOST += -Wall
 
 ifeq ($(COMPILER_HOST), intel)
+	CXXFLAGS_HOST += -Wall
 	CXXFLAGS_HOST += -O3
 #	CXXFLAGS_HOST += -fast
 #	CXXFLAGS_HOST += -fma
@@ -198,6 +207,10 @@ else ifeq ($(COMPILER_HOST), gnu)
 #	CXXFLAGS_HOST += -floop-strip-mine
 #	CXXFLAGS_HOST += -funroll-loops
 #	CXXFLAGS_HOST += -funswitch-loops
+# mute warnings
+	#CXXFLAGS_HOST += -Wall
+	CXXFLAGS_HOST += -Wno-unused-variable
+	CXXFLAGS_HOST += -Wno-unknown-pragmas
 else
 	CXXFLAGS_HOST += -O3
 	CXXFLAGS_HOST += -fopenmp

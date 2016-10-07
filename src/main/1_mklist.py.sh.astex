@@ -1,8 +1,13 @@
 #!/bin/sh
 
+
+prt_fn=../../data/astex/proteins/1a07C.pdb
+lig_dir=../../data/astex/ligands
+
+
 ./1_mklist.py \
-    ../../data/astex/proteins/1a07C.pdb \
-    ../../data/astex/ligands \
+    $prt_fn \
+    $lig_dir \
     ../../data/parameters/08ff_opt \
     ../../data/parameters/paras \
     ../../data/parameters/08_nor_a \

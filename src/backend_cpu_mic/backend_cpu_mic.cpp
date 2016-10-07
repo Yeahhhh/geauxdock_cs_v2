@@ -118,7 +118,7 @@ Dock (Complex *complex, Record *record)
 #include "kernel_print_timer.cpp"
 #include "kernel_print_benchmark.cpp"
 
-    PrintSummary (complex);
+//  PrintSummary (complex);
 
 #if IS_PAPI == 1
     m0.Shutdown ();

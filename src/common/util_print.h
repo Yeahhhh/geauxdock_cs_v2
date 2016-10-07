@@ -20,7 +20,7 @@ void PrintRecord (Record *,  int,  int,  int,  int,  int);
 void PrintRepRecord (const Record *, const int, const int, const int, const int, const int, const int);
 void PrintRepRecord2 (Record *,  ComplexSize,  int,  int,  int,  int,  int,  int);
 void PrintLigCoord (const Ligand *, const int);
-void PrintLigand (const Ligand *);
+void PrintLigand0 (const Ligand0 *);
 void PrintProtein (const Protein *);
 void PrintDataSize (const Complex *);
 void PrintComplexInfo (const Complex *);

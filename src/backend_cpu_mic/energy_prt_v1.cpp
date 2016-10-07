@@ -33,7 +33,7 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
         const float dx = lig_x3[l] - prt->x[p];
         const float dy = lig_y3[l] - prt->y[p];
         const float dz = lig_z3[l] - prt->z[p];
-        const float dst_pow2 = dx * dx + dy * dy + dz * dz;
+        const float dst_pow2 = dx * dx + dy * dy + dz * dz + SMALL_NUMBER;
         const float dst_pow4 = dst_pow2 * dst_pow2;
         const float dst = sqrtf (dst_pow2);
 
@@ -58,7 +58,14 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
         /* L-J potential */
         // p1a[MAXTP2][MAXTP1]
         // p2a[MAXTP2][MAXTP1]
+        //printf("lig__t = %d, prt__t = %d\n", lig__t, prt__t);
         const float p1 = enepara_p1a[lig__t][prt__t] / (dst_pow4 * dst_pow4 * dst);
+        //
+        //float aa1 = enepara_p1a[lig__t][prt__t];
+        //float aa2 = (dst_pow4 * dst_pow4 * dst);
+        //const float p1 = aa1 / aa2;
+        //
+        //
         const float p2 = enepara_p2a[lig__t][prt__t] / (dst_pow4 * dst_pow2);
         const float p4 = p1 * enepara_lj0 * (1.0f + enepara_lj1 * dst_pow2) + 1.0f;
         evdw += (p1 - p2) / p4;

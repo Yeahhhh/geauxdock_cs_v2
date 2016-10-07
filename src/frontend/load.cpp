@@ -1,12 +1,12 @@
 /*
    ==============================================================================================
-   _________________ ___ __              .__             _      ________   ____   
-   /  ____/\_____   \    |   \           _| /___   ___ |  | _ /   ____/  /     \  
+   _________________ ___ __              .__             _      ________   ____
+   /  ____/\_____   \    |   \           _| /___   ___ |  | _ /   ____/  /     \
    w
-   /   \  __ |     __/    |   /  _____  / _ |/   \/ __\|  |/ / \____  \  /  \ /  \ 
+   /   \  __ |     __/    |   /  _____  / _ |/   \/ __\|  |/ / \____  \  /  \ /  \
    \    \\  \|    |   |    |  /  /____/ / // (  <> )  \__|    <  /        \/    Y    \
    \_____  /|___|   |_____/           \___ |\___/ \__  >_| \/______  /\___|_  /
-   \/                                  \/           \/     \/        \/         \/ 
+   \/                                  \/           \/     \/        \/         \/
 
    GPU-accelerated hybrid-resolution ligand docking using ReplicaMC Exchange Monte Carlo
 
@@ -51,60 +51,11 @@ pushLigandPoint (Ligand0 * lig, int n, string a, int t, float c)
 
 
 
-/* load the ligand raw conf
- * the ligand effective total conf is less than the raw, since some small rmsd excluded */
-void
-loadLigConf(LigandFile * lig_file)
-{
-    // ifstream
-    std::string llib3 = lig_file->molid;
-    list < string > l1_sdf;
-    list < string >::iterator i1_sdf;
-    string line1;
-    ifstream compounds_file(lig_file->path.c_str());
-
-    if (!compounds_file.is_open()) {
-        cout << "cannot open ligand conf file" << endl;
-        cout << "Cannot open " << lig_file->path << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    while (getline(compounds_file, line1))
-        l1_sdf.push_back(line1);
-
-    compounds_file.close();
-
-    string llib1[MAXSDF];	// contains each line the .sdf file
-    int llib2 = 0;
-
-    // load the raw total conf, lig_natom, lnb, ligand name
-    for (i1_sdf = l1_sdf.begin(); i1_sdf != l1_sdf.end(); i1_sdf++) {
-        llib1[llib2++] = (*i1_sdf);
-        if ((*i1_sdf) == "$$$$") {
-            if (llib2 > 10) {
-                lig_file->lig_natom = atoi(llib1[3].substr(0, 3).c_str());
-                lig_file->lnb = atoi(llib1[3].substr(3, 3).c_str());
-                for (int i1 = 4 + lig_file->lig_natom + lig_file->lnb; i1 < llib2 - 1; i1++) {
-                    if (llib1[i1].find(llib3) != string::npos)
-                        lig_file->id = llib1[i1 + 1];
-                    else if (llib1[i1].find("ENSEMBLE_TOTAL") != string::npos)
-                        lig_file->raw_conf = atoi(llib1[i1 + 1].c_str());
-                }
-            }
-        }
-    }
-
-    // DEBUG_2_("llib2: ", llib2);
-    llib2 = 0;
-
-}
-
-
 /*
  * read 2D matrix
  */
-vector < vector < float > > 
-read2D(TraceFile *trace_file) 
+vector < vector < float > >
+read2D(TraceFile *trace_file)
 {
     string fn = trace_file->path;
     vector < vector < float > > matrix;
@@ -135,87 +86,89 @@ read2D(TraceFile *trace_file)
 }
 
 
-void 
+void
 loadLigand( LigandFile * lig_file, Ligand0 * lig)
 {
-    // ifstream
-    std::string llib3 = lig_file->molid;
-    list < string > l1_sdf;
-    list < string >::iterator i1_sdf;
-    string line1;
-    ifstream compounds_file(lig_file->path.c_str());
+    const std::string molid = lig_file->molid;
+    std::vector<string> lines;
+    int nlines;
+    string line;
+    int lna, lnb;
 
-    if (!compounds_file.is_open()) {
-        cout << "cannot open ligand file" << endl;
-        cout << "Cannot open " << lig_file->path << endl;
+    ifstream ifn(lig_file->path.c_str());
+    if (!ifn.is_open()) {
+        cout << "Failed to open " << lig_file->path << endl;
+        exit(EXIT_FAILURE);
+    }
+    while (getline(ifn, line)) {
+        lines.push_back(line);
+        if (line == "$$$$")
+            break;
+    }
+    ifn.close();
+
+    nlines = lines.size();
+    if (nlines <= 10) {
+        printf("Ligand file too small, quit\n");
         exit(EXIT_FAILURE);
     }
 
-    while (getline(compounds_file, line1))
-        l1_sdf.push_back(line1);
+    lna = atoi(lines[3].substr(0, 3).c_str());
+    lnb = atoi(lines[3].substr(3, 3).c_str());
+    lig_file->lig_natom = lna;
+    lig_file->lnb = lnb;
 
-    compounds_file.close();
-
-    string llib1[MAXSDF];	// contains each line the .sdf file
-    int llib2 = 0;		// imporant! number of each line in the .sdf file
-
-    // load the raw total conf, lig_natom, lnb, ligand name
-    for (i1_sdf = l1_sdf.begin(); i1_sdf != l1_sdf.end(); i1_sdf++) {
-        llib1[llib2++] = (*i1_sdf);
-        if ((*i1_sdf) == "$$$$") {
-            if (llib2 > 10) {
-                lig_file->lig_natom = atoi(llib1[3].substr(0, 3).c_str());
-                lig_file->lnb = atoi(llib1[3].substr(3, 3).c_str());
-                for (int i1 = 4 + lig_file->lig_natom + lig_file->lnb; i1 < llib2 - 1; i1++) {
-                    if (llib1[i1].find(llib3) != string::npos)
-                        lig_file->id = llib1[i1 + 1];
-                    else if (llib1[i1].find("ENSEMBLE_TOTAL") != string::npos)
-                        lig_file->raw_conf = atoi(llib1[i1 + 1].c_str());
-                }
-            }
-        }
+    for (int i = 4 + lna + lnb; i < nlines; i++) {
+        if (lines[i].find(molid) != string::npos) // modlid id
+            lig_file->id = lines[i + 1];
+        if (lines[i].find("ENSEMBLE_TOTAL") != string::npos)
+            lig_file->raw_conf = atoi(lines[i + 1].c_str());
     }
+
+
+
+
 
     // load the default conformation and write the ensemble coords to tmp matrix
     Ligand0 *mylig = &lig[0];
-    mylig->lig_natom = lig_file->lig_natom;
-    mylig->lnb = lig_file->lnb;
+    mylig->lig_natom = lna;
+    mylig->lnb = lnb;
 
     float tmp1[MAX_CONF_LIG][MAXLIG][3];	// for ensemble coords
     float tmp2[MAXLIG];	// for OB_ATOMIC_CHARGES
-    int tmp3[MAXLIG];	// for atom types 
+    int atom_types[MAXLIG];	// for atom types
     int tmp7 = 0;		// number the raw conf
 
-    for (int i1 = 4 + mylig->lig_natom + mylig->lnb; i1 < llib2 - 1; i1++) {
-        if (llib1[i1].find(llib3) != string::npos) {
-            mylig->id = llib1[i1 + 1];
-        }
 
-        else if (llib1[i1].find("SMILES_CANONICAL") != string::npos)
-            mylig->smiles = llib1[i1 + 1];
+    for (int i = 4 + lna + lnb; i < nlines; i++) {
+        if (lines[i].find(molid) != string::npos)
+            mylig->id = lines[i + 1];
 
-        else if (llib1[i1].find("OB_MW") != string::npos)
-            mylig->mw = atof(llib1[i1 + 1].c_str());
+        else if (lines[i].find("SMILES_CANONICAL") != string::npos)
+            mylig->smiles = lines[i + 1];
 
-        else if (llib1[i1].find("OB_logP") != string::npos)
-            mylig->logp = atof(llib1[i1 + 1].c_str());
+        else if (lines[i].find("OB_MW") != string::npos)
+            mylig->mw = atof(lines[i + 1].c_str());
 
-        else if (llib1[i1].find("OB_PSA") != string::npos)
-            mylig->psa = atof(llib1[i1 + 1].c_str());
+        else if (lines[i].find("OB_logP") != string::npos)
+            mylig->logp = atof(lines[i + 1].c_str());
 
-        else if (llib1[i1].find("OB_MR") != string::npos)
-            mylig->mr = atof(llib1[i1 + 1].c_str());
+        else if (lines[i].find("OB_PSA") != string::npos)
+            mylig->psa = atof(lines[i + 1].c_str());
 
-        else if (llib1[i1].find("MCT_HBD") != string::npos)
-            mylig->hbd = atoi(llib1[i1 + 1].c_str());
+        else if (lines[i].find("OB_MR") != string::npos)
+            mylig->mr = atof(lines[i + 1].c_str());
 
-        else if (llib1[i1].find("MCT_HBA") != string::npos)
-            mylig->hba = atoi(llib1[i1 + 1].c_str());
+        else if (lines[i].find("MCT_HBD") != string::npos)
+            mylig->hbd = atoi(lines[i + 1].c_str());
 
-        else if (llib1[i1].find("OB_ATOM_TYPES") != string::npos) {
+        else if (lines[i].find("MCT_HBA") != string::npos)
+            mylig->hba = atoi(lines[i + 1].c_str());
+
+        else if (lines[i].find("OB_ATOM_TYPES") != string::npos) {
             int tmp4 = 0;
 
-            istringstream tmp5(llib1[i1 + 1]);
+            istringstream tmp5(lines[i + 1]);
 
             while (tmp5) {
                 std::string tmp6;
@@ -223,14 +176,14 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
                 tmp5 >> tmp6;
 
                 if (tmp6.length() > 0)
-                    tmp3[tmp4++] = getLigCode(tmp6);
+                    atom_types[tmp4++] = getLigCode(tmp6);
             }
         }
 
-        else if (llib1[i1].find("OB_ATOMIC_CHARGES") != string::npos) {
+        else if (lines[i].find("OB_ATOMIC_CHARGES") != string::npos) {
             int tmp4 = 0;
 
-            istringstream tmp5(llib1[i1 + 1]);
+            istringstream tmp5(lines[i + 1]);
 
             while (tmp5) {
                 std::string tmp6;
@@ -243,12 +196,12 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
             }
         }
 
-        else if (llib1[i1].find("ENSEMBLE_COORDS") != string::npos)
-            while (llib1[++i1].size() && tmp7 < MAX_CONF_LIG) {
+        else if (lines[i].find("ENSEMBLE_COORDS") != string::npos)
+            while (lines[++i].size() && tmp7 < MAX_CONF_LIG) {
                 int tmp8 = 0;
                 int tmp9 = 0;
 
-                istringstream tmp5(llib1[i1]);
+                istringstream tmp5(lines[i]);
 
                 while (tmp5) {
                     std::string tmp6;
@@ -274,13 +227,13 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
 
     /* write the properties of each atom of the default conf */
     for (int i1 = 0; i1 < mylig->lig_natom; i1++) {
-        // DEBUG_1_("substr ", llib1[i1].substr(31, 24).c_str());
-        pushLigandPoint(mylig, i1, llib1[i1 + 4].substr(31, 24).c_str(), tmp3[i1], tmp2[i1]);
+        // DEBUG_1_("substr ", lines[i1].substr(31, 24).c_str());
+        pushLigandPoint(mylig, i1, lines[i1 + 4].substr(31, 24).c_str(), atom_types[i1], tmp2[i1]);
         /* tmp8 contains coords xyz of the first conf */
         // /*
-        tmp8[i1][0] = atof(llib1[i1 + 4].substr(0, 10).c_str());
-        tmp8[i1][1] = atof(llib1[i1 + 4].substr(10, 10).c_str());
-        tmp8[i1][2] = atof(llib1[i1 + 4].substr(20, 10).c_str());
+        tmp8[i1][0] = atof(lines[i1 + 4].substr(0, 10).c_str());
+        tmp8[i1][1] = atof(lines[i1 + 4].substr(10, 10).c_str());
+        tmp8[i1][2] = atof(lines[i1 + 4].substr(20, 10).c_str());
         // */
 
         // /*
@@ -292,7 +245,7 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
 
     }
 
-    /* calculate the ligand center 
+    /* calculate the ligand center
      * pocket center overlaps with ligand center initially */
     for (int i5 = 0; i5 < 3; i5++) {
         mylig->coord_orig.center[i5] /= (float)mylig->lig_natom;
@@ -306,16 +259,16 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
         for (int i5 = 0; i5 < 3; i5++)
             tmp8[i1][i5] -= mylig->coord_orig.center[i5];
 
-    // push the relative coords 
+    // push the relative coords
     int i4 = 0;
     for (i4 = 0; i4 < mylig->lig_natom; i4++) {
         mylig->coord_orig.x[i4] = tmp8[mylig->n[i4]][0];
         mylig->coord_orig.y[i4] = tmp8[mylig->n[i4]][1];
         mylig->coord_orig.z[i4] = tmp8[mylig->n[i4]][2];
 
-        // cout << "0--coord " <<  mylig->coord_orig.x[i4] << endl; 
-        // cout << "0--coord " <<  mylig->coord_orig.y[i4] << endl; 
-        // cout << "0--coord " <<  mylig->coord_orig.z[i4] << endl; 
+        // cout << "0--coord " <<  mylig->coord_orig.x[i4] << endl;
+        // cout << "0--coord " <<  mylig->coord_orig.y[i4] << endl;
+        // cout << "0--coord " <<  mylig->coord_orig.z[i4] << endl;
     }
 
     // DEBUG_1_("raw_conf: ", lig_file->raw_conf);
@@ -325,31 +278,31 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
         mylig = &lig[(i+1)];
         mylig->lig_natom = lig_file->lig_natom;
         mylig->lnb = lig_file->lnb;
-        for (int i1 = 4 + mylig->lig_natom + mylig->lnb; i1 < llib2 - 1; i1++) {
-            if (llib1[i1].find(llib3) != string::npos) {
-                mylig->id = llib1[i1 + 1];
+        for (int i1 = 4 + mylig->lig_natom + mylig->lnb; i1 < nlines; i1++) {
+            if (lines[i1].find(molid) != string::npos) {
+                mylig->id = lines[i1 + 1];
             }
 
-            else if (llib1[i1].find("SMILES_CANONICAL") != string::npos)
-                mylig->smiles = llib1[i1 + 1];
+            else if (lines[i1].find("SMILES_CANONICAL") != string::npos)
+                mylig->smiles = lines[i1 + 1];
 
-            else if (llib1[i1].find("OB_MW") != string::npos)
-                mylig->mw = atof(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("OB_MW") != string::npos)
+                mylig->mw = atof(lines[i1 + 1].c_str());
 
-            else if (llib1[i1].find("OB_logP") != string::npos)
-                mylig->logp = atof(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("OB_logP") != string::npos)
+                mylig->logp = atof(lines[i1 + 1].c_str());
 
-            else if (llib1[i1].find("OB_PSA") != string::npos)
-                mylig->psa = atof(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("OB_PSA") != string::npos)
+                mylig->psa = atof(lines[i1 + 1].c_str());
 
-            else if (llib1[i1].find("OB_MR") != string::npos)
-                mylig->mr = atof(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("OB_MR") != string::npos)
+                mylig->mr = atof(lines[i1 + 1].c_str());
 
-            else if (llib1[i1].find("MCT_HBD") != string::npos)
-                mylig->hbd = atoi(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("MCT_HBD") != string::npos)
+                mylig->hbd = atoi(lines[i1 + 1].c_str());
 
-            else if (llib1[i1].find("MCT_HBA") != string::npos)
-                mylig->hba = atoi(llib1[i1 + 1].c_str());
+            else if (lines[i1].find("MCT_HBA") != string::npos)
+                mylig->hba = atoi(lines[i1 + 1].c_str());
 
         }
 
@@ -363,10 +316,10 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
 
         // copy the atom types and charges
         for (int i1 = 0; i1 < mylig->lig_natom; i1++) {
-            pushLigandPoint(mylig, i1, llib1[i1 + 4].substr(31, 24).c_str(), tmp3[i1], tmp2[i1]);
+            pushLigandPoint(mylig, i1, lines[i1 + 4].substr(31, 24).c_str(), atom_types[i1], tmp2[i1]);
             /*
                DEBUG_1_("i1", i1);
-               DEBUG_1_("tmp3 ", tmp3[i1]);
+               DEBUG_1_("atom_types ", atom_types[i1]);
                DEBUG_1_("tmp2 ", tmp2[i1]);
                */
         }
@@ -392,7 +345,7 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
             for (int i5 = 0; i5 < 3; i5++) {
                 ref_xyz[i7][i5] = tmp8[i7][i5];  // native pose as the ref
 
-                mob_xyz[i7][i5] = tmp1[i6][i7][i5];  // containing ensemble coords 
+                mob_xyz[i7][i5] = tmp1[i6][i7][i5];  // containing ensemble coords
             }
         }
 
@@ -426,7 +379,7 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
         float rms2 = sqrt(rms1 / (float)mylig->lig_natom);
 
         if (rms2 > 0.1) {
-            Ligand0 *my_rest_lig = &lig[*conf_ip];	// my_rest_lig points to other conformations in the data file 
+            Ligand0 *my_rest_lig = &lig[*conf_ip];	// my_rest_lig points to other conformations in the data file
             // cout << "0-- lig_conf_rest  " << *conf_ip << endl;
             for (i4 = 0; i4 < mylig->lig_natom; i4++) {
 
@@ -624,7 +577,7 @@ void loadPrtConf(ProteinFile * prt_file, Protein0 * prt)
         else if ((*p1_i).substr(0, 6) == "ENDMDL") {
             break;
         }
-        // cout << "index part prt_conf: " << prt_conf << endl; 
+        // cout << "index part prt_conf: " << prt_conf << endl;
     }
 
     prt_file->prt_npoint = myprt->prt_npoint;	// assign the point number
@@ -768,7 +721,7 @@ void loadProtein(ProteinFile * prt_file, Protein0 * prt)
         else if ((*p1_i).substr(0, 6) == "ENDMDL") {
             break;
         }
-        // cout << "index part prt_conf: " << prt_conf << endl; 
+        // cout << "index part prt_conf: " << prt_conf << endl;
     }
 
     strcpy(protein_seq2, protein_seq1.c_str());
@@ -1019,7 +972,7 @@ void loadProtein(ProteinFile * prt_file, Protein0 * prt)
             } else if ((*p1_i).substr(0, 6) == "ENDMDL") {
                 break;
             }
-            // cout << "index part prt_conf: " << prt_conf << endl; 
+            // cout << "index part prt_conf: " << prt_conf << endl;
         }
 
     }
@@ -1389,7 +1342,7 @@ void loadNorPara(NorParaFile * norpara_file, EnePara0 * enepara )
     list < string > data;
     list < string >::iterator data_i;
 
-    string line1;				
+    string line1;
     ifstream data_file(ifn.c_str());
 
     if (!data_file.is_open()) {
@@ -1399,18 +1352,18 @@ void loadNorPara(NorParaFile * norpara_file, EnePara0 * enepara )
     }
 
     while (getline(data_file, line1))
-        data.push_back(line1);	
+        data.push_back(line1);
 
-    data_file.close();		
+    data_file.close();
 
     int total_item = data.size();
     int iter = 0;
 
-    for (iter = 0, data_i = data.begin(); iter < total_item && data_i != data.end(); iter++, data_i++) {	
+    for (iter = 0, data_i = data.begin(); iter < total_item && data_i != data.end(); iter++, data_i++) {
         string s = (*data_i).substr(0, 30);
         istringstream os(s);
         float tmp = 0.0;
-        os >> tmp;				
+        os >> tmp;
         enepara->a_para[iter] = tmp;
     }
 
@@ -1420,7 +1373,7 @@ void loadNorPara(NorParaFile * norpara_file, EnePara0 * enepara )
     list < string > data2;
     list < string >::iterator data2_i;
 
-    string line2;				
+    string line2;
     ifstream data2_file(ifn2.c_str());
 
     if (!data2_file.is_open()) {
@@ -1430,18 +1383,18 @@ void loadNorPara(NorParaFile * norpara_file, EnePara0 * enepara )
     }
 
     while (getline(data2_file, line2))
-        data2.push_back(line2);	
+        data2.push_back(line2);
 
-    data2_file.close();		
+    data2_file.close();
 
     total_item = data2.size();
     iter = 0;
 
-    for (iter = 0, data2_i = data2.begin(); iter < total_item && data2_i != data2.end(); iter++, data2_i++) {	
+    for (iter = 0, data2_i = data2.begin(); iter < total_item && data2_i != data2.end(); iter++, data2_i++) {
         string s = (*data2_i).substr(0, 30);
         istringstream os(s);
         float tmp = 0.0;
-        os >> tmp;				
+        os >> tmp;
         enepara->b_para[iter] = tmp;
     }
 }

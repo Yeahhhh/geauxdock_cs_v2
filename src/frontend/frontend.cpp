@@ -19,6 +19,7 @@
 #include <load.h>
 #include <frontend.h>
 #include <util_optimize.h>
+#include <util_print.h>
 
 //#include <yeah/c/mkdir.h>
 
@@ -34,19 +35,19 @@ void Usage(char *bin)
 void Banner()
 {
     cout << "------------------------------------------------------------"
-         << endl
-         << "                         GeauxDock                          "
-         << endl
-         << "                        version 0.1                         "
-         << endl
-         << endl
-         << "   GPU-accelerated mixed-resolution ligand docking using    "
-         << endl
-         << "                ReplicaMC Exchange Monte Carlo                "
-         << endl
-         << "------------------------------------------------------------"
-         << endl
-         << endl;
+        << endl
+        << "                         GeauxDock                          "
+        << endl
+        << "                        version 0.1                         "
+        << endl
+        << endl
+        << "   GPU-accelerated mixed-resolution ligand docking using    "
+        << endl
+        << "                ReplicaMC Exchange Monte Carlo                "
+        << endl
+        << "------------------------------------------------------------"
+        << endl
+        << endl;
 }
 
 
@@ -325,10 +326,10 @@ void Loader::set_replica()
                 replica[flatten_addr].idx_lig = l;
 
                 /*
-            // set identical replicas for test purpose
-            replica[flatten_addr].idx_prt = 0;
-            replica[flatten_addr].idx_tmp = 0;
-            replica[flatten_addr].idx_lig = 0;
+                // set identical replicas for test purpose
+                replica[flatten_addr].idx_prt = 0;
+                replica[flatten_addr].idx_tmp = 0;
+                replica[flatten_addr].idx_lig = 0;
                 */
 
                 for (int aa = 0; aa < 6; ++aa)
@@ -373,6 +374,10 @@ void Loader::load_ligand()
 {
     loadLigand(&inputfiles.lig_file, lig0);
     loadLHM(&inputfiles.lhm_file, psp0, kde0, mcs0);
+
+    // debug
+    PrintLigand0(lig0);
+
 
     OptimizeKde(kde0, kde);
     OptimizeLigand(lig0, kde, lig, inputfiles.lig_file.conf_total);
@@ -521,21 +526,21 @@ void Loader::build_complex(Complex * complex)
 
     // get the file name from a path
     /*
-    std::string str;
-    size_t p1;
+       std::string str;
+       size_t p1;
 
-    str = inputfiles.lig_file.path;
-    p1 = str.find_last_of("/");
-    if (std::string::npos != p1)
-	str.erase(0, p1 + 1);
-    strcpy(complex->lig_file, str.c_str());
+       str = inputfiles.lig_file.path;
+       p1 = str.find_last_of("/");
+       if (std::string::npos != p1)
+       str.erase(0, p1 + 1);
+       strcpy(complex->lig_file, str.c_str());
 
-    str = inputfiles.prt_file.path;
-    p1 = str.find_last_of("/");
-    if (std::string::npos != p1)
-	str.erase(0, p1 + 1);
-    strcpy(complex->prt_file, str.c_str());
-   */
+       str = inputfiles.prt_file.path;
+       p1 = str.find_last_of("/");
+       if (std::string::npos != p1)
+       str.erase(0, p1 + 1);
+       strcpy(complex->prt_file, str.c_str());
+       */
 
     strcpy(complex->lig_file, inputfiles.lig_file.path.c_str());
     strcpy(complex->prt_file, inputfiles.prt_file.path.c_str());
