@@ -167,14 +167,10 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
 
         else if (lines[i].find("OB_ATOM_TYPES") != string::npos) {
             int tmp4 = 0;
-
             istringstream tmp5(lines[i + 1]);
-
             while (tmp5) {
                 std::string tmp6;
-
                 tmp5 >> tmp6;
-
                 if (tmp6.length() > 0)
                     atom_types[tmp4++] = getLigCode(tmp6);
             }
@@ -182,14 +178,10 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
 
         else if (lines[i].find("OB_ATOMIC_CHARGES") != string::npos) {
             int tmp4 = 0;
-
             istringstream tmp5(lines[i + 1]);
-
             while (tmp5) {
                 std::string tmp6;
-
                 tmp5 >> tmp6;
-
                 if (tmp6.length() > 0)
                     tmp2[tmp4++] = atof(tmp6.c_str());
                 // DEBUG_2_("",atof(tmp6.c_str()));
@@ -200,25 +192,18 @@ loadLigand( LigandFile * lig_file, Ligand0 * lig)
             while (lines[++i].size() && tmp7 < MAX_CONF_LIG) {
                 int tmp8 = 0;
                 int tmp9 = 0;
-
                 istringstream tmp5(lines[i]);
-
                 while (tmp5) {
                     std::string tmp6;
-
                     tmp5 >> tmp6;
-
                     if (tmp6.length() > 0) {
                         tmp1[tmp7][tmp8][tmp9] = atof(tmp6.c_str());
-
                         if (++tmp9 > 2) {
                             tmp8++;
-
                             tmp9 = 0;
                         }
                     }
                 }
-
                 tmp7++;
             }
     }
