@@ -27,7 +27,7 @@ default: $(EXE)
 #default: runall
 
 
-CXX_HOST += -g
+#CXX_HOST += -g
 
 
 %.o: %.cpp

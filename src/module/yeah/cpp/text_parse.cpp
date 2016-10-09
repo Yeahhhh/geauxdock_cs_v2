@@ -19,13 +19,30 @@ void trim(std::string &s)
 }
 
 
+std::string sprint_tokens_csv(std::vector<std::string> tokens)
+{
+    std::stringstream buffer;
+
+    if (tokens.size() <= 1) {
+        for (int i = 0; i < tokens.size() - 1; ++i)
+            buffer << tokens[i];
+        buffer << std::endl;;
+    }
+    else if (tokens.size() > 1) {
+        for (int i = 0; i < tokens.size() - 1; ++i)
+            buffer << tokens[i] << ",";
+        buffer << tokens[tokens.size() - 1] << std::endl;
+    }
+
+    return buffer.str();
+}
+
+
+
 void print_tokens_csv(std::vector<std::string> tokens)
 {
-    if (tokens.size() > 1) {
-        for (int i = 0; i < tokens.size() - 1; ++i)
-            std::cout << tokens[i] << ",";
-        std::cout << tokens[tokens.size() - 1] << std::endl;;
-    }
+    std::string str = sprint_tokens_csv(tokens);
+    std::cout << str;
 }
 
 

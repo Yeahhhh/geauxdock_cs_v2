@@ -9,6 +9,7 @@
 namespace yeah {
 
 void trim(std::string &s);
+std::string sprint_tokens_csv(std::vector<std::string> tokens);
 void print_tokens_csv(std::vector<std::string> tokens);
 void print_tokens_table1(std::vector<std::string> tokens);
 std::vector<std::string> tokenlize(std::string &line, char delim);

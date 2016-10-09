@@ -31,25 +31,7 @@ void process_lines(vector<string> & lines)
         exit(EXIT_FAILURE);
     }
 
-    // prints modified CSV title
     vector<string> tokens;
-    tokens = yeah::tokenlize(lines[0], ',');
-#if TARGET_DEVICE == TARGET_CPU
-    tokens[CSVTAG_TIME_RL_CPU] = "time_rl_cpu";
-    tokens[CSVTAG_TIME_EST_CPU] = "time_est_cpu";
-#endif
-#if TARGET_DEVICE == TARGET_MIC
-    tokens[CSVTAG_TIME_RL_MIC] = "time_rl_mic";
-    tokens[CSVTAG_TIME_EST_MIC] = "time_est_mic";
-#endif
-#if TARGET_DEVICE == TARGET_GPU
-    tokens[CSVTAG_TIME_RL_GPU] = "time_rl_gpu";
-    tokens[CSVTAG_TIME_EST_GPU] = "time_est_gpu";
-#endif
-    yeah::print_tokens_csv(tokens);
-
-
-
     Loader loader; // frontend
     Docker docker; // backend
     yeah::measuring::counting::Timer t;

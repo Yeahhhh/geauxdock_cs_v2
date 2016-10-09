@@ -1,0 +1,38 @@
+http://icl.cs.utk.edu/papi/docs/index.html
+http://nereida.deioc.ull.es/~pp2/openmpbook/node43.html
+http://nereida.deioc.ull.es/~pp2/openmpbook/node45.html
+
+
+
+
+#include <papi.h>
+cc xxx.c -lpapi
+
+
+
+utility commands
+    papi_avail
+    papi_mem_info
+    papi_*
+
+
+events
+    <papiStdEventDefs.h>
+
+
+high level APIs
+
+    int PAPI_accum_counters (long long *values, int array_len)
+    int PAPI_num_counters (void)
+    int PAPI_num_components (void)
+    int PAPI_read_counters (long long *values, int array_len)
+    int PAPI_start_counters (int *events, int array_len)
+    int PAPI_stop_counters (long long *values, int array_len)
+    int PAPI_flips (float *rtime, float *ptime, long long *flpins, float *mflips)
+    int PAPI_flops (float *rtime, float *ptime, long long *flpops, float *mflops)
+    int PAPI_ipc (float *rtime, float *ptime, long long *ins, float *ipc)
+    int PAPI_epc (int event, float *rtime, float *ptime, long long *ref, long long *core, long long *evt, float *epc)
+
+
+low level APIs
+    int PAPI_reset (int EventSet);

@@ -1,0 +1,52 @@
+#!/bin/bash
+## launch 1 MPI processes per node
+
+#PBS -A hpc_hyperparal
+#PBS -M yfang11@lsu.edu
+#PBS -l walltime=7:50:00
+#PBS -l nodes=21:ppn=20
+#PBS -q checkpt
+#PBS -N geauxdock_mpi1
+#PBS -o out_client_cpu.out
+#PBS -e out_client_cpu.err
+
+
+
+
+
+cd "$PBS_O_WORKDIR"
+
+
+procpernode=1
+myhostfile=./hostfile.mic.$PBS_JOBID
+cd $PBS_O_WORKDIR
+for i in `cat $PBS_NODEFILE | uniq`; do
+    for j in $(seq $procpernode); do
+        echo $i
+    done
+done > $myhostfile
+nprocs=`wc -l $myhostfile`
+nprocs_minus_1=`expr $nprocs-1`
+
+
+
+export OMP_PROC_BIND=true
+export OMP_NUM_THREADS=240
+export MIC_OMP_PROC_BIND=true
+export MIC_KMP_AFFINITY=SCATTER
+
+
+
+
+#myhostfile=./hostfile
+#nprocs_minus_1=8
+
+
+mpirun \
+-machine $myhostfile \
+-np 1 ./server  : \
+-np 20 ./client_mic
+
+
+
+# -np $nprocs_minus_1 ./client_cpu

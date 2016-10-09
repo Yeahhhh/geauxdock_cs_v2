@@ -28,15 +28,6 @@ void process_lines(vector<string> & lines)
     // prints modified CSV title
     vector<string> tokens;
     tokens = yeah::tokenlize(lines[0], ',');
-    tokens[CSVTAG_STEPS_TOTAL] = "steps_total";
-    tokens[CSVTAG_SZ_N_PRT] = "sz_n_prt";
-    tokens[CSVTAG_SZ_N_LIG] = "sz_n_lig";
-    tokens[CSVTAG_SZ_N_TMP] = "sz_n_tmp";
-    tokens[CSVTAG_SZ_N_REP] = "sz_n_rep";
-    tokens[CSVTAG_SZ_PRT_NPOINT] = "sz_prt_npoint";
-    tokens[CSVTAG_SZ_LIG_NATOM] = "sz_lig_natom";
-    tokens[CSVTAG_SZ_KDE_NPOINT] = "sz_kde_npoint";
-    tokens[CSVTAG_SZ_MCS_NROW] = "sz_mcs_nrow";
     yeah::print_tokens_csv(tokens);
 
 

@@ -1,0 +1,45 @@
+
+tags
+cscope
+
+
+# executables, object files, libraries, shared objects
+*.out
+*.o
+#*.a
+*.so
+*.so.*
+
+*.exe
+*.obj
+*.lib
+*.dll
+
+
+# vim
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# keys
+*.pem
+*.cert
+*.key
+id_rsa*
+
+
+
+# OSX
+__MACOSX
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+

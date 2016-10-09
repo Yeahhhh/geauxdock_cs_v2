@@ -1,0 +1,44 @@
+#!/bin/bash
+## launch 1 MPI processes per node
+
+#PBS -A hpc_hyperparal
+#PBS -M yfang11@lsu.edu
+#PBS -l walltime=23:00:00
+#PBS -l nodes=8:ppn=20
+#PBS -q hybrid
+#PBS -N geauxdock_mpi1
+#PBS -o out_client_cpu.out
+#PBS -e out_client_cpu.err
+
+
+
+
+
+cd "$PBS_O_WORKDIR"
+
+
+procpernode=1
+myhostfile=./hostfile.gpu.$PBS_JOBID
+cd $PBS_O_WORKDIR
+for i in `cat $PBS_NODEFILE | uniq`; do
+    for j in $(seq $procpernode); do
+        echo $i
+    done
+done > $myhostfile
+nprocs=`wc -l $myhostfile`
+nprocs_minus_1=`expr $nprocs-1`
+
+
+
+#myhostfile=./hostfile
+#nprocs_minus_1=8
+
+
+mpirun \
+-machine $myhostfile \
+-np 1 ./server  : \
+-np 7 ./client_gpu
+
+
+
+# -np $nprocs_minus_1 ./client_cpu

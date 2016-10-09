@@ -16,21 +16,6 @@
 using namespace std;
 
 
-
-#include <sstream>
-
-template <typename T>
-string num2string (T n)
-{
-    ostringstream oss;
-    oss << n;
-    return oss.str();
-}
-
-
-
-
-
 void process_lines(vector<string> & lines)
 {
     const int nlines = lines.size();
@@ -39,11 +24,26 @@ void process_lines(vector<string> & lines)
         exit(EXIT_FAILURE);
     }
 
-
+    // prints modified CSV title
     vector<string> tokens;
     tokens = yeah::tokenlize(lines[0], ',');
+    tokens[CSVTAG_STEPS_TOTAL] = "steps_total";
+    tokens[CSVTAG_SZ_N_PRT] = "sz_n_prt";
+    tokens[CSVTAG_SZ_N_LIG] = "sz_n_lig";
+    tokens[CSVTAG_SZ_N_TMP] = "sz_n_tmp";
+    tokens[CSVTAG_SZ_N_REP] = "sz_n_rep";
+    tokens[CSVTAG_SZ_PRT_NPOINT] = "sz_prt_npoint";
+    tokens[CSVTAG_SZ_LIG_NATOM] = "sz_lig_natom";
+    tokens[CSVTAG_SZ_KDE_NPOINT] = "sz_kde_npoint";
+    tokens[CSVTAG_SZ_MCS_NROW] = "sz_mcs_nrow";
+    tokens[CSVTAG_TIME_RL_CPU] = "time_rl_cpu";
+    tokens[CSVTAG_TIME_EST_CPU] = "time_est_cpu";
+    tokens[CSVTAG_TIME_RL_MIC] = "time_rl_mic";
+    tokens[CSVTAG_TIME_EST_MIC] = "time_est_mic";
+    tokens[CSVTAG_TIME_RL_GPU] = "time_rl_gpu";
+    tokens[CSVTAG_TIME_EST_GPU] = "time_est_gpu";
     yeah::print_tokens_csv(tokens);
-    cout << endl;
+
 
     int i = 0;
     for (auto line = lines.begin() + 1; line < lines.end(); line++) {

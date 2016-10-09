@@ -1,6 +1,6 @@
 
 SRC_C = $(wildcard ./c/*.c)
-SRC_CPP = $(wildcard ./cpp/*.cpp)
+SRC_CPP = $(wildcard ./cpp/[a-z]*.cpp)
 SRC_OPENCL = $(wildcard ./opencl/*.c)
 
 OBJ_C := $(SRC_C:.c=.o)

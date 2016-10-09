@@ -1,0 +1,27 @@
+#%Module1.0
+
+proc ModulesHelp { } {
+    puts stderr "\tYeah Module"
+}
+
+module-whatis "\tYeah Module"
+
+# for Tcl script use only
+
+
+#set             CWD                     $::env(CWD)
+#set             prefix                  $CWD/..
+set             prefix                  /to/be/done
+set             sys                     linux86-64
+
+
+prepend-path    CPATH                   $prefix
+prepend-path    C_INCLUDE_PATH          $prefix
+prepend-path    CPLUS_INCLUDE_PATH      $prefix
+prepend-path    LIBRARY_PATH            $prefix/lib
+prepend-path    LD_LIBRARY_PATH         $prefix/lib
+
+prepend-path    C_INCLUDE_PATH          $prefix/nvidia/cuda7example
+prepend-path    CPLUS_INCLUDE_PATH      $prefix/nvidia/cuda7example
+
+
