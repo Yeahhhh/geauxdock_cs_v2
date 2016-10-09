@@ -16,7 +16,7 @@ namespace yeah {
             cudaEvent_t e1; // start
             cudaEvent_t e2; // stop
             cudaEvent_t e3; // set point
-            double ts; // span (miliseconds)
+            double ts; // span (in seconds)
             int n; // counter
 
             Event () { ts = 0; n = 0; }
@@ -24,7 +24,7 @@ namespace yeah {
 
             void Start (cudaStream_t s = 0) { cudaEventRecord (e1, s); }
             void Stop (cudaStream_t s = 0) { cudaEventRecord (e2, s); }
-            void Calc () { float tt; cudaEventElapsedTime (&tt, e1, e2); ts += (double) tt; n++; }
+            void Calc () { float tt; cudaEventElapsedTime (&tt, e1, e2); ts += (double) tt * 1e-3; n++; }
             void SyncStop () { cudaEventSynchronize (e2); }
 
             void Set (cudaStream_t s = 0) { cudaEventRecord (e3, s); }
@@ -34,7 +34,7 @@ namespace yeah {
             void Flush () { ts = 0; n = 0;}
             float Span () { return ts; }
             int Count () { return n; }
-            void Print () { std::cout << "span (ms): " << ts << "\tcounter: " << n << std::endl; }
+            void Print () { std::cout << "span (s): " << ts << "\tcounter: " << n << std::endl; }
         };
 
 

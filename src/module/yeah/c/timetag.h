@@ -5,11 +5,10 @@
 extern "C" {
 #endif
 
-    void GetTimeTag (char * s, const int len);
+void GetTimeTag(char* s, const int len);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

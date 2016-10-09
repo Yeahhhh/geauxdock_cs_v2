@@ -19,12 +19,12 @@ OBJ_OPENCL := $(SRC_OPENCL:.c=.o)
 
 
 
-#CC := icc #-mmic
-#CXX := icpc #-mmic
-CC := gcc
-CXX := g++
+CC := icc #-mmic
+CXX := icpc -std=c++11 #-mmic
+#CC := gcc
+#CXX := g++ -std=c++11
 #CC := clang
-#CXX := clang++
+#CXX := clang++ -std=c++11
 
 CFLAGS := -O3 -fPIC
 CXXFLAGS := -O3 -fPIC
@@ -33,7 +33,7 @@ CXXFLAGS := -O3 -fPIC
 
 
 
-all: libc
+all: libc libcxx
 #all: libc libopencl libopencl_cxx
 
 
@@ -46,8 +46,8 @@ all: libc
 libc: $(OBJ_C)
 	ar rcs ../lib/libyeahc.a $(OBJ_C)
 
-libcxx: $(OBJ_C) $(OBJ_CPP)
-	ar rcs ../lib/libyeahcxx.a $(OBJ_C) $(OBJ_CPP)
+libcxx: $(OBJ_CPP)
+	ar rcs ../lib/libyeahcxx.a $(OBJ_CPP)
 
 libopencl: $(OBJ_OPENCL)
 	ar rcs ../lib/libyeahopencl.a $(OBJ_OPENCL)

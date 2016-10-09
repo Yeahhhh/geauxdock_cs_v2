@@ -1,0 +1,12 @@
+ERR = $(shell which icc > /dev/null; echo $$?)
+ifeq "$(ERR)" "0"
+	CC = icc
+else
+	CC = gcc
+endif
+
+
+all: echo
+
+echo:
+	@echo $(CC)

@@ -6,13 +6,13 @@
 namespace yeah {
 
 
-    template <class T>
+    template <typename T>
     T Min_2 (T a, T b)
     {
         return a < b ? a : b;
     }
 
-    template <class T>
+    template <typename T>
     T Max_2 (T a, T b)
     {
         return a > b ? a : b;
@@ -27,7 +27,7 @@ namespace yeah {
 
 
 
-    template <class T>
+    template <typename T>
     int Max_array_idx (T *first, T *last)
     {
         T *a = first;
@@ -38,7 +38,7 @@ namespace yeah {
     }
 
 
-    template <class T>
+    template <typename T>
     int Min_array_idx (T *first, T *last)
     {
         T *a = first;
@@ -50,7 +50,7 @@ namespace yeah {
 
 
 
-    template <class T>
+    template <typename T>
     T Max_array (T *first, T *last)
     {
         const int idx = Max_array_idx <T> (first, last);
@@ -58,7 +58,7 @@ namespace yeah {
     }
 
 
-    template <class T>
+    template <typename T>
     T Min_array (T *first, T *last)
     {
         const int idx = Min_array_idx <T> (first, last);
@@ -69,7 +69,7 @@ namespace yeah {
 
 
 
-    template <class T>
+    template <typename T>
     double Avg_array (T *first, T *last)
     {
         double a = 0;
@@ -85,7 +85,7 @@ namespace yeah {
 
 
 //if first == last, ignore "exclude_idx"
-    template <class T>
+    template <typename T>
     int Min_array_idx_exclude (T *first, T *last, const int exclude_idx)
     {
         T *a = first;
@@ -99,7 +99,7 @@ namespace yeah {
 
 
 //if first == last, ignore "exclude_idx"
-    template <class T>
+    template <typename T>
     int Max_array_idx_exclude (T *first, T *last, const int exclude_idx)
     {
         T *a = first;
@@ -113,7 +113,7 @@ namespace yeah {
 
 
 //if first == last, ignore "exclude_idx"
-    template <class T>
+    template <typename T>
     T Min_array_exclude (T *first, T *last, const int exclude_idx)
     {
         const int idx = Min_array_idx_exclude <T> (first, last, exclude_idx);
@@ -122,7 +122,7 @@ namespace yeah {
 
 
 //if first == last, ignore "exclude_idx"
-    template <class T>
+    template <typename T>
     T Max_array_exclude (T *first, T *last, const int exclude_idx)
     {
         const int idx = Max_array_idx_exclude <T> (first, last, exclude_idx);
@@ -132,7 +132,7 @@ namespace yeah {
 
 
 //if first == last, ignore "exclude_idx"
-    template <class T>
+    template <typename T>
     double Avg_array_exclude (T *first, T *last, const int exclude_idx)
     {
         int n = last - first + 1;

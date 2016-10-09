@@ -1,0 +1,43 @@
+SRC_C = $(wildcard *.c)
+OBJ_C = $(SRC_C:.c=.o)
+EXE_C = $(SRC_C:.c=)
+SRC_CXX = $(wildcard *.cpp)
+OBJ_CXX = $(SRC_CXX:.cpp=.o)
+EXE_CXX = $(SRC_CXX:.cpp=)
+SRC_CU = $(wildcard *.cu)
+OBJ_CU = $(SRC_CU:.cu=.o)
+EXE_CU = $(SRC_CU:.cu=)
+
+OBJ = $(OBJ_C) $(OBJ_CXX) $(OBJ_CU)
+EXE = $(EXE_C) $(EXE_CXX) $(EXE_CU)
+
+
+LINKFLAGS += -lyeahc -lrt
+
+CC = cc -std=c99 -O2
+CXX = g++ -O2
+CXX_DEV = nvcc -O2
+
+all: $(EXE)
+
+
+% : %.c
+	$(CC) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
+
+% : %.cpp
+	$(CXX) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
+
+% : %.cu
+	$(CXX_DEV) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
+
+
+echo:
+	@(echo $(HEADERS))
+	@(echo $(SRC))
+	@(echo $(OBJ))
+	@(echo $(EXE))
+
+clean:
+#	$(RM) $(OBJ)
+	$(RM) $(EXE)
+

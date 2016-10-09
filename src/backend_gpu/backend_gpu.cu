@@ -20,8 +20,9 @@
 #include <yeah/cuda/runtime/event.h>
 #include <yeah/cuda/runtime/info.h>
 #include <yeah/cuda/kernel/util.h>
-#include <yeah/c/timing.h>
-#include <yeah/cpp/timer.hpp>
+//#include <yeah/c/timing.h>
+#include <yeah/measuring/counting/timer.hpp>
+
 
 
 
@@ -75,7 +76,8 @@ Dock (Complex *ch,
 
 
 
-    yeah::Timer e[11];
+    yeah::measuring::counting::Timer e[11];
+
     //yeah::cuda::EventSD e[11];
 
     CUDA_ERR (cudaMemcpyAsync (cd, ch, sizeof (Complex), cudaMemcpyHostToDevice));
@@ -102,7 +104,7 @@ Dock (Complex *ch,
         CUDA_LAST_ERR ();
         //cudaDeviceSynchronize();
 
-        //yeah::Timer eeee;
+        //yeah::measuring::counting::Timer eeee;
         //eeee.Start ();
         CUDA_ERR (cudaMemcpy (rh, rd, record_sz, cudaMemcpyDeviceToHost));
         // eeee.Stop ();
@@ -120,7 +122,7 @@ Dock (Complex *ch,
 
 #include <kernel_print_timer.cpp>
     //PrintSummary (ch);
-#include <kernel_print_benchmark.cpp>
+//#include <kernel_print_benchmark.cpp>
 
 }
 

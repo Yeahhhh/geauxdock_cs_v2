@@ -117,13 +117,50 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 10
+#define STEPS_PER_DUMP 1000
 
 // signal the MPI client to terminate
 #define FINISH_SIGNAL 0XFFFFFF
 
 // a small number, so that " / 0 + SMALL_NUMBER" is a legal expression
 #define SMALL_NUMBER 0.0f
+
+
+// column number of input/output CSV file
+#define CSVTAG_MAGIC                     0
+#define CSVTAG_DATA_ID                   1
+#define CSVTAG_PRT_ID                    2
+#define CSVTAG_PRT                       3
+#define CSVTAG_LIG_ID                    4
+#define CSVTAG_LIG                       5
+#define CSVTAG_FF                        6
+#define CSVTAG_WEIGHT                    7
+#define CSVTAG_ENEPARA                   8
+#define CSVTAG_NORA                      9
+#define CSVTAG_NORB                     10
+#define CSVTAG_NTEM                     11
+#define CSVTAG_TEMP_HIGH                12
+#define CSVTAG_TEMP_LOW                 13
+#define CSVTAG_TRAS_SCALE               14
+#define CSVTAG_ROT_SCALE                15
+#define CSVTAG_N_DUMP                   16
+#define CSVTAG_STEPS_TOTAL              18
+#define CSVTAG_SZ_N_PRT                 20
+#define CSVTAG_SZ_N_LIG                 21
+#define CSVTAG_SZ_N_TMP                 22
+#define CSVTAG_SZ_N_REP                 23
+#define CSVTAG_SZ_PRT_NPOINT            24
+#define CSVTAG_SZ_LIG_NATOM             25
+#define CSVTAG_SZ_KDE_NPOINT            26
+#define CSVTAG_SZ_MCS_NROW              27
+#define CSVTAG_TIME_RL_CPU              30
+#define CSVTAG_TIME_EST_CPU             31
+#define CSVTAG_TIME_RL_MIC              32
+#define CSVTAG_TIME_EST_MIC             33
+#define CSVTAG_TIME_RL_GPU              34
+#define CSVTAG_TIME_EST_GPU             35
+
+
 
 #endif
 

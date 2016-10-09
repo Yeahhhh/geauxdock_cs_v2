@@ -35,8 +35,8 @@ CXXFLAGS_DEV += -Xptxas -dlcm=ca
 all: $(EXE)
 
 % : %.cu
-	$(CXX_DEV) $(CXXFLAGS_DEV)$(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
-	
+	$(CXX_DEV) $(CXXFLAGS_DEV) $(HEADPATH) $(LIBPATH) $< -o $@ $(LINKFLAGS)
+
 echo:
 	@echo $(HEADERS)
 	@echo $(SRC)

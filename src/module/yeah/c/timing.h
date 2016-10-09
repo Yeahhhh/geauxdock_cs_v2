@@ -5,11 +5,10 @@
 extern "C" {
 #endif
 
-double HostTimeNow ();
+double HostTimeNow();
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

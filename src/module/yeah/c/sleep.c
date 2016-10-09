@@ -1,3 +1,4 @@
+#if 0
 // do not use flag -std=c99
 
 #include <stdio.h>
@@ -9,7 +10,7 @@
 
 
 void
-Sleep_milliseconds (double ms)
+SleepMS (double ms)
 {
   const long us = (double) (ms * 1e3);
   const long sec_ = (us / 1000000);
@@ -26,6 +27,32 @@ Sleep_milliseconds (double ms)
 
 
 // an example of random sleep
-//Sleep_milliseconds (rand () % 2000));
+//SleepMS (rand () % 2000));
 
 
+void
+SleepS (double s)
+{
+    SleepMS (s * 1e3);
+}
+
+#endif
+
+#if 1
+#include <stdio.h>
+#include <unistd.h>
+
+void SleepMS(double ms)
+{
+    unsigned int usec = (unsigned int)(ms * 1e3);
+    if (usleep(usec) < 0)
+        printf("usleep () failed\n");
+}
+
+void SleepS(double s)
+{
+    unsigned int usec = (unsigned int)(s * 1e6);
+    if (usleep(usec) < 0)
+        printf("usleep () failed\n");
+}
+#endif

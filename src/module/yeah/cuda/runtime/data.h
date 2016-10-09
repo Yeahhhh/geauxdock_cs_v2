@@ -23,7 +23,7 @@ namespace yeah {
 
 namespace cuda {
 
-template <class T0>
+template <typename T0>
 class Data0 {
    public:
     T0 *dh;  // host
@@ -61,7 +61,7 @@ class Data0 {
 };
 
 /*
-template <class T0>
+template <typename T0>
     class Data: public Data0 <T0>
 {
 public:
@@ -70,7 +70,7 @@ public:
 };
 */
 
-template <class T0>
+template <typename T0>
 class DataDummy : public Data0<T0> {
    public:
     DataDummy(int num = 1)
@@ -82,7 +82,7 @@ class DataDummy : public Data0<T0> {
     }
 };
 
-template <class T0>
+template <typename T0>
 class DataNonPinned : public Data0<T0> {
    protected:
     void Alloc()
@@ -109,7 +109,7 @@ class DataNonPinned : public Data0<T0> {
     }
 };
 
-template <class T0>
+template <typename T0>
 class DataPinned : public Data0<T0> {
    protected:
     void Alloc()
@@ -136,7 +136,7 @@ class DataPinned : public Data0<T0> {
     }
 };
 
-template <class T0>
+template <typename T0>
 class DataHostMapped : public Data0<T0> {
    public:
 };
@@ -147,7 +147,7 @@ class DataHostMapped : public Data0<T0> {
 // > Kepler
 //
 // need to call cudaDeviceSynchronize() after GPU kernel
-template <class T0>
+template <typename T0>
 class DataManaged : public Data0<T0> {
    protected:
     void Alloc()

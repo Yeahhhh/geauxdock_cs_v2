@@ -8,7 +8,7 @@ namespace yeah {
 
 namespace opencl {
 
-template <class T0>
+template <typename T0>
 class Data0 {
    public:
     T0 *dh;
@@ -37,7 +37,7 @@ class Data0 {
     // clReleaseMemObject (this->dd);
 };
 
-template <class T0>
+template <typename T0>
 class Data : public Data0<T0> {
    public:
     Data(int num = 1)

@@ -7,7 +7,7 @@
 namespace yeah {
 
 // allocate a contiguous region of 2D array
-    template <class T>
+    template <typename T>
     T ** Alloc_2d (const int rows, const int cols)
     {
         //T *data = (T *) malloc (sizeof (T) * rows * cols);
@@ -22,7 +22,7 @@ namespace yeah {
     }
 
 
-    template <class T>
+    template <typename T>
     void Free_2d (T** a)
     {
         //free (a[0]);
@@ -33,7 +33,7 @@ namespace yeah {
 
 
 // print_2d_v2 (a, rows, cols)
-    template <class T>
+    template <typename T>
     void Print_2d (T** a, const int rows, const int cols)
     {
         for (int r = 0; r < rows; ++r) {
@@ -46,7 +46,7 @@ namespace yeah {
 
 
 // print_2d_v2 (a[0], rows, cols)
-    template <class T>
+    template <typename T>
     void Print_2d_v2 (T* a, const int rows, const int cols)
     {
         for (int r = 0; r < rows; ++r) {

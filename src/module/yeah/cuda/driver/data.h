@@ -10,7 +10,7 @@ namespace yeah {
 
 namespace cu {
 
-template <class T0>
+template <typename T0>
 class Data0 {
    public:
     T0 *dh;          // host
@@ -47,7 +47,7 @@ class Data0 {
 };
 
 /*
-   template <class T0>
+   template <typename T0>
    class Data: public Data0 <T0>
    {
    public:
@@ -56,7 +56,7 @@ class Data0 {
    };
    */
 
-template <class T0>
+template <typename T0>
 class DataDummy : public Data0<T0> {
    public:
     DataDummy(int num = 1)
@@ -68,7 +68,7 @@ class DataDummy : public Data0<T0> {
     }
 };
 
-template <class T0>
+template <typename T0>
 class DataNonPinned : public Data0<T0> {
    protected:
     void Alloc()

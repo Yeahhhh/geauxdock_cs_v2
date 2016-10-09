@@ -14,7 +14,7 @@ ifeq ($(TARGET_ARCH), aarch64)
         TARGET_ARCH=armv7l
     endif
 endif
- 
+
 # TARGET_SIZE
 ifneq (,$(filter $(TARGET_ARCH),x86_64 aarch64 ppc64le armv7l))
     ifneq ($(TARGET_ARCH),$(HOST_ARCH))
@@ -147,6 +147,5 @@ echo:
 	@echo LDFLAGS:       $(LDFLAGS)
 	@echo ALL_CCFLAGS:   $(ALL_CCFLAGS)
 	@echo ALL_LDFLAGS:   $(ALL_LDFLAGS)
-
 
 

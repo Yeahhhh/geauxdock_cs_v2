@@ -18,8 +18,6 @@ void SetMcLog (McLog *);
 
 void DumpRecord (const Record *, const int, const char*);
 
-vector<string> tokenlize(string & line);
-
 
 
 template <typename T>

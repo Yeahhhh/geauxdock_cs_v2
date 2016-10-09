@@ -159,7 +159,7 @@ HEADPATH += -I. -I../common -I../frontend -I../backend_gpu -I../backend_cpu_mic 
 
 #LIBPATH += -Wl,-rpath=/usr/local/compilers/Intel/cluster_studio_xe_2013.1.046/composer_xe_2013_sp1.2.144/compiler/lib/mic
 
-LINKFLAGS += -lm -lrt -lyeahc
+LINKFLAGS += -lm -lrt -lyeahc -lyeahcxx
 #LINKFLAGS += -lpapi
 #LINKFLAGS += -static
 ifeq ($(COMPILER_HOST), intel)

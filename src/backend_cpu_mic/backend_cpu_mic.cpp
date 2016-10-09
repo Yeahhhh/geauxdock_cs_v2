@@ -11,7 +11,8 @@
 #include <util_print.h>
 #include <record.h>
 
-#include <yeah/cpp/timer.hpp>
+#include <yeah/measuring/counting/timer.hpp>
+
 
 #if IS_PAPI == 1
 #include <papi.h>
@@ -34,7 +35,7 @@
 static void
 Dock (Complex *complex, Record *record)
 {
-    yeah::Timer e[16];
+    yeah::measuring::counting::Timer e[16];
 
     // data for analysis
     //std::map < int, std::vector < LigRecordSingleStep > > multi_reps_records;

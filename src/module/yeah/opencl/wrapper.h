@@ -23,7 +23,8 @@ const char * opencl_error_string_2 (cl_int error);
 #define CL_ERR(err) __GetErrCL (err, __FILE__, __LINE__)
 
 
-inline void
+//inline void
+void
 __GetErrCL (const cl_int err, const char * const file, const int line)
 {
     if (err != CL_SUCCESS) {

@@ -6,7 +6,7 @@
 
 namespace yeah {
 
-    template <class T>
+    template <typename T>
         bool CompareResult (T * result, T * ref, const int n)
         {
             T error_norm = (T) 0.0;

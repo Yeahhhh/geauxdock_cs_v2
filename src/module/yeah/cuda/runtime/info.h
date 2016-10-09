@@ -127,7 +127,8 @@ void PrintCudaDeviceProp(const cudaDeviceProp *const prop, const int d)
 
     const int fp32units_per_mp = FpUnitsPerMp(prop, 32);
     const int fp64units_per_mp = FpUnitsPerMp(prop, 64);
-    const float chip_bw_Bps = 2 * prop->memoryClockRate * 1e3 * (prop->memoryBusWidth >> 3);
+    const float memory_tpers = 2 * prop->memoryClockRate; // transfers per second
+    const float chip_bw_Bps = memory_tpers * 1e3 * (prop->memoryBusWidth >> 3);
     const float chip_fp32_flops = 1e3 * fp32units_per_mp * prop->clockRate * prop->multiProcessorCount;
     const float chip_fp64_flops = 1e3 * fp64units_per_mp * prop->clockRate * prop->multiProcessorCount;
 
@@ -139,16 +140,18 @@ void PrintCudaDeviceProp(const cudaDeviceProp *const prop, const int d)
 
     // core
     putchar('\n');
-    printf("core clock rate \t\t%.2f GHz\n", (float)prop->clockRate / 1e6);
+    printf("core clock rate \t\t%.2f GHz\n", (float)prop->clockRate * 1e-6);
     printf("MP/GPU \t\t\t\t%d\n", prop->multiProcessorCount);
     printf("FP32/MP \t\t\t%d\n", fp32units_per_mp);
     printf("FP64/MP \t\t\t%d\n", fp64units_per_mp);
+    printf("FP32/GPU \t\t\t%d\n", fp32units_per_mp * prop->multiProcessorCount);
+    printf("FP64/GPU \t\t\t%d\n", fp64units_per_mp * prop->multiProcessorCount);
     printf("RAW FP32 FLOPS/GPU \t\t%.2f TFLOPS/s\n", chip_fp32_flops * 1e-12);
     printf("RAW FP64 FLOPS/GPU \t\t%.2f TFLOPS/s\n", chip_fp64_flops * 1e-12);
 
     // memory
     putchar('\n');
-    printf("memory clock rate \t\t%.2f GHz\n", (float)prop->memoryClockRate / 1e6);
+    printf("memory transfer rate \t\t%.2f GT/s\n", memory_tpers * 1e-6);
     printf("memory bus width \t\t%d b\n", prop->memoryBusWidth);
     printf("memory bandwidth \t\t%.2f GiB/s\n", chip_bw_Bps / (float)(1 << 30));
     printf("num reg32/block \t\t%.2f Ki\n", (float)prop->regsPerBlock / (float)(1 << 10));
@@ -159,10 +162,12 @@ void PrintCudaDeviceProp(const cudaDeviceProp *const prop, const int d)
     printf("size L2 cache/GPU \t\t%.2f MiB\n", (float)prop->l2CacheSize / (float)(1 << 20));
     printf("size global/GPU \t\t%.2f GiB\n", (float)prop->totalGlobalMem / (float)(1 << 30));
 
-    // core / memory
+    // ratio
     printf("\n");
-    printf("FP32 FLOPS/BW ratio \t\t%.2f\n", 4 * chip_fp32_flops / chip_bw_Bps);
-    printf("FP64 FLOPS/BW ratio \t\t%.2f\n", 8 * chip_fp64_flops / chip_bw_Bps);
+    printf("FP32 FLOPS/memory BW ratio \t%.2f\n", 4 * chip_fp32_flops / chip_bw_Bps);
+    printf("FP64 FLOPS/memory BW ratio \t%.2f\n", 8 * chip_fp64_flops / chip_bw_Bps);
+    printf("num reg32/num FP32 unit ratio \t%.2f\n", (float)prop->regsPerMultiprocessor / fp32units_per_mp);
+    printf("num reg64/num FP64 unit ratio \t%.2f\n", (float)prop->regsPerMultiprocessor / 2 / fp64units_per_mp);
 
     // feature
     putchar('\n');

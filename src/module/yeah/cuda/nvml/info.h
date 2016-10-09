@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <nvidia/nvml.h>
+#include <yeah/cuda/runtime/wrapper.h>
 #include <yeah/cuda/nvml/wrapper.h>
 
 
@@ -94,7 +95,8 @@ GetNvmlDeviceHandleByCudaID (nvmlDeviceProp *nvml_device_prop, const int id_cuda
         exit (EXIT_FAILURE);
     }
 
-    printf ("CUDA Device %d = NVML device %d\n", id_cuda, *id_nvml);
+    if (id_cuda != *id_nvml)
+        printf ("CUDA Device %d = NVML device %d\n", id_cuda, *id_nvml);
 }
 
 
@@ -102,7 +104,7 @@ GetNvmlDeviceHandleByCudaID (nvmlDeviceProp *nvml_device_prop, const int id_cuda
 
 
 void
-GetNvmlDeviceProp (nvmlDeviceProp * const prop, const int id_nvml, const int id_cuda)
+GetPrintNvmlDeviceProp (nvmlDeviceProp * const prop, const int id_nvml, const int id_cuda)
 {
     const int one_MiB = 1 << 20;
     unsigned int temp;
@@ -111,6 +113,8 @@ GetNvmlDeviceProp (nvmlDeviceProp * const prop, const int id_nvml, const int id_
     unsigned int powerdefaultlimit;
     unsigned int powerconstaints_min, powerconstaints_max;
     unsigned int powerusage; // On Fermi and Kepler GPUs the reading is accurate to within +/- 5% of current power draw
+                             // read period is in microseconds
+                             // reference: http://developer.download.nvidia.com/assets/cuda/files/CUDADownloads/NVML/nvml.pdf, page 67
 
     //NVML_ERR (nvmlUnitGetUnitInfo (prop->unit, &prop->unitinfo));
     NVML_ERR (nvmlDeviceGetName (prop->device, prop->name, NVML_STR_MAX_LENG));
@@ -141,7 +145,7 @@ GetNvmlDeviceProp (nvmlDeviceProp * const prop, const int id_nvml, const int id_
 
 
 void
-GetNvmlDeviceProp_2 (nvmlDeviceProp * const prop)
+GetPrintNvmlDeviceProp_2 (nvmlDeviceProp * const prop)
 {
     const int one_MiB = 1 << 20;
     unsigned int temp;

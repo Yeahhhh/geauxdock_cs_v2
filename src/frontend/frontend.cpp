@@ -22,6 +22,7 @@
 #include <util_print.h>
 
 //#include <yeah/c/mkdir.h>
+#include <yeah/cpp/text_parse.hpp>
 
 
 using namespace std;
@@ -65,56 +66,9 @@ void SetMcLog(McLog *mclog)
 
 
 
-
-
-
-
-
-
-
-static void trim(string & s)
-{
-    size_t p;
-    p = s.find_first_not_of(" \t");
-    s.erase(0, p);
-
-    p = s.find_last_not_of(" \t");
-    if (string::npos != p)
-        s.erase(p + 1);
-}
-
-
-vector<string> tokenlize(string & line)
-{
-    vector<string> tokens;
-    stringstream ss(line);
-    string t;
-
-    // cout << line << endl;
-
-    while (getline(ss, t, ',')) {
-        trim(t);
-        tokens.push_back(t);
-    }
-
-#if 0
-#define NTOKEN 16
-    const int n = tokens.size();
-    if (n != NTOKEN) {
-        cout << "number of tokens is wrong" << endl;
-        exit(EXIT_FAILURE);
-    }
-#endif
-
-    return tokens;
-}
-
-
-
-
 void ParaParser::parse(std::string str)
 {
-    tokens = tokenlize(str);
+    tokens = yeah::tokenlize(str, ',');
 
 #if 0
     for (int i = 0; i < tokens.size(); ++i) {
@@ -376,7 +330,7 @@ void Loader::load_ligand()
     loadLHM(&inputfiles.lhm_file, psp0, kde0, mcs0);
 
     // debug
-    PrintLigand0(lig0);
+    //PrintLigand0(lig0);
 
 
     OptimizeKde(kde0, kde);

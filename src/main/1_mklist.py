@@ -89,8 +89,8 @@ def func1 (argv):
         print(rot_scale, end = ',')
         print(n_dump, end = ',')
         for j in range(1, tag_extra):
-            print('0', end = ',')
-        print('0')
+            print('-2', end = ',')
+        print('-2')
         i += 1
 
 

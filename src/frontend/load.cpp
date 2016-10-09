@@ -32,40 +32,11 @@
 #include <size.h>
 #include <load.h>
 
-//#include <yeah/cpp/timer.hpp>
+//#include <yeah/measuring/counting/timer.hpp>
+
 
 
 using namespace std;
-
-
-void PrintVecstr(const std::vector<std::string> &lines)
-{
-    /*
-    const int n = lines.size();  // number of lines
-    for (int i = 0; i < n; ++i) {
-        cout << lines[i] << endl;
-    }
-    */
-
-    for (auto i = lines.begin(); i != lines.end(); i++)
-        cout << *i << endl;
-}
-
-void LoadFnToVecstr(const std::string fnpath,
-                       std::vector<std::string> &lines)
-{
-    ifstream ifn(fnpath.c_str());
-    if (!ifn.is_open()) {
-        cout << "Failed to open " << fnpath << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    std::string line;
-    while (getline(ifn, line)) {
-        lines.push_back(line);
-    }
-    ifn.close();
-}
 
 
 
