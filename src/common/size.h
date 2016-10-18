@@ -138,7 +138,7 @@
 #define CSVTAG_ENEPARA                   8
 #define CSVTAG_NORA                      9
 #define CSVTAG_NORB                     10
-#define CSVTAG_NTEM                     11
+#define CSVTAG_NTEMP                    11
 #define CSVTAG_TEMP_HIGH                12
 #define CSVTAG_TEMP_LOW                 13
 #define CSVTAG_TRAS_SCALE               14
