@@ -19,10 +19,10 @@ OBJ_OPENCL := $(SRC_OPENCL:.c=.o)
 
 
 
-CC := icc #-mmic
-CXX := icpc -std=c++11 #-mmic
-#CC := gcc
-#CXX := g++ -std=c++11
+#CC := icc #-mmic
+#CXX := icpc -std=c++11 #-mmic
+CC := gcc
+CXX := g++ -std=c++11
 #CC := clang
 #CXX := clang++ -std=c++11
 

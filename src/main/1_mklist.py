@@ -1,23 +1,58 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
-from __future__ import print_function
 import glob
 import os
 import sys
 
 
+
+
+def func_check_file_exsit(fn):
+    from pathlib import Path
+    myfile = Path(fn)
+    if (not myfile.is_file()):
+        print('\"%s\" is not a normal file or does not exist. Exit' % fn)
+        exit(1)
+
+
 def func_lig(lig_dir):
     ffs = sorted(glob.glob(lig_dir + '/*.ff'))
     sdfs = sorted(glob.glob(lig_dir + '/*.sdf'))
-    sdf_ffs = zip(sdfs, ffs)
+    zips = zip(sdfs, ffs)
+
+    #print(ffs)
+    #print(sdfs)
 
     strs = []
-    for sdf_ff in sdf_ffs:
-        sdf_path = os.path.abspath(sdf_ff[0])
-        ff_path = os.path.abspath(sdf_ff[1])
-        lig_id = os.path.basename(sdf_path).split ('.')[0]
-        str = lig_id + ',' + sdf_path + ',' + ff_path
-        strs.append(str)
+    n = 0
+    for f in zips:
+        sdf_path = os.path.abspath(f[0])
+        ff_path = os.path.abspath(f[1])
+        lig_id_sdf = os.path.basename(sdf_path).split ('.')[0]
+        lig_id_ff = os.path.basename(ff_path).split ('.')[0]
+
+        #print(lig_id_sdf)       # eg: 1ckpA1
+        #print(lig_id_ff)        # eg: 1ckpA1-0
+
+        if (lig_id_sdf in lig_id_ff):
+            lig_id = lig_id_sdf
+            str = lig_id + ',' + sdf_path + ',' + ff_path
+            strs.append(str)
+
+            n += 1
+        else:
+            print('sdf file: \"%s\" ' % lig_id_sdf)
+            print('ff file:  \"%s\" ' % lig_id_ff)
+            print('ff file and sdf file seems not match. Exit')
+            exit(1)
+
+    if (n <= 0):
+        print('Failed to find matched ff/sdf pair under dir \"%s\". Exit' % lig_dir)
+        exit(1)
+
+
+
+
     return strs
 
 
@@ -45,6 +80,12 @@ def func1 (argv):
 
 
     #print(prt_fn, lig_dir)
+
+
+    func_check_file_exsit(prt_fn)
+    func_check_file_exsit(enepara_fn)
+    func_check_file_exsit(nora_fn)
+    func_check_file_exsit(norb_fn)
 
     prt_str = func_prt(prt_fn)
     lig_strs = func_lig(lig_dir)

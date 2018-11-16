@@ -98,6 +98,7 @@ public:
     void load_target();
     void load_ligand();
     void load(std::string);
+    void check1(std::string, const int, const int, const char*, const char*);
     void check();
     void print_sz();
     void build_complex(Complex *);

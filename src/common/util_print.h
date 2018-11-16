@@ -16,13 +16,14 @@ void PrintMoveVector (const float*, const int);
 void PrintMoveRecord (const Record *, const int, const int, const int, const int, const int);
 void PrintCsv (const float *, const int, const int, const int);
 
-void PrintRecord (Record *,  int,  int,  int,  int,  int);
+void PrintRecord (const Record *,  int,  int,  int,  int,  int);
 void PrintRepRecord (const Record *, const int, const int, const int, const int, const int, const int);
 void PrintRepRecord2 (Record *,  ComplexSize,  int,  int,  int,  int,  int,  int);
 void PrintLigCoord (const Ligand *, const int);
 void PrintLigand0 (const Ligand0 *);
 void PrintProtein (const Protein *);
 void PrintDataSize (const Complex *);
+void PrintResult (const Complex *, const Record *);
 void PrintComplexInfo (const Complex *);
 void PrintSummary (const Complex *);
 

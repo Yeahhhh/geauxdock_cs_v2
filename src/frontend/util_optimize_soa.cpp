@@ -161,22 +161,29 @@ OptimizeLigand (const Ligand0 * lig0, const Kde * kde, Ligand * lig, const int n
        begin        end
        */
 
+
+
+    const int kde_npoint = kde->kde_npoint;
+
     for (int i = 0; i < n_lig; ++i) {
         Ligand *mylig = &lig[i];
         const int lig_natom = mylig->lig_natom;
+
+        //printf("debug ligand kde %d %d\n", lig_natom, kde_npoint);
+
 
         for (int l = 0; l < lig_natom; ++l) {
             mylig->kde_begin_idx[l] = 0;
             mylig->kde_end_idx[l] = 0;
             int match_kde_status = 0;
             const int lig__t = mylig->t3[l];
-            const int kde_npoint = kde->kde_npoint;
 
 #if 0
             if (i == 0)
                 printf ("lig_t %2d %2d  ", l, lig__t);
 #endif
             for (int k = 0; k < kde_npoint; ++k) {
+                //printf("ILK: %d %d %d\n", i, l, k);
                 const int kde__t = kde->t[k];
                 if (lig__t == kde__t && match_kde_status == 0) {
                     match_kde_status = 1;
@@ -425,10 +432,16 @@ OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, Mcs_R * mcs_r, Mcs_ELL * mcs_ell, Mcs
 
     // mcs_ell
 #if 1
+
     for (int i = 0; i < nrow; ++i) {
         const Mcs0 *src = &mcs0[i];
         const int ncol = src->ncol;
+
+        //printf("debug mcs %d %d\n", nrow, ncol);
+
         for (int j = 0; j < ncol; ++j) {
+            //printf("debug mcs i j %d %d\n", i, j);
+
             mcs_ell->i[i][j] = src->idx_col[j];
             mcs_ell->x[i][j] = src->x2[j];
             mcs_ell->y[i][j] = src->y2[j];

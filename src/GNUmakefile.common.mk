@@ -17,15 +17,15 @@ BUILD_MIC := 1
 
 
 
-HOST := smic
-#HOST := gnuhost
+#HOST := smic
+HOST := gnuhost
 
 ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
 
 else ifeq ($(HOST), gnuhost)
 	COMPILER_HOST := gnu
-	BUILD_GPU := 0		# overwrite degault build target list
+	BUILD_GPU := 0		# overwrite the default build target list
 	BUILD_CPU := 1
 	BUILD_MIC := 0
 
@@ -178,6 +178,7 @@ FCFLAGS_HOST += -O3
 
 
 CXXFLAGS_HOST += $(HEADPATH) $(MARCRO_MAKE)
+CXXFLAGS_HOST += -g							# should remove after debug
 
 ifeq ($(COMPILER_HOST), intel)
 	CXXFLAGS_HOST += -Wall

@@ -98,7 +98,7 @@ GeauxDock has been tested with the following packages:
   gcc 4.4.6
   gcc 4.9.2
   Bash (required for setting environment variables)
-  Python 2.7
+  Python 3
 
 
 === Steps - Initial Setup and Simple Run
@@ -113,60 +113,53 @@ readme file would be “/home/smith/geauxdock/doc/instructions.txt".
       needed.
 
 
- [ ]  Prepare The Input Data
-      Commands:
-
-      $ cd /home/smith/geauxdock/src/main
-      $ ./1_mklist.py.sh
-
- [ ]  Verify The Input Data using the pre-build binary (Linux x86-64)
-      $ cd /home/smith/geauxdock/src/main
-      $ ./2_check.sh
-
-
- [ ]  Run docking simulation using the pre-build binary (Linux x86-64, CPU)
-      Commands:
-
-      $ cd /home/smith/geauxdock/src/main
-      $ export OMP_PROC_BIND=true
-      $ ./3_geauxdock_cpu_linux_x64
-
-
  [ ]  Build the Code
       Commands:
 
-      $ cd /home/smith/geauxdock/src/module/yeah && make -B
-      $ source /home/smith/geauxdock/src/module/sourceme.bash
-      $ cd /home/smith/geauxdock/src/main
-      $ make
+      $ source /home/smith/geauxdock/src/module/env/sourceme.bash
+      $ cd /home/smith/geauxdock/src/ && make -B
 
-      Building variables are speficied in
-      /home/smith/geauxdock/src/GNUmakefile.common.mk
-      eg: HOST, COMPILER_HOST, GPU ...
-      They might be modifity to suit your environment.
+      Building variables (eg: HOST, COMPLIER_HOST...) are speficied in "src/GNUmakefile.common.mk"
+      Please modify to fit your environment.
+      Meanwhile, geauxdock and the libray "module" should be built using the same compiler.
+      Please make sure the compiler of choise is identical between
+      "src/GNUmakefile.common.mk" and "src/module/yeah/GNUmakefile".
+
 
       If the build is successful, a few executable named "3_geauxdock_*" will be created
-      in the current directory.  If not, find an experienced programmer
+      under "main" directory  If not, find an experienced programmer
       to help identify and fix the problems.
 
 
  [ ]  Run The Code
       The command below will run GeauxDock using the provided parameter files.
 
+      $ cd /home/smith/geauxdock/src/main
+      $ ./_workflow_validate_astex_1a07C1.sh 
+
+      or
+
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=20
-      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_cpu
+      $ cd /home/smith/geauxdock/src/main
+      $ ln -sf 3_geauxdock_cpu 3_geauxdock
+      $ ./_workflow_validate_astex_1a07C1.sh
 
       or
 
       $ export OMP_PROC_BIND=true
       $ export OMP_NUM_THREADS=240
       $ export MIC_OMP_PROC_BIND=true
-      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_mic
+      $ cd /home/smith/geauxdock/src/main
+      $ ln -sf 3_geauxdock_mic 3_geauxdock
+      $ ./_workflow_validate_astex_1a07C1.sh
 
       or
 
-      $ cd /home/smith/geauxdock/src/main && ./3_geauxdock_gpu
+      $ cd /home/smith/geauxdock/src/main
+      $ ln -sf 3_geauxdock_gpu 3_geauxdock
+      $ ./_workflow_validate_astex_1a07C1.sh
+
 
       The execution using the provided inputs and parameter files should complete
       in a few seconds.
@@ -178,21 +171,18 @@ readme file would be “/home/smith/geauxdock/doc/instructions.txt".
        initial energy state as part of standard output should agree with the
        lines below:
 
-       0 0 0.6434 -0.0367 -0.2079 -0.1845 0.8521 -0.8880 0.0523 0.1744 -1.0000 0.7735
        0 0 0.6434 -0.0367 -0.2079 -0.1845 0.8521 -0.8880 0.0523 0.1744 -1.0000 0.7735 Ref Result
-       ...
-       Benchmark,              1a07C1.sdf,1a07C-1.pdb,100,100,51,1,1,51,34,344,454,11,150.459
+       0 0 0.6434 -0.0367 -0.2079 -0.1845 0.8521 -0.8880 0.0523 0.1744 -1.0000 0.7735
 
 
 
 
 
 
-####################### OBSOLETE ########################################
 
 === Documentation of Features
 
-== Command-line options
+== Command-line options (OBSOLETE, swithched to CSV format input)
 
 -lp protein_text_file
     a target protein
@@ -246,7 +236,7 @@ readme file would be “/home/smith/geauxdock/doc/instructions.txt".
 
 
 
-== The definitions of default command-line options
+== The definitions of default command-line options (OBSOLETE)
 
 The default arguments are specified in source code "src/frontend/util.C":
 void ParseArguments (int argc, char **argv, ...)

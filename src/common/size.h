@@ -40,15 +40,15 @@
 #define MAXLIG_NUM 200
 /* MAX ligand in one ligand .sdf file */
 
-#define MAX_TMP 1024
-//#define MAX_TMP 32
+//#define MAX_TMP 1024
+#define MAX_TMP 32
 //#define MAX_TMP 1
 /* number of temperature replicas */
 
 //#define MAX_REP 16384
 //#define MAX_REP 4096
-#define MAX_REP 2048
-//#define MAX_REP 1024
+//#define MAX_REP 2048
+#define MAX_REP 1024
 /* max replicas */
 
 #define  MAXSWP 2000
@@ -85,7 +85,7 @@
 #define MAXKDE 10240
 /* kde points */
 
-#define MAX_MCS_ROW 512
+#define MAX_MCS_ROW 1024
 /* position restraints */
 
 #define MAX_MCS_COL MAXLIG
@@ -117,13 +117,19 @@
 #define BOLTZMANN_CONST 1.0f
 
 // monte carlo steps
-#define STEPS_PER_DUMP 1000
+#define STEPS_PER_DUMP 100
 
 // signal the MPI client to terminate
 #define FINISH_SIGNAL 0XFFFFFF
 
 // a small number, so that " / 0 + SMALL_NUMBER" is a legal expression
 #define SMALL_NUMBER 0.0f
+
+
+
+
+
+
 
 
 // column number of input/output CSV file
@@ -153,6 +159,8 @@
 #define CSVTAG_SZ_LIG_NATOM             25
 #define CSVTAG_SZ_KDE_NPOINT            26
 #define CSVTAG_SZ_MCS_NROW              27
+
+// performance metrics, real/estimated time on CPU/MIC/GPU
 #define CSVTAG_TIME_RL_CPU              30
 #define CSVTAG_TIME_EST_CPU             31
 #define CSVTAG_TIME_RL_MIC              32

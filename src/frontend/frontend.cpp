@@ -39,12 +39,13 @@ void Banner()
         << endl
         << "                         GeauxDock                          "
         << endl
-        << "                        version 0.1                         "
+        << "                        version 0.2                         "
         << endl
         << endl
         << "   GPU-accelerated mixed-resolution ligand docking using    "
         << endl
-        << "                ReplicaMC Exchange Monte Carlo                "
+        << "                        Monte Carlo                         "
+        //<< "                ReplicaMC Exchange Monte Carlo              "
         << endl
         << "------------------------------------------------------------"
         << endl
@@ -313,6 +314,15 @@ void Loader::load_target()
         loadEnePara(&inputfiles.enepara_file, enepara0);
         loadWeight(&inputfiles.weight_file, enepara0);
         loadNorPara(&inputfiles.norpara_file, enepara0);
+
+        check1(inputfiles.prt_file.id, inputfiles.prt_file.conf_total,
+            MAX_CONF_PRT, "protein conformation number", "MAX_CONF_PRT");
+        check1(inputfiles.prt_file.id, inputfiles.prt_file.prt_npoint,
+            MAXPRO, "protein point number", "MAXPRO");
+
+
+
+
         OptimizeProtein(prt0, prt, enepara0, inputfiles.prt_file.conf_total);
         OptimizeEnepara(enepara0, enepara);
 
@@ -332,6 +342,13 @@ void Loader::load_ligand()
     // debug
     //PrintLigand0(lig0);
 
+    check1(inputfiles.lig_file.id, inputfiles.lig_file.conf_total,
+        MAX_CONF_LIG, "ligand conformation number", "MAX_CONF_LIG");
+    check1(inputfiles.lig_file.id, inputfiles.lig_file.lig_natom,
+        MAXLIG, "ligand point number", "MAXLIG");
+    check1("", kde0->kde_npoint, MAXKDE, "KDE point number", "MAXKDE");
+    check1("", inputfiles.lhm_file.mcs_nrow, MAX_MCS_ROW, "MCS point number", "MAX_MCS_ROW");
+
 
     OptimizeKde(kde0, kde);
     OptimizeLigand(lig0, kde, lig, inputfiles.lig_file.conf_total);
@@ -340,6 +357,57 @@ void Loader::load_ligand()
 
     cout << "done loading ligand" << endl;
 }
+
+
+
+
+void Loader::print_sz()
+{
+    cout << sz.n_prt << ",";
+    cout << sz.n_lig << ",";
+    cout << sz.n_tmp << ",";
+    cout << sz.n_rep << ",";
+    cout << sz.prt_npoint << ",";
+    cout << sz.lig_natom << ",";
+    cout << sz.kde_npoint << ",";
+    cout << sz.mcs_nrow;
+
+    cout << endl;
+}
+
+
+
+
+void Loader::check1(
+    std::string id,
+    const int a,
+    const int ub,   // upper bound
+    const char* str1,
+    const char* str2)
+{
+    if (a > ub) {
+        cout << id << " " << str1;
+        cout << " exceeds the limit: " << a << " > " << ub << ". ";
+        cout << "Please consider increase " << str2 << " in \"src/common/size.h\"" << endl;
+        exit(EXIT_FAILURE);
+    }
+    if (a <= 0) {
+        cout << id << " " << str1;
+        cout << " is illegal: " << a << " <= " << 0 << ".";
+        cout << "Please check your input file" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    //cout << "done checking " << id << " " << str1 << endl;
+}
+
+/*
+void Loader::check()
+{
+}
+*/
+
+
 
 
 
@@ -365,6 +433,11 @@ void Loader::load(std::string str)
     sz.mcs_nrow = inputfiles.lhm_file.mcs_nrow;
 
 
+    //print_sz();
+    check1("", sz.n_tmp, MAX_TMP, "temperature number", "MAX_TMP");
+    check1("", sz.n_rep, MAX_REP, "total ensemble number", "MAX_REP");
+
+
 
     // set protein pocket center
     const float cx = lig0[0].pocket_center[0];
@@ -385,72 +458,8 @@ void Loader::load(std::string str)
 
 
 
-void Loader::print_sz()
-{
-    cout << sz.n_prt << ",";
-    cout << sz.n_lig << ",";
-    cout << sz.n_tmp << ",";
-    cout << sz.n_rep << ",";
-    cout << sz.prt_npoint << ",";
-    cout << sz.lig_natom << ",";
-    cout << sz.kde_npoint << ",";
-    cout << sz.mcs_nrow;
-
-    cout << endl;
-}
 
 
-void Loader::check()
-{
-    //print_sz();
-
-    if (sz.n_prt > MAX_CONF_PRT) {
-        cout << inputfiles.prt_file.id << " ";
-        cout << "protein conformation number exceeds the limit: ";
-        cout << sz.n_prt << " > " << MAX_CONF_PRT << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.n_lig > MAX_CONF_LIG) {
-        cout << inputfiles.lig_file.id << " ";
-        cout << "ligand conformation number exceeds the limit: ";
-        cout << sz.n_lig << " > " << MAX_CONF_LIG << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.n_tmp > MAX_TMP) {
-        cout << "temperature number exceeds the limit: ";
-        cout << sz.n_tmp << " > " << MAX_TMP << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.n_rep > MAX_REP) {
-        cout << "ensemble number execeeds the limit: ";
-        cout << sz.n_rep << " > " << MAX_REP << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.prt_npoint > MAXPRO) {
-        cout << inputfiles.prt_file.id << " ";
-        cout << "protein point number execeeds the limit: ";
-        cout << sz.prt_npoint << " > " << MAXPRO << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.lig_natom > MAXLIG) {
-        cout << inputfiles.lig_file.id << " ";
-        cout << "ligand point number execeeds the limit: ";
-        cout << sz.lig_natom << " > " << MAXLIG << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.kde_npoint > MAXKDE) {
-        cout << "KDE point number execeeds the limit: ";
-        cout << sz.kde_npoint << " > " << MAXKDE << endl;
-        exit(EXIT_FAILURE);
-    }
-    if (sz.mcs_nrow > MAX_MCS_ROW) {
-        cout << "MCS point number execeeds the limit: ";
-        cout << sz.mcs_nrow << " > " << MAX_MCS_ROW << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    cout << "done checking" << endl;
-}
 
 
 
@@ -502,5 +511,6 @@ void Loader::build_complex(Complex * complex)
     strcpy(complex->enepara_file, inputfiles.enepara_file.path.c_str());
     strcpy(complex->weight_file, inputfiles.weight_file.path.c_str());
 }
+
 
 

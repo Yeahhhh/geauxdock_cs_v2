@@ -2,6 +2,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <ctime>
+
+#include <sys/time.h>
+
 
 #include <size.h>
 #include <toggle.h>
@@ -138,7 +142,7 @@ PrintMoveRecord (const Record * record, const int steps_per_dump, const int r,
 // arg = 3      print all
 
 void
-PrintRecord (Record * record, int steps_per_dump, int r, int iter_begin, int iter_end, int arg)
+PrintRecord (const Record * record, int steps_per_dump, int r, int iter_begin, int iter_end, int arg)
 {
   // print title
   //PrintCsv (NULL, 0, 0, 1);
@@ -313,6 +317,175 @@ PrintLigand0 (const Ligand0 * lig0)
    printf ("KB total\n");
    }
    */
+
+
+
+
+
+
+void
+PrintResult (const Complex * complex, const Record *record)
+{
+
+#if 1
+
+// print the initial status of the system
+// print the initial status of the reference intput data "1a07C"
+
+std::string s;
+std::string::size_type pos;
+
+s = complex->prt_file;
+pos = s.find("1a07C");
+if (pos == std::string::npos) { // sub-string not found
+    goto next1;
+}
+
+s = complex->lig_file;
+pos = s.find("1a07C");
+if (pos == std::string::npos) { // sub-string not found
+    goto next1;
+}
+
+
+printf ("  0 0 0.6434 -0.0367 -0.2079 -0.1845 0.8521 -0.8880 0.0523 0.1744 -1.0000 0.7735 Ref Result\n"); 
+PrintRecord (record, complex->mcpara.steps_per_dump, 0, 0, 0, 2);
+
+
+next1:
+
+#endif
+
+
+
+
+
+
+
+#if 0
+// print all records
+for (int r = 0; r <= complex->size.n_rep; ++r) {        // replica loop
+    const int next_entry = record[r].next_entry;
+    PrintRecord (record, complex->mcpara.steps_per_dump, r, 0, next_entry - 1, 2);
+}
+#endif
+
+
+
+
+
+
+#if 1
+
+// print all records
+
+FILE *fp;
+char output_file[100];
+struct timeval t;
+gettimeofday(&t, NULL);
+double mytime_second = (double)t.tv_sec + (double)t.tv_usec * 1e-6;
+sprintf(output_file, "out_%.6f.txt", mytime_second);
+
+
+fp = fopen(output_file, "w");
+
+fprintf(fp, "prt input file: %s, \t%3d conformations\n", complex->prt_file, complex->size.n_prt);
+fprintf(fp, "lig input file: %s, \t%3d conformations\n", complex->lig_file, complex->size.n_lig);
+fprintf(fp, "\n");
+
+
+for (int r = 0; r <= complex->size.n_rep; ++r) {        // replica loop
+    const ReplicaMC *rep = &complex->replica[r];
+
+
+    fprintf(fp, "replica, %3d\n", r);
+    fprintf(fp, "    prt index,  %2d\n", rep->idx_prt);
+    fprintf(fp, "   temp index, %2d, minus beta, %f\n",
+        rep->idx_tmp,
+        complex->temp[rep->idx_tmp].minus_beta
+        );
+    fprintf(fp, "    lig index,  %2d \n", rep->idx_lig);
+
+    const int next_entry = record[r].next_entry;
+
+
+    if (next_entry != 0) {
+        fprintf(fp, "    accepted moves in format ");
+        fprintf(fp, "\"accepted step, mc move step, translation x y z, rotation x y z, energy\"\n");
+    }
+    else {
+        fprintf(fp, "    all moves are rejected\n");
+    }
+
+    for (int s = 0; s < next_entry; s++) { // step of record
+        const ReplicaMC *rep = &record[r].replica[s];
+        fprintf(fp, "%5d, %5d, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f\n",
+            s,                      // accepted step
+            rep->step,              // mc move step
+            rep->movematrix[0],
+            rep->movematrix[1],
+            rep->movematrix[2],
+            rep->movematrix[3],
+            rep->movematrix[4],
+            rep->movematrix[5],
+            rep->energy[9]          // total energy
+            );
+    }
+
+    fprintf(fp, "\n");
+
+}
+
+fclose(fp);
+
+printf("results are saved in %s\n", output_file);
+#endif
+
+
+
+
+
+
+
+
+
+
+// old code, bad !!!!!!!!!!!
+#if 0
+#if IS_H4DUMP == 1
+char myoutputfile[MAXSTRINGLENG];
+sprintf(myoutputfile, "%s/%s_%04d.h5", ph.mcpara->outputdir, ph.mcpara->outputfile, 0);
+Record *record;
+record = (Record *) malloc (ph.record_sz);
+ReadRecord (record, ph.complexsize->n_rep, myoutputfile);
+
+const int myreplica = 0;
+const int iter_begin = 0;
+//const int iter_end = minimal_int (steps_per_dump, 1) - 1;
+const int iter_end = 0;
+const int arg = 2;
+
+PrintRecord (record, steps_per_dump, myreplica, iter_begin, iter_end, arg);
+//PrintMoveRecord (record, steps_per_dump, myreplica, iter_begin, iter_end, arg);
+
+free (record);
+#endif
+#endif
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

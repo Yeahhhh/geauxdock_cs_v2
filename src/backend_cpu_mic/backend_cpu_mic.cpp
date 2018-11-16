@@ -9,7 +9,7 @@
 #include <size.h>
 #include <toggle.h>
 #include <util_print.h>
-#include <record.h>
+#include <complex.h>
 
 #include <yeah/measuring/counting/timer.hpp>
 
@@ -33,7 +33,7 @@
 
 
 static void
-Dock (Complex *complex, Record *record)
+Dock (Complex *ch, Record *rh)
 {
     yeah::measuring::counting::Timer e[16];
 
@@ -45,15 +45,15 @@ Dock (Complex *complex, Record *record)
     e[10].Start ();
 
     // sizes
-    const int steps_total = complex->mcpara.steps_total;
-    const int steps_per_dump = complex->mcpara.steps_per_dump;
+    const int steps_total = ch->mcpara.steps_total;
+    const int steps_per_dump = ch->mcpara.steps_per_dump;
 
     printf ("steps_per_dump = %d\n", steps_per_dump);
     printf ("steps_total = %d\n", steps_total);
 
     e[3].Start ();
     // calculate initial energy
-    MonteCarlo_d (complex, record, 0, 1);
+    MonteCarlo_d (ch, rh, 0, 1);
     e[3].Stop ();
 
 
@@ -93,7 +93,7 @@ Dock (Complex *complex, Record *record)
     for (int s1 = 0; s1 < steps_total; s1 += steps_per_dump) {
         printf ("\t%d / %d \n", s1, steps_total);
         // fflush (stdout);
-        MonteCarlo_d (complex, record, s1, steps_per_dump);
+        MonteCarlo_d (ch, rh, s1, steps_per_dump);
 #include <kernel_dump.cpp>
     }
     e[4].Stop ();
@@ -114,12 +114,10 @@ Dock (Complex *complex, Record *record)
     e[10].Stop ();
 
 
-    Complex *ch = complex;
-#include "kernel_print.cpp"
-#include "kernel_print_timer.cpp"
-#include "kernel_print_benchmark.cpp"
+#include "kernel_print_performance.cpp"
+PrintResult (ch, rh);
+//PrintSummary (ch);
 
-//  PrintSummary (complex);
 
 #if IS_PAPI == 1
     m0.Shutdown ();

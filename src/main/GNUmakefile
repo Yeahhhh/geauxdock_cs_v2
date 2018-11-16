@@ -2,17 +2,16 @@ include ../GNUmakefile.common.mk
 
 
 
-EXE += 2_modifylist
-EXE += 3_check
+EXE += 2_check
 #EXE += bench_1_splitdata
 ifeq ($(BUILD_CPU), 1)
-	EXE += 4_geauxdock_cpu
+	EXE += 3_geauxdock_cpu
 endif
 ifeq ($(BUILD_MIC), 1)
-	EXE += 4_geauxdock_mic
+	EXE += 3_geauxdock_mic
 endif
 ifeq ($(BUILD_GPU), 1)
-	EXE += 4_geauxdock_gpu
+	EXE += 3_geauxdock_gpu
 endif
 
 #EXE := runall
@@ -34,30 +33,29 @@ default: $(EXE)
 	$(CXX_HOST) $(CXXFLAGS_HOST) -c $< -o $@
 
 
-4_geauxdock_cpu.o: 4_geauxdock.cpp
+3_geauxdock_cpu.o: 3_geauxdock.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_CPU) -c $< -o $@
 
-4_geauxdock_mic.o: 4_geauxdock.cpp
+3_geauxdock_mic.o: 3_geauxdock.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_MIC) -c $< -o $@
 
-4_geauxdock_gpu.o: 4_geauxdock.cpp
+3_geauxdock_gpu.o: 3_geauxdock.cpp
 	$(CXX_HOST) $(CXXFLAGS_HOST) $(MARCRO_TARGET) -DTARGET_DEVICE=$(TARGET_GPU) -c $< -o $@
 
-
-2_modifylist: 2_modifylist.o
+2_check: 2_check.o ../frontend/util_optimize_soa_cpu.o $(OBJ_FRONTEND)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
 
-3_check: 3_check.o ../frontend/util_optimize_soa_cpu.o $(OBJ_FRONTEND)
+3_geauxdock_cpu: 3_geauxdock_cpu.o ../backend_cpu_mic/backend_cpu.o ../frontend/util_optimize_soa_cpu.o $(OBJ_FRONTEND)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
+	ln -sf $@ 3_geauxdock
 
-4_geauxdock_cpu: 4_geauxdock_cpu.o ../backend_cpu_mic/backend_cpu.o ../frontend/util_optimize_soa_cpu.o $(OBJ_FRONTEND)
+3_geauxdock_mic: 3_geauxdock_mic.o ../backend_cpu_mic/backend_mic.o ../frontend/util_optimize_soa_mic.o $(OBJ_FRONTEND)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
+	ln -sf $@ 3_geauxdock
 
-4_geauxdock_mic: 4_geauxdock_mic.o ../backend_cpu_mic/backend_mic.o ../frontend/util_optimize_soa_mic.o $(OBJ_FRONTEND)
-	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS)
-
-4_geauxdock_gpu: 4_geauxdock_gpu.o ../backend_gpu/backend_gpu.o ../frontend/util_optimize_soa_gpu.o $(OBJ_FRONTEND)
+3_geauxdock_gpu: 3_geauxdock_gpu.o ../backend_gpu/backend_gpu.o ../frontend/util_optimize_soa_gpu.o $(OBJ_FRONTEND)
 	$(CXX_HOST) $(LIBPATH) $^ -o $@ $(LINKFLAGS) -lcudart
+	ln -sf $@ 3_geauxdock
 
 
 
@@ -70,16 +68,16 @@ bench_4_splitdata: bench_4_splitdata.o
 run1: 1_mklist.py.sh
 	./1_mklist.py.sh
 
-run2: 3_check
-	./3_check.sh
+run2: 2_check
+	./2_check.sh
 
-run3: 4_geauxdock_cpu
-	./4_geauxdock_cpu a3.csv
+run3: 3_geauxdock_cpu
+	./3_geauxdock_cpu a3.csv
 
 runall:
 	./1_mklist.py.sh
-	./3_check.sh
-	./4_geauxdock_gpu
+	./2_check.sh
+	./3_geauxdock_gpu
 
 
 

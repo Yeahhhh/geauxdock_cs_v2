@@ -113,16 +113,12 @@ Dock (Complex *ch,
 //#include <kernel_dump.cpp>
     }
 
-    Record *record = rh;
-#include <kernel_print.cpp>
-
-
     e[10].Stop ();
 
 
-#include <kernel_print_timer.cpp>
-    //PrintSummary (ch);
-//#include <kernel_print_benchmark.cpp>
+#include "kernel_print_performance.cpp"
+PrintResult (ch, rh);
+//PrintSummary (ch);
 
 }
 
