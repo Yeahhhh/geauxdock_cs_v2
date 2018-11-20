@@ -28,7 +28,8 @@ GeauxDock  employs a novel hybrid force field and a Monte Carlo protocol for
 the efficient sampling of conformational space.
 
 The GPU codes use features that are supported since Kepler-Generation Graphics
-processing unit(GPU), and been tunned for Kepler GK110 and Maxwell 2.0 GPUs.
+processing unit(GPU), and been tunned for Kepler GK110, Maxwell 2.0
+and Pascal GPUs.
 
 GeauxDock has applications in:
 1. ligand virtual screening
@@ -74,11 +75,11 @@ algorithm to efficiently explore the conformational space of protein-ligand
 interactions. This protocol was optimized to rapidly discover near-native
 ligand configurations.
 
-4. Computations on graphics processing units (GPU). GeauxDock is implemented in
-CUDA-C. The code exploits the coarse-grained parallelisms for multiple
-replicas; specifically, replica simulations are dispatched on multiple CUDA
-thread blocks. The computation of molecular interactions utilizes the
-fine-grained parallelism using massive CUDA threads.
+5. Computations on multi-core CPU.
+
+6. Computations on Intel Xeon Phi Accelerator.
+
+7. Computations on CUDA GPU.
 
 
 === Prerequisites
@@ -91,14 +92,12 @@ GeauxDock has been tested on the following OS:
 
 GeauxDock has been tested with the following packages:
 
-  CUDA 6.5 and the NVIDIA binary GPU drivers
-  CUDA 7.0 and the NVIDIA binary GPU drivers
-  CUDA 7.5 and the NVIDIA binary GPU drivers
-  intel compiler 15.0.0
-  gcc 4.4.6
-  gcc 4.9.2
-  Bash (required for setting environment variables)
+  CUDA 6.5/7.0/7.5/8.0 and the NVIDIA binary GPU drivers (required by GPU build)
+  intel compiler 15.0.0                                  (required by Xeon Phi build)
+  gcc 4.4.6/4.9.2
   Python 3
+  Bash                                                   (required for setting ENV)
+
 
 
 === Steps - Initial Setup and Simple Run
@@ -120,11 +119,10 @@ readme file would be “/home/smith/geauxdock/doc/instructions.txt".
       $ cd /home/smith/geauxdock/src/ && make -B
 
       Building variables (eg: HOST, COMPLIER_HOST...) are speficied in "src/GNUmakefile.common.mk"
-      Please modify to fit your environment.
+      Please modify in order to fit your environment.
       Meanwhile, geauxdock and the libray "module" should be built using the same compiler.
-      Please make sure the compiler of choise is identical between
+      Please make sure the compiler of choise is set identical across
       "src/GNUmakefile.common.mk" and "src/module/yeah/GNUmakefile".
-
 
       If the build is successful, a few executable named "3_geauxdock_*" will be created
       under "main" directory  If not, find an experienced programmer

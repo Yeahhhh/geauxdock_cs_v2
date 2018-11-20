@@ -1081,8 +1081,9 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
                 if (dat1[1] == ligand_id) {
                     mymcs->tcc = atof (dat1[2].c_str ());
-
                     mymcs->ncol = atoi (dat1[3].c_str ());
+
+                    //cout << mymcs->tcc << endl;
 
                     for (int ia = 0; ia < mymcs->ncol; ia++) {
                         int mcs_loc = atoi (dat1[ia * 4 + 4].c_str ());
@@ -1106,14 +1107,20 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
                     //        if (ligand_mcs.size () < (int) MAX_MCS_ROW)
                     //          ligand_mcs.push_back (tmp_mcs);
-                }
-                mcs_conf++;
-                num_mcs_conf = max (num_mcs_conf, mcs_conf);
+                    mcs_conf++;
+                    num_mcs_conf = max (num_mcs_conf, mcs_conf);
                 // cout << "1-- mcs_conf " << mcs_conf << endl;
+                }
             }
         }
 
     }
+
+    if (mcs_conf == 0) {
+        cout << "Found no MCS fields that maches ligand id \"" << ligand_id << "\""<< endl;
+        exit(1);
+    }
+
 
     h1_file.close ();
 

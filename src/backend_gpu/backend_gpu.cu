@@ -88,16 +88,8 @@ Dock (Complex *ch,
 
     e[10].Start ();
 
-
-    e[3].Start ();
-    MonteCarlo_d <<< BperG, TperB >>> (cd, rd, 0, 1, curandstate_d);
-    CUDA_LAST_ERR ();
-    e[3].Stop ();
-
-
-
     for (int s1 = 0; s1 < steps_total; s1 += steps_per_dump) {
-        printf ("\t%d / %d \n", s1, steps_total);
+        //printf ("\t%d / %d \n", s1, steps_total);
 
         e[4].Start ();
         MonteCarlo_d <<< BperG, TperB >>> (cd, rd, s1, steps_per_dump, curandstate_d);
@@ -110,7 +102,8 @@ Dock (Complex *ch,
         // eeee.Stop ();
         // printf ("launcher: time of memory copy D2H %f\n", eeee.Span());
         e[4].Stop ();
-//#include <kernel_dump.cpp>
+
+        // insert your replica-exchange code here
     }
 
     e[10].Stop ();

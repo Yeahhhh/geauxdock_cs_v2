@@ -207,7 +207,6 @@ MonteCarlo_d (Complex * __restrict__ complex,
             mcs_nrow = complex->size.mcs_nrow;
             //mcs_npoint = mcs_csr->npoint;
 
-            is_accept_s = rep->is_accept;
 
             record[r].next_entry = 0; // reset the record's entry point
         }
@@ -308,20 +307,6 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
         for (int s2 = 0; s2 < s2max; ++s2) {
 
 
-            /////////////////////////////////////////////////////////////////////////////
-            // record old states
-            // 1.0% time
-            if (threadIdx.x == 0 && is_accept_s == 1) {
-                rep->step = s1 + s2;
-                const int next_entry = record[r].next_entry;
-                record[r].replica[next_entry] = *rep;
-                record[r].next_entry = next_entry + 1;
-            }
-
-
-
-
-
 
             /////////////////////////////////////////////////////////////////////////////
             // move
@@ -334,17 +319,12 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
                 const float fixed_var = 44.5f;
 #endif
 
-#if 1
+                // moving a fixed mount if s2max is 1
                 float moveamount;
-                if (s2max != 1)
+                if (s1 + s2 != 0)
                     moveamount = MYRAND;
                 else
                     moveamount = fixed_var;
-#endif
-
-#if 0
-                float moveamount = (s2max != 1) ? MYRAND : fixed_var;
-#endif
 
                 movematrix[threadIdx.x] = move_scale[threadIdx.x] * moveamount + rep->movematrix[threadIdx.x];
             }
@@ -505,28 +485,41 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
             // accept
 
             if (threadIdx.x == 0) {
-                const float delta_energy = e - rep->energy[MAXWEI -1];
-                const float beta = complex->temp[rep->idx_tmp].minus_beta;
-#if 1
-                float rand;
-                if (s2max != 1)
-                    rand = MYRAND;
-                else
-                    rand = 0.0f; // force to accept if s2max == 1
-#endif
-#if 0
-                float rand = (s2max != 1) ? MYRAND : 0.0f;
-#endif
 
-                is_accept_s = (rand < expf (delta_energy * beta));  // mybeta < 0
+                const int step = s1 + s2;
+
+                if (step != 0) {
+                    const float delta_energy = e - rep->energy[MAXWEI -1];
+                    const float beta = complex->temp[rep->idx_tmp].minus_beta; // beta < 0
+                    is_accept_s = (MYRAND < expf (delta_energy * beta));
+                }
+                else {
+                    is_accept_s = 1;
+                }
             }
+
             __syncthreads ();
+
             if (is_accept_s == 1) {
                 if (threadIdx.x < MAXWEI)
                     rep->energy[threadIdx.x] = e_s[threadIdx.x];
                 if (threadIdx.x < 6)
                     rep->movematrix[threadIdx.x] = movematrix[threadIdx.x];
             }
+
+
+            // record
+            // 1.0% time
+            if (is_accept_s == 1 && threadIdx.x == 0) {
+                rep->step = s1 + s2;
+                const int next_entry = record[r].next_entry;
+                record[r].replica[next_entry] = *rep;
+                record[r].next_entry = next_entry + 1;
+            }
+
+
+
+
 
 
 #if 0

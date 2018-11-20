@@ -13,7 +13,6 @@ printf ("kernel wall time\t\t%8.3f\n", e[10].Span ());
 printf ("alloc host\t\t\t%8.3f\n", e[0].Span ());
 printf ("H2Dcpy\t\t\t\t%8.3f\n", e[1].Span ());
 printf ("init 1\t\t\t\t%8.3f\n", e[2].Span ());
-printf ("init 2\t\t\t\t%8.3f\n", e[3].Span ());
 printf ("monte carlo\t\t\t%8.3f\n", e[4].Span ());
 printf ("\n");
 */

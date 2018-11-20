@@ -446,9 +446,13 @@ OptimizeMcs (const Mcs0 * mcs0, Mcs * mcs, Mcs_R * mcs_r, Mcs_ELL * mcs_ell, Mcs
             mcs_ell->x[i][j] = src->x2[j];
             mcs_ell->y[i][j] = src->y2[j];
             mcs_ell->z[i][j] = src->z2[j];
+
+            //printf("opt %d, %f, %f, %f\n", mcs_ell->i[i][j], mcs_ell->x[i][j], mcs_ell->y[i][j], mcs_ell->z[i][j]);
         }
         mcs_ell->ncol[i] = src->ncol;
         mcs_ell->tcc[i] = src->tcc;
+
+        //printf("opt %d, %f\n", mcs_ell->ncol[i], mcs_ell->tcc[i]);
     }
 #endif
 

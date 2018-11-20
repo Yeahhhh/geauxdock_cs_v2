@@ -9,11 +9,6 @@ MARCRO_TARGET += -DTARGET_GPU=$(TARGET_GPU) -DTARGET_CPU=$(TARGET_CPU) -DTARGET_
 #MARCRO_TARGET += -DTARGET_DEVICE=$(TARGET_GPU)
 
 
-# selecting build target
-BUILD_GPU := 1
-BUILD_CPU := 1
-BUILD_MIC := 1
-
 
 
 
@@ -22,12 +17,15 @@ HOST := gnuhost
 
 ifeq ($(HOST), intelhost)
 	COMPILER_HOST := intel
+	BUILD_CPU := 1
+	BUILD_MIC := 1
+	BUILD_GPU := 0
 
 else ifeq ($(HOST), gnuhost)
 	COMPILER_HOST := gnu
-	BUILD_GPU := 0		# overwrite the default build target list
 	BUILD_CPU := 1
 	BUILD_MIC := 0
+	BUILD_GPU := 0
 
 else ifeq ($(HOST), gpuhost)
 	COMPILER_HOST := gnu
@@ -35,15 +33,24 @@ else ifeq ($(HOST), gpuhost)
 	GPU := CC50
 #	GPU := CC52
 #	GPU := CC61
+	BUILD_CPU := 0
+	BUILD_MIC := 0
+	BUILD_GPU := 1
 
 else ifeq ($(HOST), smic)
 	COMPILER_HOST := intel
 	#COMPILER_HOST := gnu
 	GPU := CC35
+	BUILD_CPU := 1
+	BUILD_MIC := 1
+	BUILD_GPU := 1
 
 else ifeq ($(HOST), yourhost)
 	COMPILER_HOST := gnu
 	GPU := CC52
+	BUILD_CPU := 0
+	BUILD_MIC := 0
+	BUILD_GPU := 1
 endif
 
 
@@ -67,7 +74,7 @@ endif
 ifeq ($(GPU), CC35)
 	CXXFLAGS_DEV += -gencode arch=compute_35,code=sm_35
 
-# the fastest config, require "SMEM/block < 24KB"
+# the fastest config, requires "SMEM/block < 24KB"
 	BperMP := 2
 	TperB := 512
 
@@ -90,7 +97,7 @@ else ifeq ($(GPU), CC52)
 	BperMP := 4
 	TperB := 256
 
-# buggy but faster
+# buggy but faster, need to debug
 #	BperMP := 4
 #	TperB := 288
 

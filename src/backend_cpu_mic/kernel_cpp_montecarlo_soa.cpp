@@ -186,7 +186,6 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
         prt_npoint = prt->prt_npoint;
         kde_npoint = complex->size.kde_npoint;
         mcs_nrow = complex->size.mcs_nrow;
-        is_accept_s = rep->is_accept;
 
         rec[r].next_entry = 0; // reset the record's next_entry
 
@@ -220,19 +219,6 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
         for (int s2 = 0; s2 < s2max; ++s2) {
 
 
-            /////////////////////////////////////////////////////////////////////////////
-            // record old states
-            if (is_accept_s == 1) {
-                rep->step = s1 + s2;
-                const int next_entry = rec[r].next_entry;
-                rec[r].replica[next_entry] = *rep;
-                rec[r].next_entry = next_entry + 1;
-            }
-
-
-
-
-
 
             /////////////////////////////////////////////////////////////////////////////
             // move
@@ -244,7 +230,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 #elif IS_AWAY == 1
                 const float fixed_var = 44.5f;
 #endif
-                float moveamount = s2max != 1 ? MYRAND : fixed_var;
+                float moveamount = (s1 + s2) != 0 ? MYRAND : fixed_var;     // moving a fixed mount if step is 0
                 movematrix[i] = move_scale[i] * moveamount + rep->movematrix[i];
             }
 
@@ -336,7 +322,7 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 #if CALC_MCS == 1
 //#include <energy_mcs_v1.cpp> // correct, the paper
 //#include <energy_mcs_v2.cpp> // correct, not computing elhm2, no faster
-#include <energy_mcs_v3_ell.cpp> // correct, sparse matrix, ELLPACK format, the fastest, mic improve 2%, automatic unrolling ??
+#include <energy_mcs_v3_ell.cpp> // correct, sparse matrix, ELLPACK format, the fastest, mic improve 2%
 #endif
 
 
@@ -378,17 +364,34 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
             ////////////////////////////////////////////////////////////////////////
             // accept
-            const float delta_energy = etotal - rep->energy[MAXWEI -1];
-            const float beta = complex->temp[rep->idx_tmp].minus_beta;
-            float rand = s2max != 1 ? MYRAND : 0.0f; // force to accept if s2max == 1
-            is_accept_s = (rand < expf (delta_energy * beta));  // mybeta < 0
+            const int step = s1 + s2;
+            if (step != 0) {
+                const float delta_energy = etotal - rep->energy[MAXWEI -1];
+                const float mybeta = complex->temp[rep->idx_tmp].minus_beta; // this value is always negative
+                is_accept_s = (MYRAND < expf (delta_energy * mybeta));
+            }
+            else { // force to accept if step is 0
+                is_accept_s = 1;
+            }
+
+
 
             if (is_accept_s == 1) {
                 for (int i = 0; i < MAXWEI; ++i)
                     rep->energy[i] = e_s[i];
                 for (int i = 0; i < 6; ++i)
                     rep->movematrix[i] = movematrix[i];
+
+                // record
+                rep->step = step;
+                const int next_entry = rec[r].next_entry;
+                rec[r].replica[next_entry] = *rep;
+                rec[r].next_entry = next_entry + 1;
             }
+
+
+
+
 
 #if 0
         if (r == 0 && s2max == 1) {

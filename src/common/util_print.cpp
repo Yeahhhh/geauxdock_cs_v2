@@ -394,42 +394,35 @@ fprintf(fp, "lig input file: %s, \t%3d conformations\n", complex->lig_file, comp
 fprintf(fp, "\n");
 
 
-for (int r = 0; r <= complex->size.n_rep; ++r) {        // replica loop
+for (int r = 0; r < complex->size.n_rep; ++r) {        // replica loop
     const ReplicaMC *rep = &complex->replica[r];
 
 
     fprintf(fp, "replica, %3d\n", r);
-    fprintf(fp, "    prt index,  %2d\n", rep->idx_prt);
-    fprintf(fp, "   temp index, %2d, minus beta, %f\n",
+    fprintf(fp, "    prt  index,  %2d\n", rep->idx_prt);
+    fprintf(fp, "    temp index, %2d, minus beta, %f\n",
         rep->idx_tmp,
         complex->temp[rep->idx_tmp].minus_beta
         );
-    fprintf(fp, "    lig index,  %2d \n", rep->idx_lig);
+    fprintf(fp, "    lig  index,  %2d \n", rep->idx_lig);
 
     const int next_entry = record[r].next_entry;
 
 
-    if (next_entry != 0) {
-        fprintf(fp, "    accepted moves in format ");
-        fprintf(fp, "\"accepted step, mc move step, translation x y z, rotation x y z, energy\"\n");
-    }
-    else {
-        fprintf(fp, "    all moves are rejected\n");
-    }
+    fprintf(fp, "    number of accepted moves, %d\n", next_entry - 1);
+    fprintf(fp, "    number of proposed moves, %d\n", complex->mcpara.steps_total - 1);
+    fprintf(fp, "    The first record entry contains the initial status.\n");
+    fprintf(fp, "    Records in format ");
+    fprintf(fp, "\"record entry, mc move step, translation x y z, rotation x y z, evdw, eele, epmf, epsp, ehdb, ehpc, ekde, emcs, edst, etotal\"\n");
 
     for (int s = 0; s < next_entry; s++) { // step of record
         const ReplicaMC *rep = &record[r].replica[s];
-        fprintf(fp, "%5d, %5d, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f\n",
-            s,                      // accepted step
-            rep->step,              // mc move step
-            rep->movematrix[0],
-            rep->movematrix[1],
-            rep->movematrix[2],
-            rep->movematrix[3],
-            rep->movematrix[4],
-            rep->movematrix[5],
-            rep->energy[9]          // total energy
-            );
+        fprintf(fp, "   %5d, %5d, ", s, rep->step);
+        for (int k = 0; k < 6; k++) // 6 move parameters: translation x y z, rotation x y z
+            fprintf(fp, "%8.4f, ", rep->movematrix[k]);
+        for (int k = 0; k < MAXWEI; k++) // 10 energy terms, the last one is the "combined energy"
+            fprintf(fp, "%8.4f, ", rep->energy[k]);
+        fprintf(fp, "\n");
     }
 
     fprintf(fp, "\n");
