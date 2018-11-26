@@ -399,12 +399,12 @@ for (int r = 0; r < complex->size.n_rep; ++r) {        // replica loop
 
 
     fprintf(fp, "replica, %3d\n", r);
-    fprintf(fp, "    prt  index,  %2d\n", rep->idx_prt);
-    fprintf(fp, "    temp index, %2d, minus beta, %f\n",
+    fprintf(fp, "    prt  index, %3d\n", rep->idx_prt);
+    fprintf(fp, "    temp index, %3d, minus beta, %f\n",
         rep->idx_tmp,
         complex->temp[rep->idx_tmp].minus_beta
         );
-    fprintf(fp, "    lig  index,  %2d \n", rep->idx_lig);
+    fprintf(fp, "    lig  index, %3d \n", rep->idx_lig);
 
     const int next_entry = record[r].next_entry;
 

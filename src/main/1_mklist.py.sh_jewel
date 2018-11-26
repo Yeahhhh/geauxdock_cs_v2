@@ -33,6 +33,7 @@ prt_fn=../../data/N3.pdb
 #prt_fn=../../data/astex/proteins/1a07C.pdb
 #lig_dir=../../data/astex/ligands_1a07C1
 lig_dir=./ligands_jewel
+#lig_dir=./ligands_yead
 
 
 ./1_mklist.py \

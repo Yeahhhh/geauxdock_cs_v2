@@ -20,6 +20,13 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
 #endif
 
     for (int k = 0; k < kde_npoint; ++k) {	// kde loop, ~400
+
+        /*
+        if (r == 0 && (s1 + s2) == 0 && l == 0) {
+            printf("comp kde: %3d, %d, %f, %f, %f, %d\n", k, kde->t[k], kde->x[k], kde->y[k], kde->z[k]);
+        }
+        */
+
         if (lig__t == kde->t[k] OROR1) {
             const float dx = lig_x3[l] - kde->x[k];
             const float dy = lig_y3[l] - kde->y[k];

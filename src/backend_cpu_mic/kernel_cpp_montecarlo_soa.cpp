@@ -311,9 +311,9 @@ MonteCarlo_d (Complex * complex, Record *rec, const int s1, const int s2max)
 
 
 #if CALC_KDE == 1
-//#include <energy_kde_v1.cpp> // correct, the paper
+#include <energy_kde_v1.cpp> // correct, the paper
 //#include <energy_kde_v2.cpp> // correct, not computing ekde2, a little bit faster
-#include <energy_kde_v3.cpp> // correct, sparse format, CPU improve 2%, mic improve 6%
+//#include <energy_kde_v3.cpp> // correct, sparse format, CPU improve 2%, mic improve 6%
 #endif
 
 

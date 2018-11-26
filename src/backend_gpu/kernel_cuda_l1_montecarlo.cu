@@ -419,10 +419,10 @@ if (r == 0 && s2max == 1 && threadIdx.x == 0) {
 
 
 #if CALC_KDE == 1
-//#include <energy_kde_v1.cu> // correct, the paper, the best non-sparse implementation, CUDA thread 128*8
+#include <energy_kde_v1.cu> // correct, the paper, the best non-sparse implementation, CUDA thread 128*8
 //#include <energy_kde_v2.cu> // correct, CUDA_LDG_D, performance varies on different code revisions
 //#include <energy_kde_v3.cu> // correct, not computing ekde2, no faster
-#include <energy_kde_v4.cu> // correct, sparse format, the fastest, CUDA thread 32*X
+//#include <energy_kde_v4.cu> // correct, sparse format, the fastest, CUDA thread 32*X
 #endif
 
 
