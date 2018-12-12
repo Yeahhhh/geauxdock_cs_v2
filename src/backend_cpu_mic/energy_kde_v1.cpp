@@ -21,12 +21,6 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
 
     for (int k = 0; k < kde_npoint; ++k) {	// kde loop, ~400
 
-        /*
-        if (r == 0 && (s1 + s2) == 0 && l == 0) {
-            printf("comp kde: %3d, %d, %f, %f, %f, %d\n", k, kde->t[k], kde->x[k], kde->y[k], kde->z[k]);
-        }
-        */
-
         if (lig__t == kde->t[k] OROR1) {
             const float dx = lig_x3[l] - kde->x[k];
             const float dy = lig_y3[l] - kde->y[k];
@@ -47,6 +41,31 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
             ekde1 += expf (enepara_kde2 * kde_dst_pow2);
 #endif
             ekde2++;
+
+
+
+
+// DEBUG prints
+#if 0
+            if (r == 0 && (s1 + s2) == 0 && l == 0) {
+                printf("comp kde: %3d, %3d,,, %d, %f, %f, %f,,, %f, %f,,, %f, %d\n",
+                    l, k,
+                    kde->t[k], kde->x[k], kde->y[k], kde->z[k],
+                    kde_dst_pow2,
+                    enepara_kde2,
+                    ekde1,
+                    ekde2
+                    );
+            }
+#endif
+
+
+
+
+
+
+
+
         }
     } // kde loop
 

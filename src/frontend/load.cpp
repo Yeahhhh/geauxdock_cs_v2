@@ -1010,9 +1010,11 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
     string line1;
 
-    int mcs_conf = 0;
-    int num_mcs_conf = 0;		// max MCS constrains in .ff file
-    Mcs0 *mymcs = &mcs[mcs_conf];
+    int kde_row = 0;
+    int psp_row = 0;
+    int mcs_row = 0;
+
+    Mcs0 *mymcs = &mcs[mcs_row];
     kde->kde_npoint = 0;
 
 
@@ -1026,12 +1028,21 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
     while (getline (h1_file, line1)) {
         if (line1.length () > 3) {
+
+
+
             /* load KDE */
             if (line1.substr (0, 3) == "KDE") {
+                if (kde_row > MAXKDE - 1) {
+                    cout << "error: KDE overbound" << endl;
+                    cout << "please consider increase MAX_KDE in common/size.h" << endl;
+                    exit (EXIT_FAILURE);
+                }
+
+
+
                 std::string dat1[5];
-
                 int dat2 = 0;
-
                 istringstream dat3 (line1);
 
                 while (dat3)
@@ -1049,28 +1060,58 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
                 // cout << "2-- kde->pns[getLigCode (dat1[1])] " << kde->pns[getLigCode (dat1[1])] << endl;
                 kde->pns[getLigCode (dat1[1])]++;
+                kde_row++;
                 // cout << "3-- kde->pns[getLigCode (dat1[1])] " << kde->pns[getLigCode (dat1[1])] << endl;
             }
+
+
+
+
             /* load PSP */
             else if (line1.substr (0, 3) == "PSP") {
+
                 std::string dat1[4];
-
                 int dat2 = 0;
-
                 istringstream dat3 (line1);
 
                 while (dat3)
                     dat3 >> dat1[dat2++];
 
-                psp->psp[atoi (dat1[1].c_str ())][getLigCode (dat1[2])] =
-                    atof (dat1[3].c_str ());
+                int psp1 = atoi(dat1[1].c_str());
+                int psp2 = getLigCode(dat1[2]);
+                float psp3 = atof(dat1[3].c_str());
+
+
+                if (psp1 < 0 || psp1 > MAXLIG - 1) {
+                    cout << "error: PSP position 1 overbound" << endl;
+                    cout << "please consider increase MAXLIG in common/size.h" << endl;
+                    exit (EXIT_FAILURE);
+                }
+                if (psp2 < 0 || psp2 > MAXPRO - 1) {
+                    cout << "error: PSP position 2 overbound" << endl;
+                    cout << "please consider increase MAXPRO in common/size.h" << endl;
+                    exit (EXIT_FAILURE);
+                }
+
+
+
+                psp->psp[psp1][psp2] = psp3;
                 psp->n += 1;	// BUG! n was not initialized
             }
+
+
             else if (line1.substr (0, 3) == "MCS") {
+                if (mcs_row > MAX_MCS_ROW - 1) {
+                    cout << "error: MCS overbound" << endl;
+                    cout << "please consider increase MAX_MCS_ROW in common/size.h" << endl;
+                    exit (EXIT_FAILURE);
+                }
 
-                mymcs = &mcs[mcs_conf];	// renew the pointer
 
-#define MCS_STR_LENG 1024
+
+                mymcs = &mcs[mcs_row];	// renew the pointer
+
+#define MCS_STR_LENG 2048
 
                 std::string dat1[MCS_STR_LENG];
                 int dat2 = 0;
@@ -1079,7 +1120,7 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
                 while (dat3)
                     dat3 >> dat1[dat2++];
 
-                if (dat1[1] == ligand_id) {
+                if (dat1[1] == ligand_id) { // MCS tag must match ligand ID
                     mymcs->tcc = atof (dat1[2].c_str ());
                     mymcs->ncol = atoi (dat1[3].c_str ());
 
@@ -1088,11 +1129,12 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
                     for (int ia = 0; ia < mymcs->ncol; ia++) {
                         int mcs_loc = atoi (dat1[ia * 4 + 4].c_str ());
                         // performance optimization
-                        // previously index start from 1
-                        // now index start from 0
+                        // previously, index start from 1
+                        // now, index start from 0
                         mcs_loc = mcs_loc - 1;
-                        if (mcs_loc < 0 || mcs_loc >= MAXLIG - 1) {
+                        if (mcs_loc < 0 || mcs_loc >= MAX_MCS_COL - 1) {
                             cout << "error: MCS position overbound" << endl;
+                            cout << "please consider increase MAX_MCS_COL in common/size.h" << endl;
                             exit (EXIT_FAILURE);
                         }
                         mymcs->x[mcs_loc] = atof (dat1[ia * 4 + 5].c_str ());
@@ -1107,16 +1149,16 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
                     //        if (ligand_mcs.size () < (int) MAX_MCS_ROW)
                     //          ligand_mcs.push_back (tmp_mcs);
-                    mcs_conf++;
-                    num_mcs_conf = max (num_mcs_conf, mcs_conf);
-                // cout << "1-- mcs_conf " << mcs_conf << endl;
+
+                    mcs_row++;
                 }
             }
         }
 
     }
 
-    if (mcs_conf == 0) {
+
+    if (mcs_row == 0) {
         cout << "Found no MCS fields that maches ligand id \"" << ligand_id << "\""<< endl;
         exit(1);
     }
@@ -1124,7 +1166,7 @@ loadLHM (LhmFile * lhm_file, Psp0 * psp, Kde0 * kde, Mcs0 * mcs)
 
     h1_file.close ();
 
-    lhm_file->mcs_nrow = num_mcs_conf;
+    lhm_file->mcs_nrow = mcs_row;
 
 }
 

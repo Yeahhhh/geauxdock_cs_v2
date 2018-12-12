@@ -28,7 +28,7 @@
 #define MAXPRO 2048
 /* protein residues */
 
-#define MAXLIG 64
+#define MAXLIG 512
 /* ligand heavy atoms */
 
 #define MAX_CONF_PRT  20
@@ -82,7 +82,7 @@
 #define  MAXWEI 10
 /* energy terms */
 
-#define MAXKDE 10240
+#define MAXKDE 4096
 /* kde points */
 
 #define MAX_MCS_ROW 1024

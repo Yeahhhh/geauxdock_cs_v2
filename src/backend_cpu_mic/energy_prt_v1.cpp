@@ -108,6 +108,21 @@ for (int l = 0; l < lig_natom; ++l) {	// lig loop, ~30
             const int i1 = prt->seq3r[p];
             epsp += psp->psp[lig__t][i1];	// sparse matrix, indirect dereference
 
+
+
+
+// DEBUG prints
+#if 0 
+            //if (r == 0 && (s1 + s2) == 0) {
+            //if ((s1 + s2) == 0) {
+                printf("comp psp: %3d, %3d, %d, %d, %f\n",
+                    l, p, lig__t, i1, psp->psp[lig__t][i1]);
+           // }
+#endif
+
+
+
+
             // performance measuring
             // improve from 336 to 352, not worth doing
             //epsp += float (lig__t + i1);
